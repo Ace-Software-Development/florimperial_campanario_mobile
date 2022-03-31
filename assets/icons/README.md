@@ -1,0 +1,1 @@
+Aquí van todos los íconos, deben de estar en formato svg para que no se deforme la calidad

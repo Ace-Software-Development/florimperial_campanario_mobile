@@ -1,0 +1,1 @@
+Todos los componentes generales de las páginas de los módulos

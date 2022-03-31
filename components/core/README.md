@@ -1,0 +1,1 @@
+Aquí van todos los componentes generales de la aplicación, como la navegación, los modales, etc.
