@@ -8,10 +8,10 @@ const ModulesStackNavigator = createNativeStackNavigator();
 export default function NewsletterStack(props) {
 	return (
 		<ModulesStackNavigator.Navigator
-			initialRouteName=''
+			initialRouteName='module_main'
 		>
 			<ModulesStackNavigator.Screen 
-				name='main'
+				name='module_main'
 				component={ModulesScreen}
 				options={{
 					headerShown: false,
