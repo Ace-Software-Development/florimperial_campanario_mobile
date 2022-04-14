@@ -1,19 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground  } from 'react-native';
+import { Title, Subtitle, P, ActionBtn, Btn } from '../../ui/CampanarioComponents';
 import perfilIMG from '../../../assets/img/perfilIMG.png'
 import golfIMG from '../../../assets/img/golfIMG.png'
+import Navigation from '../../core/Navigation';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ModulesScreen(props) {
+	const navigation = useNavigation();
 	return (
 	<View style={style.container}>
       <View style={{width: "100%", height: 50}}>
-        <Text style={style.title}>Módulos</Text>
+        <Title>Módulos</Title>
         <Image style={style.perfilIMG} source={perfilIMG}/>
       </View>
       <View>
-        <ImageBackground style={style.modulo} source={golfIMG} imageStyle={{ borderRadius: 10}}>
-          <Text style={style.textoModulo}>Golf</Text>
-        </ImageBackground>
+		<Btn
+			onPress = {() => {
+				navigation.navigate('golf_module')
+			}}>
+			<ImageBackground style={style.modulo} source={golfIMG} imageStyle={{ borderRadius: 10}}>
+			<Text style={style.textoModulo}>Golf</Text>
+			</ImageBackground>
+		</Btn>
       </View>
     </View>
 	);
@@ -24,11 +33,6 @@ const style = StyleSheet.create({
 	  flex: 1,  
 	  paddingTop: 60, 
 	  paddingHorizontal: 25
-	},
-	title: {
-	  fontSize: 22,
-	  fontWeight: 'bold', 
-	  color: `#2B4066`
 	}, 
 	modulo: {
 	  marginVertical: 10,

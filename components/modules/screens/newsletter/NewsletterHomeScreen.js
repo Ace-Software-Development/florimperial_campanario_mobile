@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { Title, Subtitle, P, ActionBtn } from '../../../ui/CampanarioComponents';
 import golfIMG from '../../../../assets/img/golfIMG.png'
 import gymIMG from '../../../../assets/img/gymIMG.jpeg'
 import kidsclubIMG from '../../../../assets/img/kidsclubIMG.jpg'
@@ -9,7 +10,7 @@ export default function NewsletterHomeScreen(props) {
 	return (
 	<View style={style.container}>
       <View style={{width: "100%", height: 50}}>
-        <Text style={style.title}>Anuncios</Text>
+        <Title style={style.title}>Anuncios</Title>
         <Image style={style.perfilIMG} source={perfilIMG}/>
       </View>
       <View>
@@ -37,11 +38,6 @@ const style = StyleSheet.create({
 	  flex: 1,  
 	  paddingTop: 60, 
 	  paddingHorizontal: 25
-	},
-	title: {
-	  fontSize: 22,
-	  fontWeight: 'bold', 
-	  color: `#2B4066`
 	},
 	anuncio: {
 	  marginVertical: 10,
