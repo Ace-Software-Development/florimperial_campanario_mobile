@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ImageBackground  } from 'react-native';
+import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity  } from 'react-native';
 import { Title, Subtitle, P, ActionBtn, Btn } from '../../ui/CampanarioComponents';
 import perfilIMG from '../../../assets/img/perfilIMG.png'
 import golfIMG from '../../../assets/img/golfIMG.png'
@@ -15,14 +15,14 @@ export default function ModulesScreen(props) {
         <Image style={style.perfilIMG} source={perfilIMG}/>
       </View>
       <View>
-		<Btn
+		<TouchableOpacity
 			onPress = {() => {
 				navigation.navigate('golf_module')
 			}}>
 			<ImageBackground style={style.modulo} source={golfIMG} imageStyle={{ borderRadius: 10}}>
 			<Text style={style.textoModulo}>Golf</Text>
 			</ImageBackground>
-		</Btn>
+		</TouchableOpacity>
       </View>
     </View>
 	);

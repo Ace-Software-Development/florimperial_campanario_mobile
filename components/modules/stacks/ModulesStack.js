@@ -19,11 +19,13 @@ export default function NewsletterStack(props) {
 					headerShown: false,
 				}}
 			/>
-			<ModulesStackNavigator.Screen 
+			<ModulesStackNavigator.Screen
 				name='golf_module'
 				component={GolfMenuScreen}
 				options={{
-					headerShown: false,
+					title: 'Golf',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: false,
 				}}
 			/>
 		</ModulesStackNavigator.Navigator>
