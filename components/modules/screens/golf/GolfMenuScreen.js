@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { P } from '../../../ui/CampanarioComponents';
+import { ScreenContainer, Subtitle } from '../../../ui/CampanarioComponents';
 import { ModulesMenuList, ModulesMenuListItem } from '../../../ui/ModulesMenuList';
 import { useNavigation } from '@react-navigation/native';
 
@@ -8,21 +8,30 @@ import { useNavigation } from '@react-navigation/native';
 export default function GolfMenuScreen(props) {
 	const navigation = useNavigation();
 	return (
-		<View style={style.container}>
-			<ModulesMenuList>
-				<ModulesMenuListItem title="Horarios y reservaciones" onPress={() => navigation.navigate('golf_reservations')} />
-				<ModulesMenuListItem title="Clases grupales" onPress={() => {}} />
-				<ModulesMenuListItem title="Tee de práctica" onPress={() => {}} />
-			</ModulesMenuList>
-		</View>
+		<ScreenContainer>
+
+			<View style={style.container}>
+				<Subtitle style={{marginBottom: 10}}>Reservaciones</Subtitle>
+				<ModulesMenuList>
+					<ModulesMenuListItem title="Horarios y reservaciones" onPress={() => navigation.navigate('golf_reservations')} />
+					<ModulesMenuListItem title="Clases grupales" onPress={() => {}} />
+					<ModulesMenuListItem title="Tee de práctica" onPress={() => {}} />
+				</ModulesMenuList>
+			</View>
+
+			<View style={style.container}>
+				<Subtitle style={{marginBottom: 10}}>Reglamentos</Subtitle>
+				<ModulesMenuList>
+					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('golf_reservations')} />
+				</ModulesMenuList>
+			</View>
+			
+		</ScreenContainer>
 	);
 }
 
 const style = StyleSheet.create({
 	container: {
-	  flex: 1,  
-	  paddingTop: 60, 
-	  paddingHorizontal: 25
-	},
-
+		marginBottom: 40
+	}
 });
