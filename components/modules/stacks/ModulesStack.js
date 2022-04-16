@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import ModulesScreen from '../screens/ModulesScreen';
 import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
+import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -25,7 +26,17 @@ export default function NewsletterStack(props) {
 				options={{
 					title: 'Golf',
 					headerTitle: (props) => <Title {...props}/>,
-					headerBackTitleVisible: false,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen 
+				name='golf_reservations'
+				component={GolfReservationsScreen}
+				options={{
+					title: 'Golf Reservaciones',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
 				}}
 			/>
 		</ModulesStackNavigator.Navigator>

@@ -1,13 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Title, P, Subtitle } from '../../../ui/CampanarioComponents';
+import { P } from '../../../ui/CampanarioComponents';
+import { ModulesMenuList, ModulesMenuListItem } from '../../../ui/ModulesMenuList';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function GolfMenuScreen(props) {
+	const navigation = useNavigation();
 	return (
 		<View style={style.container}>
-			<View>
-				<P>Módulo de golf</P>
-			</View>
+			<ModulesMenuList>
+				<ModulesMenuListItem title="Horarios y reservaciones" onPress={() => navigation.navigate('golf_reservations')} />
+				<ModulesMenuListItem title="Clases grupales" onPress={() => {}} />
+				<ModulesMenuListItem title="Tee de práctica" onPress={() => {}} />
+			</ModulesMenuList>
 		</View>
 	);
 }
