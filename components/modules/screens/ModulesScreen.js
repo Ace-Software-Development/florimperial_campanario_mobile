@@ -10,11 +10,11 @@ export default function ModulesScreen(props) {
 	const navigation = useNavigation();
 	return (
 	<View style={style.container}>
-      <View style={{width: "100%", height: 50}}>
-        <Title>Módulos</Title>
-        <Image style={style.perfilIMG} source={perfilIMG}/>
-      </View>
-      <View>
+		<View style={{width: "100%", height: 50}}>
+		<Title>Módulos</Title>
+		<Image style={style.perfilIMG} source={perfilIMG}/>
+		</View>
+		<View>
 		<TouchableOpacity
 			onPress = {() => {
 				navigation.navigate('golf_module')
@@ -23,37 +23,37 @@ export default function ModulesScreen(props) {
 			<Text style={style.textoModulo}>Golf</Text>
 			</ImageBackground>
 		</TouchableOpacity>
-      </View>
-    </View>
+		</View>
+	</View>
 	);
 }
 
 const style = StyleSheet.create({
 	container: {
-	  flex: 1,  
-	  paddingTop: 60, 
-	  paddingHorizontal: 25
+		flex: 1,  
+		paddingTop: 60, 
+		paddingHorizontal: 25
 	}, 
 	modulo: {
-	  marginVertical: 10,
-	  resizeMode: 'contain',
-	  height: 200,
-	  width: "100%"
+		marginVertical: 10,
+		resizeMode: 'contain',
+		height: 200,
+		width: "100%"
 	},
 	textoModulo: {
-	  marginHorizontal: 20,
-	  fontSize: 27,
-	  fontWeight: 'bold', 
-	  color: `white`,
-	  position: 'absolute',
-	  bottom: 13
+		marginHorizontal: 20,
+		fontSize: 27,
+		fontWeight: 'bold', 
+		color: `white`,
+		position: 'absolute',
+		bottom: 13
 	},
 	perfilIMG: {
-	  resizeMode: "contain",
-	  width: 25,
-	  height: 22,
-	  position: 'absolute',
-	  right: 2,
-	  marginTop: 6
+		resizeMode: "contain",
+		width: 25,
+		height: 22,
+		position: 'absolute',
+		right: 2,
+		marginTop: 6
 	}
-  });
+});
