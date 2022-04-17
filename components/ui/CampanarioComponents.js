@@ -34,7 +34,7 @@ export function P(props) {
 	};
 
 	if ('size' in props)
-		localStyles.fontSize = props.size === 'small' ? 16 : 20
+		localStyles.fontSize = props.size === 'large' ? 22 : 20
 
 	return (
 		<Text style={[defaultStyles.p, localStyles]}>
@@ -146,7 +146,7 @@ const defaultStyles = StyleSheet.create({
 
 	screenContainer: {
 		paddingTop: '15%',
-		paddingHorizontal: 25,
+		paddingHorizontal: 20,
 		flex: 1
 	},
 
