@@ -54,7 +54,7 @@ export function Btn(props) {
 
 export function ActionBtn(props) {
 	const textLocalStyles = {};
-	const containerLocalStyles = {};
+	const containerLocalStyles = { ...props.style };
 	return (
 		<TouchableOpacity onPress={props.onPress} style={[defaultStyles.actionBtnContainer, containerLocalStyles]}>
 			<Text style={[defaultStyles.actionBtnText, textLocalStyles]}>
@@ -66,7 +66,7 @@ export function ActionBtn(props) {
 
 export function ScreenContainer(props) {
 	return (
-		<View style={defaultStyles.screenContainer}>
+		<View style={[defaultStyles.screenContainer, props.style]}>
 			{ props.children }
 		</View>
 	);
@@ -132,6 +132,7 @@ const defaultStyles = StyleSheet.create({
 
 	actionBtnContainer: {
 		backgroundColor: c.color.grey,
+		width: '55%',
 		borderRadius: 10,
 		paddingVertical: 10,
 		paddingHorizontal: 12

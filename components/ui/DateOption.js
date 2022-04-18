@@ -5,7 +5,8 @@ import { STYLES as c } from '../../utils/constants';
 
 export default function DateOption(props) {
 	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
-	let statusStyle = active ? styles.containerActive : styles.containerInactive;
+	let statusContainerStyle = active ? styles.containerActive : styles.containerInactive;
+	let statusTitleStyle = active ? styles.titleActive : styles.titleInactive;
 
 	const handleClick = () => {
 		setActive(!active);
@@ -13,15 +14,16 @@ export default function DateOption(props) {
 
 	useEffect(() => {
 		props.onClick(active, props.datetime);
-		statusStyle = active ? styles.containerActive : styles.containerInactive;
+		statusContainerStyle = active ? styles.containerActive : styles.containerInactive;
+		statusTitleStyle = active ? styles.titleActive : styles.titleInactive;
 	} , [active]);
 
 
 
 	return (
-		<TouchableOpacity style={[styles.container, statusStyle]} onClick={handleClick}>
-			<Text style={styles.date} >{props.date}</Text>
-			<Text style={styles.day} >{props.day}</Text>
+		<TouchableOpacity style={[styles.container, statusContainerStyle]} onClick={handleClick}>
+			<Text style={[styles.date, statusTitleStyle]} >{props.date}</Text>
+			<Text style={[styles.day, statusTitleStyle]} >{props.day}</Text>
 		</TouchableOpacity>
 	);
 }
@@ -38,24 +40,30 @@ const styles = StyleSheet.create({
 
 	containerInactive: {
 		backgroundColor: c.color.grey,
-		color: c.color.primaryColor
 	},
 
 	containerActive: {
 		backgroundColor: c.color.primaryColor,
-		color: 'white'
 	},
 
-	
+	titleInactive: {
+		color: c.color.primaryColor,
+	},
+
+	titleActive: {
+		color: 'white'
+	},
 
 	date: {
 		fontSize: 20,
 		color: c.color.primaryColor,
 		textTransform: 'uppercase',
+		includeFontPadding: false
 	},
 
 	day: {
 		fontSize: 38,
 		color: c.color.primaryColor,
+		includeFontPadding: false
 	}
 })

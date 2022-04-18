@@ -1,12 +1,19 @@
-import React from 'react';
-import { View, Switch, StyleSheet } from 'react-native';
-import { Title, ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { TextInput, ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
+import Switch from '../../../ui/Switch';
 
 export default function GolfReservationsScreen(props) {
+	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
+
+	const handleClick = () => {
+		setActive(!active);
+	}
+
 	return (
-		<ScreenContainer>
+		<ScreenContainer style={{paddingTop: 0}}>
 			
 			{/* Hoyos a jugar y carritos */}
 			<View style={style.tableContainer}>
@@ -16,7 +23,7 @@ export default function GolfReservationsScreen(props) {
 						<P >Hoyos a jugar:</P>
 					</View>
 					<View style={style.tableCol2}>
-						<Switch style={{width: 50}} />
+						<Switch defaultValue={true} activeText='18' inactiveText='09' />
 					</View>
 				</View>
 
@@ -25,7 +32,13 @@ export default function GolfReservationsScreen(props) {
 						<P >Carritos rentados:</P>
 					</View>
 					<View style={style.tableCol2}>
-						<Switch style={{width:50}} />
+						<TextInput 
+							//style={style.textInput}
+							keyboardType='numeric'
+							onChangeText={(text)=> {}}
+							value={0}
+							maxLength={10}  //setting limit of input
+							/>
 					</View>
 				</View>
 
@@ -43,15 +56,21 @@ export default function GolfReservationsScreen(props) {
 
 				{/* Hour picker */}
 				<View style={style.timePickerContainer} >
-					<CapsuleBtn title='12:00 am' subtitle='HOYO 1' />
-					<CapsuleBtn title='1:00 pm' subtitle='HOYO 1' />
-					<CapsuleBtn title='2:00 pm' subtitle='HOYO 1' />
-					<CapsuleBtn title='3:00 pm' subtitle='HOYO 1' />
-					<CapsuleBtn title='4:00 pm' subtitle='HOYO 1' />
-					<CapsuleBtn title='5:30 pm' subtitle='HOYO 1' />
-					<CapsuleBtn title='10:30 pm' subtitle='HOYO 1' />
+					<CapsuleBtn defaultActive={false} title='12:00 am' subtitle='HOYO 1' onClick={() => {}} />
+					<CapsuleBtn defaultActive={false} title='1:00 pm' subtitle='HOYO 1' onClick={() => {}} />
+					<CapsuleBtn defaultActive={true} title='2:00 pm' subtitle='HOYO 1' onClick={() => {}} />
+					<CapsuleBtn defaultActive={false} title='3:00 pm' subtitle='HOYO 1' onClick={() => {}} />
+					<CapsuleBtn defaultActive={false} title='4:00 pm' subtitle='HOYO 1' onClick={() => {}} />
+					<CapsuleBtn defaultActive={false} title='5:30 pm' subtitle='HOYO 1' onClick={() => {}} />
+					<CapsuleBtn defaultActive={false} title='10:30 pm' subtitle='HOYO 1' onClick={() => {}} />
 				</View>
+			</View>
 
+			<View style={style.guestsContainer}>
+				<Subtitle>Agrega más asistentes</Subtitle>
+				<View style={style.actionBtnContainer}>
+					<ActionBtn title="Añadir invitados" />
+				</View>
 			</View>
 
 		</ScreenContainer>
@@ -60,9 +79,8 @@ export default function GolfReservationsScreen(props) {
 
 const style = StyleSheet.create({
 	tableContainer: {
-		flex: 5,
 		justifyContent: 'flex-start',
-		maxHeight: '25%'
+		marginVertical: 20
 	},
 
 	tableRow: {
@@ -84,12 +102,21 @@ const style = StyleSheet.create({
 
 	datePickerContainer: {
 		flexDirection: 'row',
-		marginTop: 10
+		marginTop: 20
 	},
 
 	timePickerContainer: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
-		marginTop: 10
+		marginTop: 25
+	},
+
+	guestsContainer: {
+		marginTop: 20
+	},
+
+	actionBtnContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-around'
 	}
 })

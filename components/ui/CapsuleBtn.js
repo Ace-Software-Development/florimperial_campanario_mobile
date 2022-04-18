@@ -1,14 +1,31 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { STYLES as c } from '../../utils/constants';
 
 
 export default function CapsuleBtn(props) {
+	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
+	let statusContainerStyle = active ? style.containerActive : style.containerInactive;
+	let statusTitleStyle = active ? style.titleActive : style.titleInactive;
+	let statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;
+	
+
+	const handleClick = () => {
+		setActive(!active);
+	}
+
+	useEffect(() => {
+		props.onClick(active, props.datetime);
+		statusContainerStyle = active ? style.containerActive : style.containerInactive;
+		statusTitleStyle = active ? style.titleActive : style.titleInactive;
+		statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;
+	}, [active]);
+
 	return (
-		<View style={style.container}>
-			<Text style={style.title}>{props.title}</Text>
-			<Text style={style.subtitle}>{props.subtitle}</Text>
-		</View>
+		<TouchableOpacity style={[style.container, statusContainerStyle]} onClick={handleClick}>
+			<Text style={[style.title, statusTitleStyle]}>{props.title}</Text>
+			<Text style={[style.subtitle, statusSubTitleStyle]}>{props.subtitle}</Text>
+		</TouchableOpacity>
 	);
 }
 
@@ -28,11 +45,34 @@ const style = StyleSheet.create({
 	
 	title: {
 		fontSize: 16,
-		color: c.color.primaryColor
 	},
 
 	subtitle: {
 		fontSize: 12,
+		color: c.color.darkGrey
+	},
+
+	containerActive: {
+		backgroundColor: c.color.primaryColor
+	},
+
+	containerInactive: {
+		backgroundColor: null
+	},
+
+	titleActive: {
+		color: 'white'
+	},
+
+	titleInactive: {
+		color: c.color.primaryColor
+	},
+
+	subtitleActive: {
+		color: c.color.grey
+	},
+	
+	subtitleInactive: {
 		color: c.color.darkGrey
 	}
 });
