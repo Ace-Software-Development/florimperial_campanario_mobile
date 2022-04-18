@@ -7,9 +7,19 @@ import Switch from '../../../ui/Switch';
 
 export default function GolfReservationsScreen(props) {
 	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
+	const [date, setDate] = useState();
+	const [hour, setHour] = useState();
 
 	const handleClick = () => {
 		setActive(!active);
+	}
+
+	const saveReservation = () => {
+		var reservation={"date_time" : date, "hour" : hour};
+		var JSONreservation=JSON.stringify(reservation);
+		console.log(date);
+		console.log(hour);
+		console.log(JSONreservation.date_time, JSONreservation.hour);
 	}
 
 	return (
@@ -49,9 +59,9 @@ export default function GolfReservationsScreen(props) {
 
 				{/* Date picker */}
 				<View style={style.datePickerContainer}>
-					<DateOption defaultActive={true} datetime={'2022-04-20'} date='lun' day='20' onClick={() => {}} />
-					<DateOption defaultActive={false} datetime={'2022-04-20'} date='mar' day='21' onClick={() => {}} />
-					<DateOption defaultActive={false} datetime={'2022-04-22'} date='mie' day='22' onClick={() => {}} />
+					<DateOption defaultActive={false} datetime={'2022-04-20'} date='lun' day='20' value={date} onClick={() => setDate('2022-04-20')} />
+					<DateOption defaultActive={false} datetime={'2022-04-20'} date='mar' day='21' value={date} onClick={() => setDate('2022-04-20')} />
+					<DateOption defaultActive={false} datetime={'2022-04-22'} date='mie' day='22' value={date} onClick={() => setDate('2022-04-22')} />
 				</View>
 
 				{/* Hour picker */}
