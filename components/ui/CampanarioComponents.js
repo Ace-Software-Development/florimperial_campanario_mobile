@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { STYLES as c } from '../../utils/constants';
+
 
 export function Title(props) {
 	const localStyles = {
@@ -33,7 +34,7 @@ export function P(props) {
 	};
 
 	if ('size' in props)
-		localStyles.fontSize = props.size === 'small' ? 16 : 20
+		localStyles.fontSize = props.size === 'large' ? 22 : 20
 
 	return (
 		<Text style={[defaultStyles.p, localStyles]}>
@@ -53,12 +54,57 @@ export function Btn(props) {
 
 export function ActionBtn(props) {
 	const textLocalStyles = {};
-	const containerLocalStyles = {};
+	const containerLocalStyles = { ...props.style };
 	return (
 		<TouchableOpacity onPress={props.onPress} style={[defaultStyles.actionBtnContainer, containerLocalStyles]}>
 			<Text style={[defaultStyles.actionBtnText, textLocalStyles]}>
 				{ props.title }
 			</Text>
+		</TouchableOpacity>
+	);
+}
+
+export function ScreenContainer(props) {
+	return (
+		<View style={[defaultStyles.screenContainer, props.style]}>
+			{ props.children }
+		</View>
+	);
+}
+
+export function ModuleCard(props) {
+	return (
+		<TouchableOpacity
+			onPress={props.onPress}
+		>
+			<ImageBackground
+				style={defaultStyles.cardImgBg}
+				source={props.source}
+				imageStyle={{ borderRadius: 10}}
+			>
+				<Subtitle color='light' style={defaultStyles.cardTitle}>
+					{props.title}
+				</Subtitle>
+			</ImageBackground>
+		</TouchableOpacity>
+	);
+}
+
+export function AnnoucementCard(props) {
+	return (
+		<TouchableOpacity
+			onPress={props.onPress}
+		>
+			<ImageBackground
+				style={defaultStyles.cardImgBg}
+				source={props.source}
+				imageStyle={{ borderRadius: 10}}
+			>
+				<Text style={defaultStyles.cardTimestamp}>{ props.timeTitle }</Text>
+				<Subtitle color='light' style={defaultStyles.smallCardTitle}>
+					{props.title} 
+				</Subtitle>
+			</ImageBackground>
 		</TouchableOpacity>
 	);
 }
@@ -86,6 +132,7 @@ const defaultStyles = StyleSheet.create({
 
 	actionBtnContainer: {
 		backgroundColor: c.color.grey,
+		width: '55%',
 		borderRadius: 10,
 		paddingVertical: 10,
 		paddingHorizontal: 12
@@ -96,5 +143,48 @@ const defaultStyles = StyleSheet.create({
 		fontSize: 18,
 		fontWeight: 'bold',
 		alignSelf: 'center'
+	},
+
+	screenContainer: {
+		paddingTop: '15%',
+		paddingHorizontal: 20,
+		flex: 1
+	},
+
+	cardImgBg: {
+		marginVertical: 10,
+		resizeMode: 'contain',
+		height: 200,
+		width: "100%"
+	},
+
+	cardTitle: {
+		marginHorizontal: 20,
+		position: 'absolute',
+		bottom: 13,
+		fontSize: 27
+	},
+
+	smallCardTitle: {
+		marginHorizontal: 20,
+		position: 'absolute',
+		bottom: 13,
+		fontSize: 24
+	},
+
+	cardTimestamp: {
+		fontSize: 12.5,
+		color: c.color.darkGrey,
+		fontWeight: 'bold',
+		textAlign: 'center',
+		textAlignVertical: 'center',
+		backgroundColor: '#EBEBEBBB',
+		width: 100,
+		height: 29,
+		borderRadius: 10,
+		position: 'absolute',
+		right: 5,
+		marginHorizontal: 10,
+		marginTop: 10
 	}
 });
