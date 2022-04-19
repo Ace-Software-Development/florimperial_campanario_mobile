@@ -2,9 +2,10 @@ import React from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import ModulesScreen from '../screens/ModulesScreen';
-import { Title } from '../../ui/CampanarioComponents';
+import { Title, P } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
+import { TouchableOpacity } from 'react-native';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -37,6 +38,12 @@ export default function NewsletterStack(props) {
 					title: 'Golf Reservaciones',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true,
+					headerRight: () => (
+						<TouchableOpacity
+							onPress={() => {}}>
+							<P>Guardar</P>
+						</TouchableOpacity>
+					)
 				}}
 			/>
 		</ModulesStackNavigator.Navigator>

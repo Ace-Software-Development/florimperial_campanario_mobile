@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TextInput, ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
+import { View, StyleSheet, TextInput } from 'react-native';
+import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
+import { STYLES as c } from '../../../../utils/constants'
 
 export default function GolfReservationsScreen(props) {
 	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
@@ -42,7 +43,11 @@ export default function GolfReservationsScreen(props) {
 						<P >Carritos rentados:</P>
 					</View>
 					<View style={style.tableCol2}>
-						<TextInput />
+						<TextInput style={style.textInput}
+							keyboardType='numeric'
+							onChangeText={()=> {}}
+							maxLength={2}
+							/>
 					</View>
 				</View>
 
@@ -122,5 +127,15 @@ const style = StyleSheet.create({
 	actionBtnContainer: {
 		flexDirection: 'row',
 		justifyContent: 'space-around'
+	},
+
+	textInput: {
+		color: c.color.primaryColor,
+		backgroundColor: c.color.grey,
+		paddingVertical: 3,
+		paddingHorizontal: 10,
+		borderRadius: 100,
+		width: 100,
+		height: 33
 	}
 })
