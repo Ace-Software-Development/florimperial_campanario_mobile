@@ -7,8 +7,8 @@ import Switch from '../../../ui/Switch';
 
 export default function GolfReservationsScreen(props) {
 	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
-	const [date, setDate] = useState();
-	const [hour, setHour] = useState();
+	const [date, setDate] = useState('2022-04-02');
+	const [hour, setHour] = useState('3:00 pm');
 
 	const handleClick = () => {
 		setActive(!active);
@@ -42,13 +42,7 @@ export default function GolfReservationsScreen(props) {
 						<P >Carritos rentados:</P>
 					</View>
 					<View style={style.tableCol2}>
-						<TextInput 
-							//style={style.textInput}
-							keyboardType='numeric'
-							onChangeText={(text)=> {}}
-							value={0}
-							maxLength={10}  //setting limit of input
-							/>
+						<TextInput />
 					</View>
 				</View>
 
