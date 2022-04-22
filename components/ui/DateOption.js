@@ -4,29 +4,40 @@ import { STYLES as c } from '../../utils/constants';
 
 
 export default function DateOption(props) {
-	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
+	const [active, setActive] = useState('active' in props ? props.active : false);
 	let statusContainerStyle = active ? styles.containerActive : styles.containerInactive;
 	let statusTitleStyle = active ? styles.titleActive : styles.titleInactive;
 
+	const dayMapping = [
+		'DOM', 'LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB'
+	];
+
+	// When the selectedDate is modified in the parent
+	useEffect(()=> {
+		setActive( props.selectedDate === props.datetime );
+	}, [props.selectedDate]);
+
+	// When the users clicks this component
 	const handleClick = () => {
 		setActive(!active);
 	}
 
+	// When 
 	useEffect(() => {
-		props.onClick(active, props.datetime);
+		if (active)
+			props.onClick(props.datetime);
 		statusContainerStyle = active ? styles.containerActive : styles.containerInactive;
 		statusTitleStyle = active ? styles.titleActive : styles.titleInactive;
 	} , [active]);
 
-
-
 	return (
-		<TouchableOpacity style={[styles.container, statusContainerStyle]} onClick={handleClick}>
+		<TouchableOpacity style={[styles.container, statusContainerStyle]} onPress={handleClick}>
+			<Text style={[styles.day, statusTitleStyle]} >{dayMapping[props.day]}</Text>
 			<Text style={[styles.date, statusTitleStyle]} >{props.date}</Text>
-			<Text style={[styles.day, statusTitleStyle]} >{props.day}</Text>
 		</TouchableOpacity>
 	);
 }
+
 
 const styles = StyleSheet.create({
 	container: {
@@ -54,14 +65,14 @@ const styles = StyleSheet.create({
 		color: 'white'
 	},
 
-	date: {
+	day: {
 		fontSize: 20,
 		color: c.color.primaryColor,
 		textTransform: 'uppercase',
 		includeFontPadding: false
 	},
 
-	day: {
+	date: {
 		fontSize: 38,
 		color: c.color.primaryColor,
 		includeFontPadding: false
