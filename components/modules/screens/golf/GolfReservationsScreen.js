@@ -5,14 +5,71 @@ import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 
+
+const test_data = [
+	{
+		'id': 1,
+		'datetime': '2022-04-05T10:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-05T11:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-05T12:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-06T10:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-06T10:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-06T10:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-06T10:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-07T10:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-07T10:05:02+00:00'
+	},
+	{
+		'id': 1,
+		'datetime': '2022-04-07T10:05:02+00:00'
+	}
+];
+
 export default function GolfReservationsScreen(props) {
 	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
-	const [date, setDate] = useState('2022-04-02');
-	const [hour, setHour] = useState('3:00 pm');
+	const [allDates, setAllDates] = useState([]);
+
 
 	const handleClick = () => {
 		setActive(!active);
 	}
+
+	const getCalendarOptions = data => {
+		const dates = [];
+		const seen = new Set();
+		data.forEach(row => {
+			if (!seen.has(row.datetime)){
+				dates.push(row);
+				seen.add(row.datetime);
+			}
+		});
+		dates.sort( (a,b) => a.year-b.year || a.month-b.month || a.day-b.day);
+		return dates;
+	};
 
 	const saveReservation = () => {
 		var reservation={"date_time" : date, "hour" : hour};
@@ -53,6 +110,7 @@ export default function GolfReservationsScreen(props) {
 
 				{/* Date picker */}
 				<View style={style.datePickerContainer}>
+					
 					<DateOption defaultActive={false} datetime={'2022-04-20'} date='lun' day='20' value={date} onClick={() => setDate('2022-04-20')} />
 					<DateOption defaultActive={false} datetime={'2022-04-20'} date='mar' day='21' value={date} onClick={() => setDate('2022-04-20')} />
 					<DateOption defaultActive={false} datetime={'2022-04-22'} date='mie' day='22' value={date} onClick={() => setDate('2022-04-22')} />
