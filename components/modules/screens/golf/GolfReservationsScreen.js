@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, TextInput, Modal } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
+import ModalAddGuests from './ModalAddGuests';
 import { STYLES as c } from '../../../../utils/constants'
 
 export default function GolfReservationsScreen(props) {
 	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
 	const [date, setDate] = useState('2022-04-02');
 	const [hour, setHour] = useState('3:00 pm');
+	const [activeModal, setActiveModal] = useState(false);
 
 	const handleClick = () => {
 		setActive(!active);
@@ -43,11 +45,12 @@ export default function GolfReservationsScreen(props) {
 						<P >Carritos rentados:</P>
 					</View>
 					<View style={style.tableCol2}>
-						<TextInput style={style.textInput}
-							keyboardType='numeric'
-							onChangeText={()=> {}}
-							maxLength={2}
-							/>
+							<TextInput style={style.textInput}
+								keyboardType='numeric'
+								onChangeText={()=> {}}
+								maxLength={2}
+								keyboard
+								/>
 					</View>
 				</View>
 
@@ -76,9 +79,17 @@ export default function GolfReservationsScreen(props) {
 			</View>
 
 			<View style={style.guestsContainer}>
+
+				{/* Modal para agregar invitados */}
+				<View>
+					<ModalAddGuests openModal={activeModal} setModalOpen={setActiveModal}/>
+				</View>
+
 				<Subtitle>Agrega más asistentes</Subtitle>
 				<View style={style.actionBtnContainer}>
-					<ActionBtn title="Añadir invitados" />
+					<ActionBtn title="Añadir invitados" 
+						onPress={() => setActiveModal(true)}
+					/>
 				</View>
 			</View>
 
