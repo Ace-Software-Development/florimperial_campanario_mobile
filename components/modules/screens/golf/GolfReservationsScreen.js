@@ -7,23 +7,94 @@ import Switch from '../../../ui/Switch';
 import ModalAddGuests from './ModalAddGuests';
 import { STYLES as c } from '../../../../utils/constants'
 
+
+const test_data = [
+	{
+		'id': 1,
+		'datetime': '2022-04-05T10:05:02+00:00',
+		'hoyo_inicio': 'HOYO 1'
+	},
+	{
+		'id': 2,
+		'datetime': '2022-04-05T11:05:02+00:00',
+		'hoyo_inicio': 'HOYO 2'
+	},
+	{
+		'id': 3,
+		'datetime': '2022-04-05T12:05:02+00:00',
+		'hoyo_inicio': 'HOYO 3'
+	},
+	{
+		'id': 4,
+		'datetime': '2022-04-06T13:05:02+00:00',
+		'hoyo_inicio': 'HOYO 4'
+	},
+	{
+		'id': 5,
+		'datetime': '2022-04-06T14:05:02+00:00',
+		'hoyo_inicio': 'HOYO 5'
+	},
+	{
+		'id': 6,
+		'datetime': '2022-04-06T15:05:02+00:00',
+		'hoyo_inicio': 'HOYO 6'
+	},
+	{
+		'id': 7,
+		'datetime': '2022-04-06T16:05:02+00:00',
+		'hoyo_inicio': 'HOYO 7'
+	},
+	{
+		'id': 8,
+		'datetime': '2022-04-07T17:05:02+00:00',
+		'hoyo_inicio': 'HOYO 8'
+	},
+	{
+		'id': 9,
+		'datetime': '2022-04-07T18:05:02+00:00',
+		'hoyo_inicio': 'HOYO 10'
+	},
+	{
+		'id': 10,
+		'datetime': '2022-04-07T19:05:02+00:00',
+		'hoyo_inicio': 'HOYO 11'
+	}
+];
+
 export default function GolfReservationsScreen(props) {
-	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
-	const [date, setDate] = useState('2022-04-02');
-	const [hour, setHour] = useState('3:00 pm');
-	const [activeModal, setActiveModal] = useState(false);
+	const [allReservations, setAllReservations] = useState(test_data);
+	const [selectedDate, setSelectedDate] = useState(null);
+	const [shownReservations, setShownReservations] = useState([]);
+	const [selectedReservationId, setSelectedReservationId] = useState(null);
 
-	const handleClick = () => {
-		setActive(!active);
-	}
+	const getCalendarOptions = data => {
+		const dates = [];
+		const seen = new Set();
+		data.forEach(row => {
+			const d = row.datetime.split('T')[0];
+			if (!seen.has(d)){
+				const date = new Date(row.datetime);
+				dates.push(date);
+				seen.add(d);
+			}
+		});
+		dates.sort( (a,b) => a.getFullYear()-b.getFullYear() || a.getMonth()-b.getMonth() || a.getDate()-b.getDate());
+		return dates;
+	};
 
-	const saveReservation = () => {
-		var reservation={"date_time" : date, "hour" : hour};
-		var JSONreservation=JSON.stringify(reservation);
-		console.log(date);
-		console.log(hour);
-		console.log(JSONreservation.date_time, JSONreservation.hour);
-	}
+	// When the selected Date changes, we need to update the reservations available
+	useEffect(() => {
+		if (selectedDate !== null && selectedDate !== undefined) {
+			let reservations = JSON.parse(JSON.stringify(allReservations));
+			reservations = reservations.filter(i => i.datetime.split('T')[0]===selectedDate.split('T')[0]);
+			reservations = reservations.map(i => {
+				i.datetime = new Date(i.datetime);
+				return i;
+			});
+			setSelectedReservationId(null);
+			setShownReservations(reservations);
+		}
+	} , [selectedDate]);
 
 	return (
 		<ScreenContainer style={{paddingTop: 0}}>
@@ -61,20 +132,36 @@ export default function GolfReservationsScreen(props) {
 
 				{/* Date picker */}
 				<View style={style.datePickerContainer}>
-					<DateOption defaultActive={false} datetime={'2022-04-20'} date='lun' day='20' value={date} onClick={() => setDate('2022-04-20')} />
-					<DateOption defaultActive={false} datetime={'2022-04-20'} date='mar' day='21' value={date} onClick={() => setDate('2022-04-20')} />
-					<DateOption defaultActive={false} datetime={'2022-04-22'} date='mie' day='22' value={date} onClick={() => setDate('2022-04-22')} />
+					{ getCalendarOptions(allReservations).map( date => {
+						return (
+							<DateOption 
+								defaultActive={false} 
+								datetime={date.toISOString()} 
+								day={date.getDay()}
+								date={date.getDate()}
+								onClick={datetime => setSelectedDate(datetime)}
+								selectedDate={selectedDate}
+								key={date.toISOString()}
+							/>
+						);
+					}) }
 				</View>
 
 				{/* Hour picker */}
 				<View style={style.timePickerContainer} >
-					<CapsuleBtn defaultActive={false} title='12:00 am' subtitle='HOYO 1' onClick={() => {}} />
-					<CapsuleBtn defaultActive={false} title='1:00 pm' subtitle='HOYO 1' onClick={() => {}} />
-					<CapsuleBtn defaultActive={true} title='2:00 pm' subtitle='HOYO 1' onClick={() => {}} />
-					<CapsuleBtn defaultActive={false} title='3:00 pm' subtitle='HOYO 1' onClick={() => {}} />
-					<CapsuleBtn defaultActive={false} title='4:00 pm' subtitle='HOYO 1' onClick={() => {}} />
-					<CapsuleBtn defaultActive={false} title='5:30 pm' subtitle='HOYO 1' onClick={() => {}} />
-					<CapsuleBtn defaultActive={false} title='10:30 pm' subtitle='HOYO 1' onClick={() => {}} />
+					{ shownReservations.map(i => {
+						return (
+							<CapsuleBtn 
+								defaultActive={false}
+								title={i.datetime.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}
+								subtitle={i.hoyo_inicio}
+								value={i.id}
+								onClick={id => setSelectedReservationId(id)}
+								selectedReservationId={selectedReservationId}
+								key={i.id}
+							/>
+						);
+					}) }
 				</View>
 			</View>
 

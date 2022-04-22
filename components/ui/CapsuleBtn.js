@@ -8,26 +8,29 @@ export default function CapsuleBtn(props) {
 	let statusContainerStyle = active ? style.containerActive : style.containerInactive;
 	let statusTitleStyle = active ? style.titleActive : style.titleInactive;
 	let statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;
-	
 
-	const handleClick = () => {
-		setActive(!active);
-	}
-
+	// When the selectedReservation is modified in the parent component
 	useEffect(() => {
-		props.onClick(active, props.datetime);
+		setActive( props.selectedReservationId === props.value );
+	}, [props.selectedReservationId]);
+	
+	// When this component changes the Active state
+	useEffect(() => {
+		if (active)
+			props.onClick(props.value);
 		statusContainerStyle = active ? style.containerActive : style.containerInactive;
 		statusTitleStyle = active ? style.titleActive : style.titleInactive;
 		statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;
 	}, [active]);
 
 	return (
-		<TouchableOpacity style={[style.container, statusContainerStyle]} onClick={handleClick}>
+		<TouchableOpacity style={[style.container, statusContainerStyle]} onPress={() => setActive(!active)}>
 			<Text style={[style.title, statusTitleStyle]}>{props.title}</Text>
 			<Text style={[style.subtitle, statusSubTitleStyle]}>{props.subtitle}</Text>
 		</TouchableOpacity>
 	);
 }
+
 
 const style = StyleSheet.create({
 	container : {
