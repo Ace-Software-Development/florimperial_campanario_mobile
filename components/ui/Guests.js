@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { P } from './CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
 
 export default function Guests(props) {
     return (
         <View style={style.item}>
             <View style={style.itemLeft}>
-                <Text>{props.text}</Text>
+                <P>{props.text}</P>
             </View>
             <View style={style.itemDelete}>
 
@@ -17,13 +18,13 @@ export default function Guests(props) {
 
 const style = StyleSheet.create({
     item: {
-        backgroundColor: c.color.grey,
+        backgroundColor: c.color.lightGrey,
         padding: 15,
         borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 20
+        marginBottom: 10
     },
     itemLeft: {
         flexDirection: 'row',

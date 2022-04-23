@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { ScreenContainer, P, Subtitle } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
@@ -62,15 +63,18 @@ const test_data = [
 
 export default function GolfReservationsScreen(props) {
 	const [allReservations, setAllReservations] = useState(test_data);
+	//Fechas
 	const [selectedDate, setSelectedDate] = useState(null);
 	const [shownReservations, setShownReservations] = useState([]);
 	const [selectedReservationId, setSelectedReservationId] = useState(null);
-	const [activeModal, setActiveModal] = useState(false);
 	//Invitados
 	const [guest, setGuest] = useState();
     const [guests, setGuests] = useState([]);
     const maxGuests = 15;
     const [maxGuestsReached, setMaxGuests] = useState(false);
+	//Hoyos y carritos
+	const [holesEnabled, setHolesEnabled] = useState(true);
+	const [karts, setKarts] = useState(0);
 
 	/* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
     const handleAddGuests = () => {
@@ -93,9 +97,7 @@ export default function GolfReservationsScreen(props) {
 		setGuests(guestsCopy);
 	}
 
-    /* Se guardan los invitados en la base de datos */
-    const saveGuests = () => {}
-
+	/* Obtener todas las fechas de las reservaciones */
 	const getCalendarOptions = data => {
 		const dates = [];
 		const seen = new Set();
@@ -111,7 +113,7 @@ export default function GolfReservationsScreen(props) {
 		return dates;
 	};
 
-	// When the selected Date changes, we need to update the reservations available
+	/* When the selected Date changes, we need to update the reservations available */
 	useEffect(() => {
 		if (selectedDate !== null && selectedDate !== undefined) {
 			let reservations = JSON.parse(JSON.stringify(allReservations));
@@ -125,6 +127,8 @@ export default function GolfReservationsScreen(props) {
 		}
 	} , [selectedDate]);
 
+	const toggleHoles = () => setHolesEnabled( previousState => !previousState )
+
 	return (
 		<ScrollView>
 		<ScreenContainer style={{paddingTop: 0}}>
@@ -137,7 +141,11 @@ export default function GolfReservationsScreen(props) {
 						<P >Hoyos a jugar:</P>
 					</View>
 					<View style={style.tableCol2}>
-						<Switch defaultValue={true} activeText='18' inactiveText='09' />
+						<Switch defaultValue={true} 
+								onValueChange={val => setHolesEnabled(val)}
+								activeText='18' 
+								inactiveText='09'
+								/>
 					</View>
 				</View>
 
@@ -157,6 +165,7 @@ export default function GolfReservationsScreen(props) {
 
 			</View>
 
+			{/* Selecciona la fecha y hora de la reservacion */}
 			<View>
 				<Subtitle>Selecciona la fecha y la hora</Subtitle>
 
@@ -183,7 +192,7 @@ export default function GolfReservationsScreen(props) {
 						return (
 							<CapsuleBtn 
 								defaultActive={false}
-								title={i.datetime.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}
+								title={i.datetime.toISOString().slice(11,16)}
 								subtitle={i.hoyo_inicio}
 								value={i.id}
 								onClick={id => setSelectedReservationId(id)}
@@ -195,46 +204,34 @@ export default function GolfReservationsScreen(props) {
 				</View>
 			</View>
 
+			{/* Agrega los invitados */}
 			<View style={style.guestsContainer}>
-
-				{/* Agregar invitados */}
-				{/* <View>
-					<ModalAddGuests openModal={activeModal} setModalOpen={setActiveModal}/>
-				</View>
-
-				<View style={style.actionBtnContainer}>
-					<ActionBtn title="Añadir invitados" 
-						onPress={() => setActiveModal(true)}
-					/>
-				</View> */}
+				<Subtitle>Agrega más asistentes</Subtitle>
+				<KeyboardAvoidingView
+					behavior={Platform.OS == "ios" ? "padding" : "height"}
+					style={style.keyboardContainer}
+				>
+					<TextInput 
+						placeholder={'Escribe el nombre del invitado'}
+						style={style.input}
+						value={guest}
+						onChangeText={text => setGuest(text)}/>
+					<TouchableOpacity onPress={() => handleAddGuests()} disabled={maxGuestsReached}>
+						<View style={style.addWrapper}>
+							<P color="light">+</P>
+						</View>
+					</TouchableOpacity>
+				</KeyboardAvoidingView>
 				<View>
-					<Subtitle>Agrega más asistentes</Subtitle>
-                        <KeyboardAvoidingView
-                            behavior={Platform.OS == "ios" ? "padding" : "height"}
-                            style={style.keyboardContainer}
-                        >
-                            <TextInput 
-                                placeholder={'Escribe el nombre del invitado'}
-                                style={style.Input}
-                                value={guest}
-                                onChangeText={text => setGuest(text)}/>
-                            <TouchableOpacity onPress={() => handleAddGuests()} disabled={maxGuestsReached}>
-                                <View style={style.addWrapper}>
-                                    <P>+</P>
-                                </View>
-                            </TouchableOpacity>
-                        </KeyboardAvoidingView>
-                        <View>
-                            {/* Aqui van a ir los invitados agregados */}
-                            {
-                                guests.map((item, index) => {
-                                    return (
-										<TouchableOpacity key={index} onPress={() => deleteGuest(index)}>
-											<Guests text={item} />
-										</TouchableOpacity>)
-                                })
-                            }
-                        </View>
+					{/* Aqui van a ir los invitados agregados */}
+					{
+						guests.map((item, index) => {
+							return (
+								<TouchableOpacity key={index} onPress={() => deleteGuest(index)}>
+									<Guests text={item} />
+								</TouchableOpacity>)
+						})
+					}
 				</View>
 			</View>
 
@@ -291,26 +288,31 @@ const style = StyleSheet.create({
 		backgroundColor: c.color.grey,
 		paddingVertical: 3,
 		paddingHorizontal: 10,
-		borderRadius: 100,
+		borderRadius: 10,
 		width: 100,
 		height: 33
 	},
+
 	keyboardContainer: {
         alignItems: 'center',
-        marginBottom: 20,
+        marginVertical: 20,
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-between'
     },
-    Input: {
+
+    input: {
         backgroundColor: c.color.grey,
-        paddingVertical: 15,
-        paddingHorizontal: 15,
-        borderRadius: 30,
+        paddingVertical: 7,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+		width: '80%',
+		fontSize: RFPercentage(2.1)
     }, 
+
     addWrapper: {
-        width: 60,
-        height: 60,
-        backgroundColor: c.color.grey,
+        width: 35,
+        height: 35,
+		backgroundColor: c.color.primaryColor,
         borderRadius: 60,
         justifyContent: 'center',
         alignItems: 'center'

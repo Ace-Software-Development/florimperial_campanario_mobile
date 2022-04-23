@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
 
 
@@ -37,7 +38,7 @@ const style = StyleSheet.create({
 		borderWidth: 1.5,
 		borderColor: c.color.primaryColor,
 		borderRadius: 100,
-		width: 107,
+		width: '29%',
 		paddingTop: 8,
 		paddingBottom: 7,
 		paddingHorizontal: 10,
@@ -47,11 +48,11 @@ const style = StyleSheet.create({
 	},
 	
 	title: {
-		fontSize: 16,
+		fontSize: RFPercentage(2),
 	},
 
 	subtitle: {
-		fontSize: 12,
+		fontSize: RFPercentage(1.4),
 		color: c.color.darkGrey
 	},
 

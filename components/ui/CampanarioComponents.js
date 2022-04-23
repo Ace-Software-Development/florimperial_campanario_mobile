@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
 
 
@@ -114,19 +115,19 @@ const defaultStyles = StyleSheet.create({
 	
 	title: {
 		color: c.color.primaryColor,
-		fontSize: 24,
+		fontSize: RFPercentage(2.8),
 		fontWeight: 'bold',
 	},
 
 	subtitle: {
 		color: c.color.darkGrey,
-		fontSize: 20,
+		fontSize: RFPercentage(2.5),
 		fontWeight: 'bold'
 	},
 
 	p: {
 		color: c.color.darkGrey,
-		fontSize: 18,
+		fontSize: RFPercentage(2.1),
 		fontWeight: 'normal'
 	},
 
@@ -140,7 +141,7 @@ const defaultStyles = StyleSheet.create({
 	
 	actionBtnText: {
 		color: c.color.primaryColor,
-		fontSize: 18,
+		fontSize: RFPercentage(2.1),
 		fontWeight: 'bold',
 		alignSelf: 'center'
 	},
@@ -162,7 +163,7 @@ const defaultStyles = StyleSheet.create({
 		marginHorizontal: 20,
 		position: 'absolute',
 		bottom: 13,
-		fontSize: 27
+		fontSize: RFPercentage(4),
 	},
 
 	smallCardTitle: {
@@ -173,7 +174,7 @@ const defaultStyles = StyleSheet.create({
 	},
 
 	cardTimestamp: {
-		fontSize: 12.5,
+		fontSize: RFPercentage(1.7),
 		color: c.color.darkGrey,
 		fontWeight: 'bold',
 		textAlign: 'center',

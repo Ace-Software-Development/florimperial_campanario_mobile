@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch as CustomSwitch } from 'react-native-switch';
 import { STYLES as c } from '../../utils/constants';
 
 
 export default function Switch(props) {
-	const padding = 'activeText' in props || 'inactiveText' in props ? 5.5 : 2;
+	const [isEnabled, setIsEnabled] = useState('defaultValue' in props ? props.defaultValue : false)
+
+	const toggleSwitch = () => setIsEnabled(prevState => !prevState);
+
+	useEffect(() => {
+		props.onValueChange(isEnabled);
+	}, [isEnabled]);
+
 	return (
 		<CustomSwitch 
-			value={'defaultValue' in props ? props.defaultValue : false}
-			onValueChange={(val) => console.log(val)}
+			value={isEnabled}
+			onValueChange={toggleSwitch}
 			disabled={false}
 			activeText={'activeText' in props ? props.activeText : ''}
 			inActiveText={'inactiveText' in props ? props.inactiveText : ''}

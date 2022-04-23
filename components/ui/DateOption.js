@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
 
 
@@ -66,14 +67,14 @@ const styles = StyleSheet.create({
 	},
 
 	day: {
-		fontSize: 20,
+		fontSize: RFPercentage(2.8),
 		color: c.color.primaryColor,
 		textTransform: 'uppercase',
 		includeFontPadding: false
 	},
 
 	date: {
-		fontSize: 38,
+		fontSize: RFPercentage(5.6),
 		color: c.color.primaryColor,
 		includeFontPadding: false
 	}
