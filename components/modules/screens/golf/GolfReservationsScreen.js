@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, Modal } from 'react-native';
+import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
-import ModalAddGuests from './ModalAddGuests';
 import { STYLES as c } from '../../../../utils/constants'
-
+import Guests from '../../../ui/Guests';
 
 const test_data = [
 	{
@@ -66,6 +65,36 @@ export default function GolfReservationsScreen(props) {
 	const [selectedDate, setSelectedDate] = useState(null);
 	const [shownReservations, setShownReservations] = useState([]);
 	const [selectedReservationId, setSelectedReservationId] = useState(null);
+	const [activeModal, setActiveModal] = useState(false);
+	//Invitados
+	const [guest, setGuest] = useState();
+    const [guests, setGuests] = useState([]);
+    const maxGuests = 15;
+    const [maxGuestsReached, setMaxGuests] = useState(false);
+
+	/* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
+    const handleAddGuests = () => {
+        Keyboard.dismiss();
+		if(guests.length < maxGuests){
+            setGuests([...guests, guest]);
+            setGuest(null);
+        }else{
+			Alert.alert('Máximo alcanzado', 'Ya no se pueden agregar mas invitados', [
+				{text: 'Aceptar'}
+			])
+            //setMaxGuests(true);
+        }
+    }
+
+	/* Se borran los invitados seleccionados */
+	const deleteGuest = (index) => {
+		let guestsCopy = [...guests];
+		guestsCopy.splice(index, 1);
+		setGuests(guestsCopy);
+	}
+
+    /* Se guardan los invitados en la base de datos */
+    const saveGuests = () => {}
 
 	const getCalendarOptions = data => {
 		const dates = [];
@@ -97,6 +126,7 @@ export default function GolfReservationsScreen(props) {
 	} , [selectedDate]);
 
 	return (
+		<ScrollView>
 		<ScreenContainer style={{paddingTop: 0}}>
 			
 			{/* Hoyos a jugar y carritos */}
@@ -167,20 +197,49 @@ export default function GolfReservationsScreen(props) {
 
 			<View style={style.guestsContainer}>
 
-				{/* Modal para agregar invitados */}
-				<View>
+				{/* Agregar invitados */}
+				{/* <View>
 					<ModalAddGuests openModal={activeModal} setModalOpen={setActiveModal}/>
 				</View>
 
-				<Subtitle>Agrega más asistentes</Subtitle>
 				<View style={style.actionBtnContainer}>
 					<ActionBtn title="Añadir invitados" 
 						onPress={() => setActiveModal(true)}
 					/>
+				</View> */}
+				<View>
+					<Subtitle>Agrega más asistentes</Subtitle>
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS == "ios" ? "padding" : "height"}
+                            style={style.keyboardContainer}
+                        >
+                            <TextInput 
+                                placeholder={'Escribe el nombre del invitado'}
+                                style={style.Input}
+                                value={guest}
+                                onChangeText={text => setGuest(text)}/>
+                            <TouchableOpacity onPress={() => handleAddGuests()} disabled={maxGuestsReached}>
+                                <View style={style.addWrapper}>
+                                    <P>+</P>
+                                </View>
+                            </TouchableOpacity>
+                        </KeyboardAvoidingView>
+                        <View>
+                            {/* Aqui van a ir los invitados agregados */}
+                            {
+                                guests.map((item, index) => {
+                                    return (
+										<TouchableOpacity key={index} onPress={() => deleteGuest(index)}>
+											<Guests text={item} />
+										</TouchableOpacity>)
+                                })
+                            }
+                        </View>
 				</View>
 			</View>
 
 		</ScreenContainer>
+		</ScrollView>
 	);
 }
 
@@ -235,5 +294,25 @@ const style = StyleSheet.create({
 		borderRadius: 100,
 		width: 100,
 		height: 33
-	}
+	},
+	keyboardContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    Input: {
+        backgroundColor: c.color.grey,
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        borderRadius: 30,
+    }, 
+    addWrapper: {
+        width: 60,
+        height: 60,
+        backgroundColor: c.color.grey,
+        borderRadius: 60,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 })
