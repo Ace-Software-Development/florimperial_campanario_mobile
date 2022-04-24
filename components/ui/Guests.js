@@ -2,15 +2,14 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { P } from './CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function Guests(props) {
     return (
         <View style={style.item}>
             <View style={style.itemLeft}>
+                <Icon name='user' size={25} style={style.icon}/>
                 <P>{props.text}</P>
-            </View>
-            <View style={style.itemDelete}>
-
             </View>
         </View>
     )
@@ -31,10 +30,7 @@ const style = StyleSheet.create({
         alignItems: 'center',
         flexWrap: 'wrap'
     },
-    itemDelete: {
-        width: 12,
-        height: 12,
-        borderWidth: 2,
-        borderRadius: 10
-    },
+    icon: {
+        marginRight: 15
+    }
 });

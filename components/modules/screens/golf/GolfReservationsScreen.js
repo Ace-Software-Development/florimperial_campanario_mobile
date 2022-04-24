@@ -70,8 +70,8 @@ export default function GolfReservationsScreen(props) {
 	//Invitados
 	const [guest, setGuest] = useState();
     const [guests, setGuests] = useState([]);
-    const maxGuests = 15;
-    const [maxGuestsReached, setMaxGuests] = useState(false);
+    const maxGuests = 5;
+	var pressed = 0;
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState(0);
@@ -79,14 +79,21 @@ export default function GolfReservationsScreen(props) {
 	/* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
     const handleAddGuests = () => {
         Keyboard.dismiss();
-		if(guests.length < maxGuests){
-            setGuests([...guests, guest]);
+		if(guests.length < maxGuests && guest != null){
+			setGuests([...guests, guest]);
             setGuest(null);
-        }else{
+        }else if(guest == null){
+			pressed++;
+			if(pressed > 5){
+				Alert.alert('No se ha introducido ningún nombre', 'Escriba el nombre del invitado', [
+					{text: 'Aceptar'}
+				])
+				pressed = 0;
+			}
+		}else{
 			Alert.alert('Máximo alcanzado', 'Ya no se pueden agregar mas invitados', [
 				{text: 'Aceptar'}
 			])
-            //setMaxGuests(true);
         }
     }
 
@@ -216,7 +223,7 @@ export default function GolfReservationsScreen(props) {
 						style={style.input}
 						value={guest}
 						onChangeText={text => setGuest(text)}/>
-					<TouchableOpacity onPress={() => handleAddGuests()} disabled={maxGuestsReached}>
+					<TouchableOpacity onPress={() => handleAddGuests()}>
 						<View style={style.addWrapper}>
 							<P color="light">+</P>
 						</View>
