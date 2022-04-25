@@ -6,7 +6,7 @@ import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
-import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
+import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
 import Guests from '../../../ui/Guests';
 
 
@@ -24,6 +24,9 @@ export default function GolfReservationsScreen(props) {
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState(0);
+	//Botón de guardar
+	const [showSaveBtn, setVisible] = useState(true);
+	const [savedReservation, setSavedReservation] = useState(false);
 
 	/* When app did mount */
 	useEffect(() => {
@@ -111,13 +114,23 @@ export default function GolfReservationsScreen(props) {
 			carritosReservados: parseInt(karts),
 			cantidadHoyos: holesEnabled ? 18 : 9,
 		};
-		createReservationGolf(reservationData, reservationGolfData);
+		createReservationGolf(reservationData, reservationGolfData, guests, () => {
+			setSavedReservation(true);
+			setSelectedDate(null);
+			setShownReservations([]);
+			setSelectedReservationId(null);
+			setGuests([]);
+			Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
+				{text: 'Aceptar'}
+			])
+		});
 	};
 
+	/* Habilitar el botón de guardar solo cuando se hayan introducido los datos necesarios */
 
 	return (
 		<ScrollView>
-		<ScreenContainer style={{paddingTop: 0}}>
+		<ScreenContainer style={{paddingTop: 0}} key={savedReservation}>
 			
 			{/* Hoyos a jugar y carritos */}
 			<View style={style.tableContainer}>
@@ -221,8 +234,10 @@ export default function GolfReservationsScreen(props) {
 				</View>
 			</View>
 			
-			<ActionBtn title="Guardar" onPress={onSubmit} />
-
+			{showSaveBtn ? (
+				<ActionBtn title="Guardar" onPress={onSubmit} />
+				) : null
+			}
 		</ScreenContainer>
 		</ScrollView>
 	);

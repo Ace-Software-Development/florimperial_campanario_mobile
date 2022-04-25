@@ -5,6 +5,7 @@ const RESERVACION_MODEL = Parse.Object.extend("Reservacion");
 const RESERVACION_GOLF_MODEL = Parse.Object.extend("ReservacionGolf");
 const AREA_MODEL = Parse.Object.extend("Area")
 const SITIO_MODEL = Parse.Object.extend("Sitio")
+const INVITADO_MODEL = Parse.Object.extend("Invitado")
 
 export async function getAllAvailableReservationsGolf(){
 	const currentTime = new Date();
@@ -32,17 +33,30 @@ export async function getAllAvailableReservationsGolf(){
 	return data;
 }
 
-export async function createReservationGolf(dataReservation, dataReservationGolf) {
-	// Update Reservation entry
-	let reservationObj = new Parse.Object('Reservacion');
-	reservationObj.set('objectId', dataReservation.objectId);
-	reservationObj.set('estatus', dataReservation.estatus);
-	await reservationObj.save();
+export async function createReservationGolf(dataReservation, dataReservationGolf, guests, callBackFunction) {
+	try{
+		// Update Reservation entry
+		let reservationObj = new Parse.Object('Reservacion');
+		reservationObj.set('objectId', dataReservation.objectId);
+		reservationObj.set('estatus', dataReservation.estatus);
+		await reservationObj.save();
 
-	// Create GolfReservation entry
-	let reservationGolfObj = new Parse.Object('ReservacionGolf');
-	reservationGolfObj.set('carritosReservados', dataReservationGolf.carritosReservados);
-	reservationGolfObj.set('cantidadHoyos', dataReservationGolf.cantidadHoyos);
-	reservationGolfObj.set('reservacion', reservationObj);
-	await reservationGolfObj.save();
+		// Create GolfReservation entry
+		let reservationGolfObj = new Parse.Object('ReservacionGolf');
+		reservationGolfObj.set('carritosReservados', dataReservationGolf.carritosReservados);
+		reservationGolfObj.set('cantidadHoyos', dataReservationGolf.cantidadHoyos);
+		reservationGolfObj.set('reservacion', reservationObj);
+		await reservationGolfObj.save();
+
+		// Crer entrada de invitados
+		for(let i = 0; i < guests.length; i++){
+			let guestObj = new Parse.Object('Invitados');
+			guestObj.set('nombre', guests[i]);
+			guestObj.save();
+		}
+
+		callBackFunction();
+	}catch(error) {
+		console.log(error)
+	}
 }
