@@ -26,7 +26,7 @@ export default function TopNav(props) {
 				<View style={styles.centeredView}>
 				<View style={styles.modalView}>
 					<View style={{borderBottomColor: c.color.grey, borderBottomWidth: 1, marginBottom: 15}}> 
-						<Subtitle style={styles.profileName}>You know who</Subtitle>
+						<Subtitle style={styles.profileName}>Diego Carrillo</Subtitle>
 						<Text style={styles.profileID}>0001</Text>
 					</View>
 
@@ -62,9 +62,9 @@ export default function TopNav(props) {
 
 			</Modal>
 
-			<Pressable style={styles.perfilBtn} onPress={() => setModalVisible(true)}>
+			<TouchableOpacity style={styles.perfilBtn} onPress={() => setModalVisible(true)}>
 				<Image style={styles.perfilImg} source={perfilIMG}/>
-			</Pressable>
+			</TouchableOpacity>
 
 			<Title style={{marginTop: 10}}>{props.title}</Title>
 		</View>
@@ -80,14 +80,15 @@ const styles = StyleSheet.create({
 
 	perfilImg: {
 		resizeMode: "contain",
-		width: 30,
-		height: 28,
+		width: 36,
+		height: 34,
 	}, 
 
 	perfilBtn: {
-		padding: 15,
+		padding: 10,
 		position: 'absolute',
-		right: -14,
+		right: -10,
+		
 	}, 
 
 	profileName: {
