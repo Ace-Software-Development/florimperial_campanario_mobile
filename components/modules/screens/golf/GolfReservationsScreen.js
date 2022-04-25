@@ -24,8 +24,7 @@ export default function GolfReservationsScreen(props) {
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState(0);
-	//Botón de guardar
-	const [showSaveBtn, setVisible] = useState(true);
+	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
 
 	/* When app did mount */
@@ -125,8 +124,6 @@ export default function GolfReservationsScreen(props) {
 			])
 		});
 	};
-
-	/* Habilitar el botón de guardar solo cuando se hayan introducido los datos necesarios */
 
 	return (
 		<ScrollView>
@@ -234,7 +231,7 @@ export default function GolfReservationsScreen(props) {
 				</View>
 			</View>
 			
-			{showSaveBtn ? (
+			{selectedReservationId ? (
 				<ActionBtn title="Guardar" onPress={onSubmit} />
 				) : null
 			}
