@@ -27,9 +27,7 @@ export default function GolfReservationsScreen(props) {
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
 
-	/* When app did mount */
-	useEffect(() => {
-		/* Get data from DB */
+	const retrieveDataFromDB = () => {
 		getAllAvailableReservationsGolf().then( response => {
 			const data = [];
 			response.forEach(i => {
@@ -39,6 +37,12 @@ export default function GolfReservationsScreen(props) {
 				});
 			setAllReservations(data);
 		});
+	}
+
+	/* When app did mount */
+	useEffect(() => {
+		/* Get data from DB */
+		retrieveDataFromDB();
 
 	}, []);
 
@@ -122,6 +126,7 @@ export default function GolfReservationsScreen(props) {
 			Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
 				{text: 'Aceptar'}
 			])
+			retrieveDataFromDB();
 		});
 	};
 
@@ -166,7 +171,7 @@ export default function GolfReservationsScreen(props) {
 				<Subtitle>Selecciona la fecha y la hora</Subtitle>
 
 				{/* Date picker */}
-				<View style={style.datePickerContainer}>
+				<ScrollView style={style.datePickerContainer} horizontal={true}>
 					{ getCalendarOptions(allReservations).map( date => {
 						return (
 							<DateOption 
@@ -180,7 +185,7 @@ export default function GolfReservationsScreen(props) {
 							/>
 						);
 					}) }
-				</View>
+				</ScrollView>
 
 				{/* Hour picker */}
 				<View style={style.timePickerContainer} >

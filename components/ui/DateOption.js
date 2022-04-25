@@ -20,7 +20,8 @@ export default function DateOption(props) {
 
 	// When the users clicks this component
 	const handleClick = () => {
-		setActive(!active);
+		if (!active)
+			setActive(true);
 	}
 
 	// When 
@@ -43,6 +44,7 @@ export default function DateOption(props) {
 const styles = StyleSheet.create({
 	container: {
 		justifyContent: 'center',
+		minWidth: 105,
 		alignItems: 'center',
 		flex: 1,
 		padding: 5,
