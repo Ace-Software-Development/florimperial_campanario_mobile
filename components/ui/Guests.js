@@ -8,7 +8,7 @@ export default function Guests(props) {
     return (
         <View style={style.item}>
             <View style={style.itemLeft}>
-                <Icon name='user' size={25} style={style.icon}/>
+                <Icon name='user' size={20} style={style.icon}/>
                 <P>{props.text}</P>
             </View>
         </View>
@@ -18,7 +18,8 @@ export default function Guests(props) {
 const style = StyleSheet.create({
     item: {
         backgroundColor: c.color.lightGrey,
-        padding: 15,
+        padding: 12,
+        paddingLeft: 20,
         borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
@@ -31,6 +32,7 @@ const style = StyleSheet.create({
         flexWrap: 'wrap'
     },
     icon: {
-        marginRight: 15
+        marginRight: 15,
+        color: c.color.darkGrey
     }
 });

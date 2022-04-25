@@ -4,7 +4,7 @@ import ModulesScreen from '../screens/ModulesScreen';
 import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
-import { SimpleBtn } from '../../ui/Btn';
+//import { SimpleBtn } from '../../ui/Btn';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -31,6 +31,7 @@ export default function NewsletterStack(props) {
 				}}
 			/>
 
+			{/* TODO: Pass these component to a Golf Stack */}
 			<ModulesStackNavigator.Screen 
 				name='golf_reservations'
 				component={GolfReservationsScreen}
@@ -38,9 +39,9 @@ export default function NewsletterStack(props) {
 					title: 'Reservaciones Golf',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true,
-					headerRight: () => (
-						<SimpleBtn title="Guardar" />
-					)
+					//headerRight: () => (
+					//	<SimpleBtn title="Guardar" />
+					//)
 				}}
 			/>
 		</ModulesStackNavigator.Navigator>

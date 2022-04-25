@@ -1,68 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScreenContainer, P, Subtitle } from '../../../ui/CampanarioComponents';
+import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
+import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
 import Guests from '../../../ui/Guests';
 
-const test_data = [
-	{
-		'id': 1,
-		'datetime': '2022-04-05T10:05:02+00:00',
-		'hoyo_inicio': 'HOYO 1'
-	},
-	{
-		'id': 2,
-		'datetime': '2022-04-05T11:05:02+00:00',
-		'hoyo_inicio': 'HOYO 2'
-	},
-	{
-		'id': 3,
-		'datetime': '2022-04-05T12:05:02+00:00',
-		'hoyo_inicio': 'HOYO 3'
-	},
-	{
-		'id': 4,
-		'datetime': '2022-04-06T13:05:02+00:00',
-		'hoyo_inicio': 'HOYO 4'
-	},
-	{
-		'id': 5,
-		'datetime': '2022-04-06T14:05:02+00:00',
-		'hoyo_inicio': 'HOYO 5'
-	},
-	{
-		'id': 6,
-		'datetime': '2022-04-06T15:05:02+00:00',
-		'hoyo_inicio': 'HOYO 6'
-	},
-	{
-		'id': 7,
-		'datetime': '2022-04-06T16:05:02+00:00',
-		'hoyo_inicio': 'HOYO 7'
-	},
-	{
-		'id': 8,
-		'datetime': '2022-04-07T17:05:02+00:00',
-		'hoyo_inicio': 'HOYO 8'
-	},
-	{
-		'id': 9,
-		'datetime': '2022-04-07T18:05:02+00:00',
-		'hoyo_inicio': 'HOYO 10'
-	},
-	{
-		'id': 10,
-		'datetime': '2022-04-07T19:05:02+00:00',
-		'hoyo_inicio': 'HOYO 11'
-	}
-];
 
 export default function GolfReservationsScreen(props) {
-	const [allReservations, setAllReservations] = useState(test_data);
+	const [allReservations, setAllReservations] = useState([]);
 	//Fechas
 	const [selectedDate, setSelectedDate] = useState(null);
 	const [shownReservations, setShownReservations] = useState([]);
@@ -70,11 +19,26 @@ export default function GolfReservationsScreen(props) {
 	//Invitados
 	const [guest, setGuest] = useState();
     const [guests, setGuests] = useState([]);
-    const maxGuests = 5;
+    const maxGuests = 4;
 	var pressed = 0;
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState(0);
+
+	/* When app did mount */
+	useEffect(() => {
+		/* Get data from DB */
+		getAllAvailableReservationsGolf().then( response => {
+			const data = [];
+			response.forEach(i => {
+				data.push({id: i.id, 
+							datetime: i.get('fechaInicio').toISOString(), 
+							hoyo_inicio: i.get('sitio').get('nombre')})
+				});
+			setAllReservations(data);
+		});
+
+	}, []);
 
 	/* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
     const handleAddGuests = () => {
@@ -106,6 +70,9 @@ export default function GolfReservationsScreen(props) {
 
 	/* Obtener todas las fechas de las reservaciones */
 	const getCalendarOptions = data => {
+		if (data.length == 0)
+			return [];
+
 		const dates = [];
 		const seen = new Set();
 		data.forEach(row => {
@@ -134,7 +101,19 @@ export default function GolfReservationsScreen(props) {
 		}
 	} , [selectedDate]);
 
-	const toggleHoles = () => setHolesEnabled( previousState => !previousState )
+	const onSubmit = () => {
+		const reservationData = {
+			objectId: selectedReservationId,
+			estatus: 2,
+			//socio: ""
+		};
+		const reservationGolfData = {
+			carritosReservados: parseInt(karts),
+			cantidadHoyos: holesEnabled ? 18 : 9,
+		};
+		createReservationGolf(reservationData, reservationGolfData);
+	};
+
 
 	return (
 		<ScrollView>
@@ -163,7 +142,7 @@ export default function GolfReservationsScreen(props) {
 					<View style={style.tableCol2}>
 							<TextInput style={style.textInput}
 								keyboardType='numeric'
-								onChangeText={()=> {}}
+								onChangeText={val => setKarts(val)}
 								maxLength={2}
 								keyboard
 								/>
@@ -241,6 +220,8 @@ export default function GolfReservationsScreen(props) {
 					}
 				</View>
 			</View>
+			
+			<ActionBtn title="Guardar" onPress={onSubmit} />
 
 		</ScreenContainer>
 		</ScrollView>
