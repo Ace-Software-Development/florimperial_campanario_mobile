@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, createStackNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { STYLES as styles } from '../../utils/constants';
 
@@ -10,9 +10,8 @@ import MyReservationsScreen from '../modules/screens/MyReservationsScreen';
 
 const TAB = createBottomTabNavigator();
 
-export default function Navigation() {
+export default MainNavigation = () => {
 	return (
-		<NavigationContainer>
 			<TAB.Navigator
 				initialRouteName="newsletter"
 				screenOptions={{
@@ -50,6 +49,5 @@ export default function Navigation() {
 							}}
 				/>
 			</TAB.Navigator>
-		</NavigationContainer>
 	);
 }
