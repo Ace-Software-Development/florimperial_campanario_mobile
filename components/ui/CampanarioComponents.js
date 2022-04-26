@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
@@ -56,8 +56,17 @@ export function Btn(props) {
 export function ActionBtn(props) {
 	const textLocalStyles = {};
 	const containerLocalStyles = { ...props.style };
+	const [activeOnce, setActiveOnce] = useState(true);
+
+	const preSave = () => {
+		if(activeOnce){
+			props.onPress();
+			setActiveOnce(false);
+		}
+	}
+
 	return (
-		<TouchableOpacity onPress={props.onPress} style={[defaultStyles.actionBtnContainer, containerLocalStyles]}>
+		<TouchableOpacity onPress={preSave} style={[defaultStyles.actionBtnContainer, containerLocalStyles]}>
 			<Text style={[defaultStyles.actionBtnText, textLocalStyles]}>
 				{ props.title }
 			</Text>

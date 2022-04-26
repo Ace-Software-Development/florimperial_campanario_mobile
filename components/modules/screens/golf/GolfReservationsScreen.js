@@ -26,6 +26,7 @@ export default function GolfReservationsScreen(props) {
 	const [karts, setKarts] = useState(0);
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
+	//const [disableSaveBtn, setDisableSavebtn] = useState(false);
 
 	const retrieveDataFromDB = () => {
 		getAllAvailableReservationsGolf().then( response => {
@@ -119,8 +120,8 @@ export default function GolfReservationsScreen(props) {
 		};
 		createReservationGolf(reservationData, reservationGolfData, guests, () => {
 			setSavedReservation(true);
-			setSelectedDate(null);
 			setShownReservations([]);
+			setSelectedDate(null);
 			setSelectedReservationId(null);
 			setGuests([]);
 			Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
@@ -237,7 +238,7 @@ export default function GolfReservationsScreen(props) {
 			</View>
 			
 			{selectedReservationId ? (
-				<ActionBtn title="Guardar" onPress={onSubmit} />
+				<ActionBtn title="Guardar" onPress={onSubmit}/>
 				) : null
 			}
 		</ScreenContainer>
