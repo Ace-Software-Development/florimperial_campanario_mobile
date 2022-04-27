@@ -19,6 +19,9 @@ export default function CapsuleBtn(props) {
 	useEffect(() => {
 		if (active)
 			props.onClick(props.value);
+		else{
+			props.onClick(null);
+		}
 		statusContainerStyle = active ? style.containerActive : style.containerInactive;
 		statusTitleStyle = active ? style.titleActive : style.titleInactive;
 		statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;

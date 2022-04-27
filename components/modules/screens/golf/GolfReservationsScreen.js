@@ -26,7 +26,6 @@ export default function GolfReservationsScreen(props) {
 	const [karts, setKarts] = useState(0);
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
-	//const [disableSaveBtn, setDisableSavebtn] = useState(false);
 
 	const retrieveDataFromDB = () => {
 		getAllAvailableReservationsGolf().then( response => {
