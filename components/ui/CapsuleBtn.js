@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
 
 
@@ -8,33 +9,39 @@ export default function CapsuleBtn(props) {
 	let statusContainerStyle = active ? style.containerActive : style.containerInactive;
 	let statusTitleStyle = active ? style.titleActive : style.titleInactive;
 	let statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;
-	
 
-	const handleClick = () => {
-		setActive(!active);
-	}
-
+	// When the selectedReservation is modified in the parent component
 	useEffect(() => {
-		props.onClick(active, props.datetime);
+		setActive( props.selectedReservationId === props.value );
+	}, [props.selectedReservationId]);
+	
+	// When this component changes the Active state
+	useEffect(() => {
+		if (active)
+			props.onClick(props.value);
+		else{
+			props.onClick(null);
+		}
 		statusContainerStyle = active ? style.containerActive : style.containerInactive;
 		statusTitleStyle = active ? style.titleActive : style.titleInactive;
 		statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;
 	}, [active]);
 
 	return (
-		<TouchableOpacity style={[style.container, statusContainerStyle]} onClick={handleClick}>
+		<TouchableOpacity style={[style.container, statusContainerStyle]} onPress={() => setActive(!active)}>
 			<Text style={[style.title, statusTitleStyle]}>{props.title}</Text>
 			<Text style={[style.subtitle, statusSubTitleStyle]}>{props.subtitle}</Text>
 		</TouchableOpacity>
 	);
 }
 
+
 const style = StyleSheet.create({
 	container : {
 		borderWidth: 1.5,
 		borderColor: c.color.primaryColor,
 		borderRadius: 100,
-		width: 107,
+		width: '29%',
 		paddingTop: 8,
 		paddingBottom: 7,
 		paddingHorizontal: 10,
@@ -44,11 +51,11 @@ const style = StyleSheet.create({
 	},
 	
 	title: {
-		fontSize: 16,
+		fontSize: RFPercentage(2),
 	},
 
 	subtitle: {
-		fontSize: 12,
+		fontSize: RFPercentage(1.4),
 		color: c.color.darkGrey
 	},
 
