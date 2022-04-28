@@ -186,7 +186,7 @@ export default function GolfReservationsScreen(props) {
 
 			{/* Agrega los invitados */}
 			<View>
-				<GuestsSection getList={saveGuest}/>
+				<GuestsSection getList={saveGuest} deleteGuest={deleteGuest}/>
 			</View>
 			
 			{selectedReservationId ? (
@@ -232,10 +232,6 @@ const style = StyleSheet.create({
 		marginTop: 25
 	},
 
-	guestsContainer: {
-		marginTop: 20
-	},
-
 	actionBtnContainer: {
 		flexDirection: 'row',
 		justifyContent: 'space-around'
@@ -249,30 +245,5 @@ const style = StyleSheet.create({
 		borderRadius: 10,
 		width: 100,
 		height: 33
-	},
-
-	keyboardContainer: {
-        alignItems: 'center',
-        marginVertical: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-
-    input: {
-        backgroundColor: c.color.grey,
-        paddingVertical: 7,
-        paddingHorizontal: 20,
-        borderRadius: 10,
-		width: '80%',
-		fontSize: RFPercentage(2.1)
-    }, 
-
-    addWrapper: {
-        width: 35,
-        height: 35,
-		backgroundColor: c.color.primaryColor,
-        borderRadius: 60,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
+	}
 })

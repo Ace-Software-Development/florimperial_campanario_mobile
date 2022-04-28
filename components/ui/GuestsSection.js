@@ -38,8 +38,8 @@ export default function GuestsSection(props) {
 	const deleteGuest = (index) => {
 		let guestsCopy = [...guests];
 		guestsCopy.splice(index, 1);
-		setGuests(guestsCopy);
         props.deleteGuest(guestsCopy);
+		setGuests(guestsCopy);
 	}
     
     return (
