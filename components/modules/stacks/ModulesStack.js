@@ -4,6 +4,7 @@ import ModulesScreen from '../screens/ModulesScreen';
 import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
+import GolfTeeScreen from '../screens/golf/GolfTeeScreen';
 //import { SimpleBtn } from '../../ui/Btn';
 
 const ModulesStackNavigator = createNativeStackNavigator();
@@ -42,6 +43,16 @@ export default function NewsletterStack(props) {
 					//headerRight: () => (
 					//	<SimpleBtn title="Guardar" />
 					//)
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen 
+				name='golf_tee'
+				component={GolfTeeScreen}
+				options={{
+					title: 'Tee de práctica',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
 				}}
 			/>
 		</ModulesStackNavigator.Navigator>

@@ -33,6 +33,32 @@ export async function getAllAvailableReservationsGolf(){
 	return data;
 }
 
+export async function getAllAvailableReservationsGolfTee(){
+	const currentTime = new Date();
+	
+	// Query todos los sitios que pertenecen al tee de práctica
+	const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.equalTo('eliminado', false);
+	areaQuery.equalTo('nombre', 'Golf_tee');
+
+	const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	sitiosQuery.select("nombre");
+	sitiosQuery.equalTo('eliminado', false);
+	sitiosQuery.matchesQuery('area', areaQuery);
+	sitiosQuery.include('area');
+
+	// Query all reservations
+	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	reservationQuery.select('fechaInicio', 'sitio', 'objectId');
+	reservationQuery.equalTo('eliminado', false);
+	reservationQuery.equalTo('estatus', 1);
+	reservationQuery.matchesQuery('sitio', sitiosQuery);
+	reservationQuery.include('sitio');
+
+	let data = await reservationQuery.find();
+	return data;
+}
+
 export async function createReservationGolf(dataReservation, dataReservationGolf, guests, callBackFunction) {
 	try{
 		// Update Reservation entry

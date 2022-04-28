@@ -15,7 +15,7 @@ export default function GolfMenuScreen(props) {
 				<ModulesMenuList>
 					<ModulesMenuListItem title="Horarios y reservaciones" onPress={() => navigation.navigate('golf_reservations')} />
 					<ModulesMenuListItem title="Clases grupales" onPress={() => {}} />
-					<ModulesMenuListItem title="Tee de práctica" onPress={() => {}} />
+					<ModulesMenuListItem title="Tee de práctica" onPress={() => navigation.navigate('golf_tee')} />
 				</ModulesMenuList>
 			</View>
 

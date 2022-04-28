@@ -7,7 +7,7 @@ import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
-import Guests from '../../../ui/Guests';
+import GuestsSection from '../../../ui/GuestsSection';
 
 
 export default function GolfReservationsScreen(props) {
@@ -17,10 +17,7 @@ export default function GolfReservationsScreen(props) {
 	const [shownReservations, setShownReservations] = useState([]);
 	const [selectedReservationId, setSelectedReservationId] = useState(null);
 	//Invitados
-	const [guest, setGuest] = useState();
     const [guests, setGuests] = useState([]);
-    const maxGuests = 4;
-	var pressed = 0;
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState(0);
@@ -46,32 +43,14 @@ export default function GolfReservationsScreen(props) {
 
 	}, []);
 
-	/* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
-    const handleAddGuests = () => {
-        Keyboard.dismiss();
-		if(guests.length < maxGuests && guest != null){
-			setGuests([...guests, guest]);
-            setGuest(null);
-        }else if(guest == null){
-			pressed++;
-			if(pressed > 5){
-				Alert.alert('No se ha introducido ningún nombre', 'Escriba el nombre del invitado', [
-					{text: 'Aceptar'}
-				])
-				pressed = 0;
-			}
-		}else{
-			Alert.alert('Máximo alcanzado', 'Ya no se pueden agregar mas invitados', [
-				{text: 'Aceptar'}
-			])
-        }
-    }
+	/* Guardar invitados del componente en useState del padre */
+	const saveGuest = (gst) => {
+		setGuests([...guests, gst])
+	}
 
-	/* Se borran los invitados seleccionados */
-	const deleteGuest = (index) => {
-		let guestsCopy = [...guests];
-		guestsCopy.splice(index, 1);
-		setGuests(guestsCopy);
+	/* Elimina el invitado seleccionado del padre */
+	const deleteGuest = (gsts) => {
+		setGuests(gsts)
 	}
 
 	/* Obtener todas las fechas de las reservaciones */
@@ -206,34 +185,8 @@ export default function GolfReservationsScreen(props) {
 			</View>
 
 			{/* Agrega los invitados */}
-			<View style={style.guestsContainer}>
-				<Subtitle>Agrega más asistentes</Subtitle>
-				<KeyboardAvoidingView
-					behavior={Platform.OS == "ios" ? "padding" : "height"}
-					style={style.keyboardContainer}
-				>
-					<TextInput 
-						placeholder={'Escribe el nombre del invitado'}
-						style={style.input}
-						value={guest}
-						onChangeText={text => setGuest(text)}/>
-					<TouchableOpacity onPress={() => handleAddGuests()}>
-						<View style={style.addWrapper}>
-							<P color="light">+</P>
-						</View>
-					</TouchableOpacity>
-				</KeyboardAvoidingView>
-				<View>
-					{/* Aqui van a ir los invitados agregados */}
-					{
-						guests.map((item, index) => {
-							return (
-								<TouchableOpacity key={index} onPress={() => deleteGuest(index)}>
-									<Guests text={item} />
-								</TouchableOpacity>)
-						})
-					}
-				</View>
+			<View>
+				<GuestsSection getList={saveGuest}/>
 			</View>
 			
 			{selectedReservationId ? (
