@@ -4,7 +4,7 @@ import ModulesScreen from '../screens/ModulesScreen';
 import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
-//import { SimpleBtn } from '../../ui/Btn';
+import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -38,12 +38,20 @@ export default function NewsletterStack(props) {
 				options={{
 					title: 'Reservaciones Golf',
 					headerTitle: (props) => <Title {...props}/>,
-					headerBackTitleVisible: true,
-					//headerRight: () => (
-					//	<SimpleBtn title="Guardar" />
-					//)
+					headerBackTitleVisible: true
 				}}
 			/>
+
+			<ModulesStackNavigator.Screen 
+				name='golf_classes_reservations'
+				component={GolfClassesScreen}
+				options={{
+					title: 'Clases personalizadas Golf',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
 		</ModulesStackNavigator.Navigator>
 	);
 }

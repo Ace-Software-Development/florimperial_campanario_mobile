@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { P } from './CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
-import arrowIcon from '../../assets/icons/arrow1.png';
+import ArrowIcon from '../../assets/icons/arrow1-icon.svg';
 
 export function ModulesMenuList(props) {
 	const testData = [
@@ -23,9 +23,9 @@ export function ModulesMenuListItem(props) {
 			style={styles.listItem}
 			onPress={props.onPress}
 		>
-			<View style={styles.listItemIcon}></View>
+			{ props.children }
 			<P style={styles.listItemTitle}>{props.title}</P>
-			<Image source={arrowIcon} style={styles.arrowIcon} />
+			<ArrowIcon width={15} height={15} style={styles.arrowIcon} />
 		</TouchableOpacity>
 	);
 }
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		justifyContent: 'space-evenly',
 		paddingVertical: 10,
+		paddingLeft: 10
 	},
 
 	listItem: {
@@ -46,20 +47,11 @@ const styles = StyleSheet.create({
 		padding: 10
 	},
 
-	listItemIcon: {
-		marginHorizontal: 15,
-		width: 40,
-		height: 40,
-		backgroundColor: 'grey',
-		borderRadius: 5
-	},
-
 	listItemTitle: {
+		marginLeft: 12
 	},
 
 	arrowIcon: {
-		height: 20,
-		width: 10,
 		position: 'absolute',
 		right: 15,
 	}
