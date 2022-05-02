@@ -61,6 +61,6 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 
 		callBackFunction();
 	}catch(error) {
-		console.log(error)
+		console.log(error);
 	}
 }
