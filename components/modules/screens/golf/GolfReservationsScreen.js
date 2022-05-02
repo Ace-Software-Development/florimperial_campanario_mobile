@@ -8,6 +8,7 @@ import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
 import Guests from '../../../ui/Guests';
+import { Parse } from "parse/react-native";
 
 
 export default function GolfReservationsScreen(props) {

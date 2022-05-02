@@ -35,10 +35,14 @@ export async function getAllAvailableReservationsGolf(){
 
 export async function createReservationGolf(dataReservation, dataReservationGolf, guests, callBackFunction) {
 	try{
+		// Get current user loged in
+		const userObj = await Parse.User.currentAsync();
+
 		// Update Reservation entry
 		let reservationObj = new Parse.Object('Reservacion');
 		reservationObj.set('objectId', dataReservation.objectId);
 		reservationObj.set('estatus', dataReservation.estatus);
+		reservationObj.set('socio', userObj);
 		await reservationObj.save();
 
 		// Create GolfReservation entry
