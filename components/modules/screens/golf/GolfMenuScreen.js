@@ -22,7 +22,7 @@ export default function GolfMenuScreen(props) {
 			<View style={style.container}>
 				<Subtitle style={{marginBottom: 10}}>Reglamentos</Subtitle>
 				<ModulesMenuList>
-					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('golf_reservations')} />
+					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('golf_regulations')} />
 				</ModulesMenuList>
 			</View>
 			
