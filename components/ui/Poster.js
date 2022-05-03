@@ -5,22 +5,30 @@ import { STYLES as c } from '../../utils/constants';
 
 
 export default function Poster(props){
-	const [height, setHeight] = useState('85%');
+	const [imgSize, setImgSize] = useState([]);
+	const [containerSize, setContainerSize] = useState([]);
 
-	const onLayout = event => {
-		const {x, y, h, w} = event.nativeEvent.layout;
+	// Get the size of the image
+	Image.getSize(props.source, (w, h) => {
+		console.log('Get image size', w, h);
+		setImgSize([w, h]);
+	});
+	
+	const getLayoutSize = event => {
+		console.log(event.layout);
+		const {x, y, w, h} = event.layout;
+		console.log('Layout size', w, h);
+		const new_ratio = w / imgSize[0];
+		const new_height =  imgSize[1]  * new_ratio;
+		console.log('New size of img', imgSize[0], new_height);
+		if (new_height != imgSize[1])
+			setImgSize([imgSize[0], new_height]);
 	};
-	console.log('hola', onLayout);
 
-	useEffect(() => {
-		Image.getSize(props.source, (w, h) => {
-			setHeight(h);
-		});
-	}, []);
 
 	return (
-		<View onPress={props.onPress} style={styles.container}>
-			<Image style={[styles.cardImgBg, {height:height}]} source={{uri: props.source}} />
+		<View onLayout={event => getLayoutSize(event) } onPress={props.onPress} style={styles.container}>
+			<Image style={[styles.cardImgBg, {height:imgSize[1]}]} source={{uri: props.source}} />
 			<Text style={styles.cardTimestamp}>{ props.timeTitle }</Text>
 		</View>	
 	);
@@ -35,7 +43,7 @@ const styles = StyleSheet.create({
 		marginVertical: 10,
 		resizeMode: 'contain',
 		borderRadius: 10,
-		width: '100%',
+		width: '100%'
 	},	
 
 	cardTimestamp: {

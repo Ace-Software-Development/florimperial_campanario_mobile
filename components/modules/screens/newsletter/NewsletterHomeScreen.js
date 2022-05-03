@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { ScreenContainer } from '../../../ui/CampanarioComponents';
 import Poster from '../../../ui/Poster';
 import TopNav from '../../../core/TopNav';
@@ -21,18 +21,20 @@ export default function NewsletterHomeScreen(props) {
 	}, []);
 
 	return (
-		<ScreenContainer>
-			<TopNav title='Anuncios' />
-			<View>
-			{ posters.map( (poster, i) => {
-				return (
-				<Poster key={i} 
-						source={poster.get('imagen').url()}
-						timeTitle={poster.get('createdAt').toISOString()}
-				/>
-				)
-			}) }
-			</View>
-		</ScreenContainer>
+		<ScrollView>
+			<ScreenContainer>
+				<TopNav title='Anuncios' />
+				<View>
+				{ posters.map( (poster, i) => {
+					return (
+					<Poster key={i} 
+							source={poster.get('imagen').url()}
+							timeTitle={poster.get('createdAt').toISOString()}
+					/>
+					)
+				}) }
+				</View>
+			</ScreenContainer>
+		</ScrollView>
 	);
 }
