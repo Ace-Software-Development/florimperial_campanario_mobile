@@ -40,8 +40,9 @@ export default function GolfReservationsScreen(props) {
 	useEffect(() => {
 		/* Get data from DB */
 		retrieveDataFromDB();
-
-	}, []);
+		
+		// const currentUser = await Parse.User.currentAsync();
+	}, c);
 
 	/* Guardar invitados del componente en useState del padre */
 	const saveGuest = (gst) => {
@@ -96,7 +97,7 @@ export default function GolfReservationsScreen(props) {
 			carritosReservados: parseInt(karts),
 			cantidadHoyos: holesEnabled ? 18 : 9,
 		};
-		createReservationGolf(reservationData, reservationGolfData, guests, () => {
+		createReservationGolf(reservationData, reservationGolfData, guests, currentUser,() => {
 			setSavedReservation(true);
 			setShownReservations([]);
 			setSelectedDate(null);

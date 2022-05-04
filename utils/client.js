@@ -59,7 +59,7 @@ export async function getAllAvailableReservationsGolfTee(){
 	return data;
 }
 
-export async function createReservationGolf(dataReservation, dataReservationGolf, guests, callBackFunction) {
+export async function createReservationGolf(dataReservation, dataReservationGolf, guests, user,callBackFunction) {
 	try{
 		// Update Reservation entry
 		let reservationObj = new Parse.Object('Reservacion');
@@ -76,8 +76,9 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 
 		// Crer entrada de invitados
 		for(let i = 0; i < guests.length; i++){
-			let guestObj = new Parse.Object('Invitados');
+			let guestObj = new Parse.Object('Invitado');
 			guestObj.set('nombre', guests[i]);
+			guestObj.set('socio', user)
 			guestObj.save();
 		}
 
