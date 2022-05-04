@@ -1,8 +1,8 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react';
 import { View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity } from 'react-native';
 import { Title } from '../ui/CampanarioComponents';
-import perfilIMG from '../../assets/img/perfilIMG.png'
-import adptvIcon from '../../assets/img/adaptive-icon.png'
+import perfilIMG from '../../assets/img/perfilIMG.png';
+import adptvIcon from '../../assets/img/adaptive-icon.png';
 import{ Subtitle } from '../ui/CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';

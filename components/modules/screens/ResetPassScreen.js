@@ -34,7 +34,7 @@ export default UserResetPassword = () => {
     };
     return(
         <View style={styles.container}>
-            <Text style={styles.textTop}>Por favor, ingresa tu correo electronico. Recibira una liga para recuparerar su contraseña</Text>
+            <Text style={styles.textTop}>Por favor, ingresa tu correo electrónico. Recibirá una liga para recuperar su contraseña</Text>
             <View style={styles.inputContainer}>
             <TextInput style={styles.inputs}
                 keyboardType="email-address"
