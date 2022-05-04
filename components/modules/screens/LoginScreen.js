@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Pressable,
   Image,
   StyleSheet,
   Text,
@@ -77,8 +78,13 @@ export default class LogInScreen extends React.Component{
     } else {
       try {
         await Parse.User.logIn(username.toString(), password.toString());
-        // this.submitAndClear();
-        this.props.navigation.navigate('Home');        
+        //this.submitAndClear();
+        this.textInput.clear();
+        this.textInput1.clear(); 
+        this.state.username = '';
+        this.state.password = '';
+        this.state.nameError = null;
+        this.props.navigation.navigate('Home');  
       } catch (error) {                
         this.setState(() => ({ nameError: 'Usuario o contraseña incorrectos' }));
         return (error)
@@ -95,6 +101,7 @@ export default class LogInScreen extends React.Component{
             keyboardType="email-address"
             placeholder="Usuario"
             value={this.state.username}
+            ref = {input => {this.textInput = input}}
             onChangeText={(username) => this.setState({username})}/>
         </View>
         <View style={styles.inputContainer}>
@@ -103,9 +110,12 @@ export default class LogInScreen extends React.Component{
             secureTextEntry={true}
             underlineColorAndroid='transparent'
             value={this.state.password}
+            ref = {input => {this.textInput1 = input}}
             onChangeText={(password) => this.setState({password})}/>
         </View>
-        <Text style={styles.loginText}>¿Olvidaste tu contraseña?</Text>
+        <Pressable onPress={() => this.props.navigation.navigate('Recuperar contraseña')}>
+          <Text style={styles.loginText}>¿Olvidaste tu contraseña?</Text>
+        </Pressable>
         {!!this.state.nameError && (
           <View styles={styles.divError}>
               <Text style={styles.divErrorFont}>{this.state.nameError}</Text>
