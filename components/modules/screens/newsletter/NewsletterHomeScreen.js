@@ -4,6 +4,8 @@ import { ScreenContainer } from '../../../ui/CampanarioComponents';
 import Poster from '../../../ui/Poster';
 import TopNav from '../../../core/TopNav';
 import Parse from 'parse/react-native.js';
+import { normalizeDayMonthFormat } from '../../../../utils/timeHelpers';
+
 
 export default function NewsletterHomeScreen(props) {
 	const [posters, setPosters] = useState([]);
@@ -16,7 +18,6 @@ export default function NewsletterHomeScreen(props) {
 			const results = await query.find();
 			setPosters(results);
 		};
-		
 		fetchImages();
 	}, []);
 
@@ -29,7 +30,8 @@ export default function NewsletterHomeScreen(props) {
 					return (
 					<Poster key={i} 
 							source={poster.get('imagen').url()}
-							timeTitle={poster.get('createdAt').toISOString()}
+							timeTitle={normalizeDayMonthFormat(poster.get('createdAt'))}
+							style={{marginBottom: 20}}
 					/>
 					)
 				}) }
