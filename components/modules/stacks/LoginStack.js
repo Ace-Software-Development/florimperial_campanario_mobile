@@ -1,33 +1,28 @@
 import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native';
-import { STYLES as styles } from '../../utils/constants';
 
 
-import MainNavigation from './Navigation';
-import LoginStack from '../modules/stacks/LoginStack';
+import UserResetPassword from '../screens/ResetPassScreen';
+import LogInScreen from '../screens/LoginScreen';
 
 const Stack = createStackNavigator();
 
-export default function RootStack() {
+export default function LoginStack() {
     return(
-        <NavigationContainer>
             <Stack.Navigator>
-                <Stack.Screen name="LogIn"
-                                component={LoginStack}
+                <Stack.Screen name="Login"
+                                component={LogInScreen}
                                 options={{
                                     headerShown: false,
                                 }}
                     />
-                <Stack.Screen name="Home"
-                                component={MainNavigation}
+                <Stack.Screen name="Recuperar contraseña"
+                                component={UserResetPassword}
                                 options={{
-                                    headerShown: false,
+                                    headerShown: true,
                                 }}
                     />
             </Stack.Navigator>
-        </NavigationContainer>
     )
 }
-
-
