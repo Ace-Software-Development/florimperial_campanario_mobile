@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
+import { RFPercentage } from "react-native-responsive-fontsize";
+import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
@@ -26,23 +26,9 @@ export default function GolfClassesScreen(props) {
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
 
-	const retrieveDataFromDB = () => {
-		getAllAvailableReservationsGolf().then( response => {
-			const data = [];
-			response.forEach(i => {
-				data.push({id: i.id, 
-							datetime: i.get('fechaInicio').toISOString(), 
-							hoyo_inicio: i.get('sitio').get('nombre')})
-				});
-			setAllReservations(data);
-		});
-	}
-
 	/* When app did mount */
 	useEffect(() => {
-		/* Get data from DB */
-		retrieveDataFromDB();
-
+		retrieveDataFromDB().then(data => setAllReservations(data));
 	}, []);
 
 	/* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
@@ -72,25 +58,6 @@ export default function GolfClassesScreen(props) {
 		guestsCopy.splice(index, 1);
 		setGuests(guestsCopy);
 	}
-
-	/* Obtener todas las fechas de las reservaciones */
-	const getCalendarOptions = data => {
-		if (data.length == 0)
-			return [];
-
-		const dates = [];
-		const seen = new Set();
-		data.forEach(row => {
-			const d = row.datetime.split('T')[0];
-			if (!seen.has(d)){
-				const date = new Date(row.datetime);
-				dates.push(date);
-				seen.add(d);
-			}
-		});
-		dates.sort( (a,b) => a.getFullYear()-b.getFullYear() || a.getMonth()-b.getMonth() || a.getDate()-b.getDate());
-		return dates;
-	};
 
 	/* When the selected Date changes, we need to update the reservations available */
 	useEffect(() => {
@@ -125,7 +92,8 @@ export default function GolfClassesScreen(props) {
 			Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
 				{text: 'Aceptar'}
 			])
-			retrieveDataFromDB();
+			retrieveDataFromDB().then(data => setAllReservations(data))
+			.catch(error => console.log(error));
 		});
 	};
 
@@ -188,19 +156,35 @@ export default function GolfClassesScreen(props) {
 
 				{/* Hour picker */}
 				<View style={style.timePickerContainer} >
-					{ shownReservations.map(i => {
-						return (
-							<CapsuleBtn 
-								defaultActive={false}
-								title={i.datetime.toISOString().slice(11,16)}
-								subtitle={i.hoyo_inicio}
-								value={i.id}
-								onClick={id => setSelectedReservationId(id)}
-								selectedReservationId={selectedReservationId}
-								key={i.id}
-							/>
-						);
-					}) }
+					{ Object.keys(groupByProfessor(shownReservations)).map(
+						(key, index) => {
+							return (
+								<View key={`${key}-container`} style={style.reservationsGroup}>
+									<P key={`${key}-paragraph`} size='large'>{key}</P>
+									<View style={style.reservationsContainer}>
+										{groupByProfessor(shownReservations)[key].map( 
+											i => {
+												return (
+													<CapsuleBtn 
+														defaultActive={false}
+														title={i.datetime.toISOString().slice(11,16)}
+														subtitle={i.hoyo_inicio}
+														value={i.id}
+														onClick={id => setSelectedReservationId(id)}
+														selectedReservationId={selectedReservationId}
+														key={`${i.id}-capsule`}
+													/>
+												);
+											}
+										)}
+									</View>
+									{ index+1 < Object.keys(groupByProfessor(shownReservations)).length && 
+										<Hr/>
+									}
+								</View>
+							);
+						}) 
+					}
 				</View>
 			</View>
 
@@ -244,6 +228,48 @@ export default function GolfClassesScreen(props) {
 	);
 }
 
+
+const retrieveDataFromDB = async () => {
+	const response = await getAllAvailableReservationsGolf(true);
+	const data = [];
+	response.forEach(i => {
+		data.push({id: i.id, 
+					datetime: i.get('fechaInicio').toISOString(), 
+					profesor: {id:i.get('profesor').get('id'), nombre: i.get('profesor').get('nombre')},
+					hoyo_inicio: i.get('sitio').get('nombre')})
+		});
+	return data;
+}
+
+const groupByProfessor = reservationsList => {
+	const result = {};
+	reservationsList.forEach(i => {
+		const key = i.profesor.nombre;
+		if (!(key in result))
+			result[key] = [];
+		result[key].push(i);
+	});
+	return result;
+};
+
+const getCalendarOptions = data => {
+	if (data.length === 0 || data === undefined)
+		return [];
+
+	const dates = [];
+	const seen = new Set();
+	data.forEach(row => {
+		const d = row.datetime.split('T')[0];
+		if (!seen.has(d)){
+			const date = new Date(row.datetime);
+			dates.push(date);
+			seen.add(d);
+		}
+	});
+	dates.sort( (a,b) => a.getFullYear()-b.getFullYear() || a.getMonth()-b.getMonth() || a.getDate()-b.getDate());
+	return dates;
+};
+
 const style = StyleSheet.create({
 	tableContainer: {
 		justifyContent: 'flex-start',
@@ -273,8 +299,6 @@ const style = StyleSheet.create({
 	},
 
 	timePickerContainer: {
-		flexDirection: 'row',
-		flexWrap: 'wrap',
 		marginTop: 25
 	},
 
@@ -320,5 +344,16 @@ const style = StyleSheet.create({
         borderRadius: 60,
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+
+	reservationsGroup: {
+		width: '100%',
+	},
+
+	reservationsContainer: {
+		width: '100%',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		marginTop: 10
+	}
 })

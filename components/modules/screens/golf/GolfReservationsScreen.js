@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { RFPercentage } from "react-native-responsive-fontsize";
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
@@ -8,7 +8,6 @@ import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
 import Guests from '../../../ui/Guests';
-import { Parse } from "parse/react-native";
 
 
 export default function GolfReservationsScreen(props) {
@@ -44,7 +43,6 @@ export default function GolfReservationsScreen(props) {
 	useEffect(() => {
 		/* Get data from DB */
 		retrieveDataFromDB();
-
 	}, []);
 
 	/* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */

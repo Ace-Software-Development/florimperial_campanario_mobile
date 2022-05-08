@@ -35,7 +35,7 @@ export function P(props) {
 	};
 
 	if ('size' in props)
-		localStyles.fontSize = props.size === 'large' ? 22 : 20
+		localStyles.fontSize = props.size === 'large' ? 21 : 20
 
 	return (
 		<Text style={[defaultStyles.p, localStyles]}>
@@ -119,6 +119,12 @@ export function AnnoucementCard(props) {
 	);
 }
 
+export function Hr(props) {
+	return (
+		<View style={defaultStyles.hr} />
+	);
+}
+
 
 const defaultStyles = StyleSheet.create({
 	
@@ -196,5 +202,12 @@ const defaultStyles = StyleSheet.create({
 		right: 5,
 		marginHorizontal: 10,
 		marginTop: 10
+	},
+
+	hr: {
+		borderWidth: 0.5,
+		backgroundColor: c.color.darkGrey,
+        borderColor: c.color.darkGrey,
+        marginVertical: 10,
 	}
 });
