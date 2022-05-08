@@ -9,7 +9,6 @@ import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
 import GuestsSection from '../../../ui/GuestsSection';
 
-
 export default function GolfReservationsScreen(props) {
 	const [allReservations, setAllReservations] = useState([]);
 	//Fechas
@@ -18,6 +17,7 @@ export default function GolfReservationsScreen(props) {
 	const [selectedReservationId, setSelectedReservationId] = useState(null);
 	//Invitados
     const [guests, setGuests] = useState([]);
+	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState(0);
@@ -30,8 +30,10 @@ export default function GolfReservationsScreen(props) {
 			response.forEach(i => {
 				data.push({id: i.id, 
 							datetime: i.get('fechaInicio').toISOString(), 
-							hoyo_inicio: i.get('sitio').get('nombre')})
-				});
+							hoyo_inicio: i.get('sitio').get('nombre'),
+							maximoJugadores: i.get('maximoJugadores')
+						});
+			});
 			setAllReservations(data);
 		});
 	}
@@ -40,9 +42,7 @@ export default function GolfReservationsScreen(props) {
 	useEffect(() => {
 		/* Get data from DB */
 		retrieveDataFromDB();
-		
-		// const currentUser = await Parse.User.currentAsync();
-	}, c);
+	}, []);
 
 	/* Guardar invitados del componente en useState del padre */
 	const saveGuest = (gst) => {
@@ -91,13 +91,12 @@ export default function GolfReservationsScreen(props) {
 		const reservationData = {
 			objectId: selectedReservationId,
 			estatus: 2,
-			//socio: ""
 		};
 		const reservationGolfData = {
 			carritosReservados: parseInt(karts),
 			cantidadHoyos: holesEnabled ? 18 : 9,
 		};
-		createReservationGolf(reservationData, reservationGolfData, guests, currentUser,() => {
+		createReservationGolf(reservationData, reservationGolfData, guests,() => {
 			setSavedReservation(true);
 			setShownReservations([]);
 			setSelectedDate(null);
@@ -109,6 +108,8 @@ export default function GolfReservationsScreen(props) {
 			retrieveDataFromDB();
 		});
 	};
+
+	useEffect(() => {console.log(allReservations.length)}, [allReservations])
 
 	return (
 		<ScrollView>
@@ -187,7 +188,7 @@ export default function GolfReservationsScreen(props) {
 
 			{/* Agrega los invitados */}
 			<View>
-				<GuestsSection getList={saveGuest} deleteGuest={deleteGuest}/>
+				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
 			</View>
 			
 			{selectedReservationId ? (
@@ -247,4 +248,4 @@ const style = StyleSheet.create({
 		width: 100,
 		height: 33
 	}
-})
+});

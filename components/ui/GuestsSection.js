@@ -1,23 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { RFPercentage } from "react-native-responsive-fontsize";
 import { View, StyleSheet, TextInput, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { ScreenContainer, P, Subtitle, ActionBtn } from '../ui/CampanarioComponents';
+import { P, Subtitle, Guests, Btn } from '../ui/CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
-import Guests from '../ui/Guests';
+import { getAllActiveUsers } from '../../utils/client';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function GuestsSection(props) {
     //Invitados
 	const [guest, setGuest] = useState();
     const [guests, setGuests] = useState([]);
-    const maxGuests = 4;
+    const [partnersList, setPartnersList] = useState([]);
+    //const [showList, setShowList] = useState(true);
+    const maxGuests = props.maxGuests;
 	var pressed = 0;
+
+    /* Get all Users from DB */
+    useEffect(() => {
+        getAllActiveUsers().then( response => {
+            const data = [];
+            response.forEach(i => {
+                data.push({id: i.id, username: i.get('username')});
+            });
+            setPartnersList(data);
+        });
+    }, [])
 
     /* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
     const handleAddGuests = () => {
-        Keyboard.dismiss();
-		if(guests.length < maxGuests && guest != null){
-			setGuests([...guests, guest]);
-            props.getList(guest);
+		Keyboard.dismiss();
+        if(guests.length < maxGuests && guest != null){
+            let guestDic = {id: "", username: guest}
+            setGuests([...guests, guestDic]);
+            props.setList(guest);
             setGuest(null);
         }else if(guest == null){
 			pressed++;
@@ -34,14 +49,12 @@ export default function GuestsSection(props) {
         }
     }
 
-	/* Se borran los invitados seleccionados */
-	const deleteGuest = (index) => {
-		let guestsCopy = [...guests];
-		guestsCopy.splice(index, 1);
-        props.deleteGuest(guestsCopy);
-		setGuests(guestsCopy);
+	/* Selected guests are deleted */
+	const deleteGuest = (gsts) => {
+        props.deleteGuest(gsts);
+		setGuests(gsts);
 	}
-    
+
     return (
         /* Agrega los invitados */
         <View style={style.guestsContainer}>
@@ -54,22 +67,51 @@ export default function GuestsSection(props) {
                     placeholder={'Escribe el nombre del invitado'}
                     style={style.input}
                     value={guest}
-                    onChangeText={text => setGuest(text)}/>
+                    //onFocus={() => retrieveDataFromDB()}
+                    //onEndEditing={() => setShowList(false)}
+                    onChangeText={text => setGuest(text)}
+                />
                 <TouchableOpacity onPress={() => handleAddGuests()}>
                     <View style={style.addWrapper}>
                         <P color="light">+</P>
                     </View>
                 </TouchableOpacity>
             </KeyboardAvoidingView>
+
+            {/* Partners list */}
+            {guest ? (
+                    <ScrollView>
+                        {
+                            partnersList.filter(i => i.username.toLowerCase().includes(guest.toLowerCase())).map(index => {
+                                return (
+                                        <TouchableOpacity
+                                            key={index.id}
+                                            style={style.deployableList} 
+                                            onPress={() => {
+                                                setGuests([...guests, {id: index.id, username: index.username}]);
+                                                setGuest(null);
+                                                }}>
+                                                <P>{index.username}</P>
+                                        </TouchableOpacity>
+                                )
+                            })
+                        }
+                    </ScrollView>
+                    ) : null}
+
             <View>
-                {/* Aqui van a ir los invitados agregados */}
-                {
-                    guests.map((item, index) => {
-                        return (
-                            <TouchableOpacity key={index} onPress={() => deleteGuest(index)}>
-                                <Guests text={item} />
-                            </TouchableOpacity>)
-                    })
+                {/* Here goes the added guests */}
+                {   
+                guests.map((item, index) => {
+                    return (
+                        <Guests 
+                            key={index}
+                            text={item.username}
+                            index={index} 
+                            deleteGuest={deleteGuest} 
+                            guestsList={guests}/>
+                        )
+                })
                 }
             </View>
         </View>
@@ -102,5 +144,8 @@ const style = StyleSheet.create({
         borderRadius: 60,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    deployableList: {
+        marginVertical: 10
     }
 })

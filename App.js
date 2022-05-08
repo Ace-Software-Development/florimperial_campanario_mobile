@@ -1,5 +1,5 @@
 import RootStack from './components/core/RootStack';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import keys from './utils/keys';
 import React from 'react';
 

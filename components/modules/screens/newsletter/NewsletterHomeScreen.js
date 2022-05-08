@@ -1,41 +1,40 @@
-import React from 'react';
-import { View } from 'react-native';
-import { ScreenContainer, AnnoucementCard } from '../../../ui/CampanarioComponents';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView } from 'react-native';
+import { ScreenContainer } from '../../../ui/CampanarioComponents';
+import Poster from '../../../ui/Poster';
 import TopNav from '../../../core/TopNav';
-import golfIMG from '../../../../assets/img/golfIMG.png'
-import gymIMG from '../../../../assets/img/gymIMG.jpeg'
-import kidsclubIMG from '../../../../assets/img/kidsclubIMG.jpg'
-
+import Parse from 'parse/react-native.js';
 
 export default function NewsletterHomeScreen(props) {
+	const [posters, setPosters] = useState([]);
+
+	// Component did mount
+	// useEffect(() => {
+	// 	const fetchImages = async () => {
+	// 		let query = new Parse.Query('Anuncio');
+	// 		query.equalTo('eliminado', false);
+	// 		const results = await query.find();
+	// 		setPosters(results);
+	// 	};
+		
+	// 	fetchImages();
+	// }, []);
+
 	return (
-		<ScreenContainer>
-
-			<TopNav title='Anuncios' />
-
-			<View>
-				<AnnoucementCard  
-					title='Verano Campanario'
-					timeTitle='Hace 3 días'
-					source={golfIMG}
-					onPress={() => {}}
-				/>
-
-				<AnnoucementCard  
-					title='GYM & Fitness'
-					timeTitle='Hace 2 días'
-					source={gymIMG}
-					onPress={() => {}}
-				/>
-
-				<AnnoucementCard  
-					title="Kid's Club"
-					timeTitle='Hace 3 días'
-					source={kidsclubIMG}
-					onPress={() => {}}
-				/>
-			</View>
-
-		</ScreenContainer>
+		<ScrollView>
+			<ScreenContainer>
+				<TopNav title='Anuncios' />
+				<View>
+				{/* { posters.map( (poster, i) => {
+					return (
+					<Poster key={i} 
+							source={poster.get('imagen').url()}
+							timeTitle={poster.get('createdAt').toISOString()}
+					/>
+					)
+				}) } */}
+				</View>
+			</ScreenContainer>
+		</ScrollView>
 	);
 }

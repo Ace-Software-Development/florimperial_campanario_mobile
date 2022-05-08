@@ -20,6 +20,7 @@ export default function GolfTeeScreen(props) {
 	const [karts, setKarts] = useState(0);
 	//Invitados
 	const [guests, setGuests] = useState([]);
+	const [maxGuests, setMaxGuests] = useState(0);
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
 
@@ -29,7 +30,9 @@ export default function GolfTeeScreen(props) {
 			response.forEach(i => {
 				data.push({id: i.id, 
 							datetime: i.get('fechaInicio').toISOString(), 
-							hoyo_inicio: i.get('sitio').get('nombre')})
+							hoyo_inicio: i.get('sitio').get('nombre'),
+							maximoJugadores: i.get('maximoJugadores')
+						})
 				});
 			setAllReservations(data);
 		});
@@ -39,7 +42,6 @@ export default function GolfTeeScreen(props) {
 	useEffect(() => {
 		/* Get data from DB */
 		retrieveDataFromDB();
-
 	}, []);
 
 	/* Obtener todas las fechas de las reservaciones */
@@ -142,7 +144,7 @@ export default function GolfTeeScreen(props) {
 								title={i.datetime.toISOString().slice(11,16)}
 								subtitle={i.hoyo_inicio}
 								value={i.id}
-								onClick={id => setSelectedReservationId(id)}
+								onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}
 								selectedReservationId={selectedReservationId}
 								key={i.id}
 							/>
@@ -153,7 +155,7 @@ export default function GolfTeeScreen(props) {
 			
 			{/* Invitados */}
 			<View>
-				<GuestsSection getList={saveGuest} deleteGuest={deleteGuest}/>
+				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
 			</View>
 			
 			{selectedReservationId ? (

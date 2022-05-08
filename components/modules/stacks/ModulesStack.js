@@ -6,7 +6,7 @@ import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
 import GolfTeeScreen from '../screens/golf/GolfTeeScreen';
 import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
-//import { SimpleBtn } from '../../ui/Btn';
+import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -40,10 +40,17 @@ export default function NewsletterStack(props) {
 				options={{
 					title: 'Horarios y Reservaciones',
 					headerTitle: (props) => <Title {...props}/>,
-					headerBackTitleVisible: true,
-					//headerRight: () => (
-					//	<SimpleBtn title="Guardar" />
-					//)
+					headerBackTitleVisible: true
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen
+				name='golf_classes_reservations'
+				component={GolfClassesScreen}
+				options={{
+					title: 'Clases personalizadas Golf',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
 				}}
 			/>
 
@@ -66,6 +73,7 @@ export default function NewsletterStack(props) {
 					headerBackTitleVisible: true,
 				}}
 			/>
+
 		</ModulesStackNavigator.Navigator>
 	);
 }

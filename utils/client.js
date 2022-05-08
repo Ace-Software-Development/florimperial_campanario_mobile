@@ -3,9 +3,10 @@ import Parse from "parse/react-native.js";
 // Declaration of models
 const RESERVACION_MODEL = Parse.Object.extend("Reservacion");
 const RESERVACION_GOLF_MODEL = Parse.Object.extend("ReservacionGolf");
-const AREA_MODEL = Parse.Object.extend("Area")
-const SITIO_MODEL = Parse.Object.extend("Sitio")
-const INVITADO_MODEL = Parse.Object.extend("Invitado")
+const AREA_MODEL = Parse.Object.extend("Area");
+const SITIO_MODEL = Parse.Object.extend("Sitio");
+const INVITADO_MODEL = Parse.Object.extend("Invitado");
+const USER_MODEL = Parse.Object.extend("User");
 
 export async function getAllAvailableReservationsGolf(){
 	const currentTime = new Date();
@@ -59,12 +60,16 @@ export async function getAllAvailableReservationsGolfTee(){
 	return data;
 }
 
-export async function createReservationGolf(dataReservation, dataReservationGolf, guests, user,callBackFunction) {
+export async function createReservationGolf(dataReservation, dataReservationGolf, guests, callBackFunction) {
 	try{
+		// Get current user loged in
+		const userObj = await Parse.User.currentAsync();
+
 		// Update Reservation entry
 		let reservationObj = new Parse.Object('Reservacion');
 		reservationObj.set('objectId', dataReservation.objectId);
 		reservationObj.set('estatus', dataReservation.estatus);
+		reservationObj.set('socio', userObj);
 		await reservationObj.save();
 
 		// Create GolfReservation entry
@@ -78,12 +83,23 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 		for(let i = 0; i < guests.length; i++){
 			let guestObj = new Parse.Object('Invitado');
 			guestObj.set('nombre', guests[i]);
-			guestObj.set('socio', user)
+			guestObj.set('socio', userObj);
 			guestObj.save();
 		}
 
 		callBackFunction();
 	}catch(error) {
-		console.log(error)
+		console.log(error);
 	}
+}
+
+export async function getAllActiveUsers(){
+	// Query all Socios
+	const userQuery = new Parse.Query(USER_MODEL);
+	userQuery.equalTo('isAdmin', false);
+	//userQuery.fullText('username', text);
+	userQuery.descending('username');
+
+	let data = await userQuery.find();
+	return data;
 }
