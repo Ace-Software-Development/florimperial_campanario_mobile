@@ -7,7 +7,6 @@ import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
-import Guests from '../../../ui/Guests';
 
 export default function GolfClassesScreen(props) {
 	const [allReservations, setAllReservations] = useState([]);

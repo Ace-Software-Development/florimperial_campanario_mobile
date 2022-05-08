@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, ScrollView } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 export function Title(props) {
 	const localStyles = {
@@ -125,6 +126,27 @@ export function Hr(props) {
 	);
 }
 
+export function Guests(props) {
+    const deleteGuest = (index) => {
+		let guestsCopy = [...props.guestsList];
+		guestsCopy.splice(index, 1);
+		props.deleteGuest(guestsCopy);
+	}
+	
+	return (
+        <View style={defaultStyles.item}>
+            <View style={defaultStyles.itemLeft}>
+                <Icon name='user' size={20} style={defaultStyles.icon}/>
+                <P>{props.text}</P>
+					<TouchableOpacity 
+						style={defaultStyles.delete} 
+						onPress={() => deleteGuest(props.index)}>
+							<Icon name='trash' size={20}/>
+					</TouchableOpacity>
+            </View>
+        </View>
+    )
+}
 
 const defaultStyles = StyleSheet.create({
 	
@@ -209,5 +231,30 @@ const defaultStyles = StyleSheet.create({
 		backgroundColor: c.color.darkGrey,
         borderColor: c.color.darkGrey,
         marginVertical: 10,
+	//Guests styles
+	item: {
+        backgroundColor: c.color.lightGrey,
+        padding: 12,
+        paddingLeft: 20,
+        borderRadius: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 10
+    },
+
+    itemLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'wrap'
+    },
+
+    icon: {
+        marginRight: 15,
+        color: c.color.darkGrey
+    },
+
+	delete: {
+		backgroundColor: c.color.contrastColor
 	}
 });

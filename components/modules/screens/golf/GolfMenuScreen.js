@@ -22,7 +22,7 @@ export default function GolfMenuScreen(props) {
 					<ModulesMenuListItem title="Clases grupales" onPress={() => navigation.navigate('golf_classes_reservations')}>
 						<TeePracticeIcon width={30} height={30} />
 					</ModulesMenuListItem>
-					<ModulesMenuListItem title="Tee de práctica" onPress={() => {}}>
+					<ModulesMenuListItem title="Tee de práctica" onPress={() => navigation.navigate('golf_tee')}>
 						<Golf2Icon width={30} height={30} />
 					</ModulesMenuListItem>
 				</ModulesMenuList>
@@ -31,7 +31,7 @@ export default function GolfMenuScreen(props) {
 			<View style={style.container}>
 				<Subtitle style={{marginBottom: 10}}>Reglamentos</Subtitle>
 				<ModulesMenuList>
-					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('golf_reservations')} />
+					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('golf_regulations')} />
 				</ModulesMenuList>
 			</View>
 			

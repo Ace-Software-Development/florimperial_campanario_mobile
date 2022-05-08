@@ -4,6 +4,8 @@ import ModulesScreen from '../screens/ModulesScreen';
 import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
+import GolfTeeScreen from '../screens/golf/GolfTeeScreen';
+import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
 
 const ModulesStackNavigator = createNativeStackNavigator();
@@ -36,19 +38,39 @@ export default function NewsletterStack(props) {
 				name='golf_reservations'
 				component={GolfReservationsScreen}
 				options={{
-					title: 'Reservaciones Golf',
+					title: 'Horarios y Reservaciones',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
 				}}
 			/>
 
-			<ModulesStackNavigator.Screen 
+			<ModulesStackNavigator.Screen
 				name='golf_classes_reservations'
 				component={GolfClassesScreen}
 				options={{
 					title: 'Clases personalizadas Golf',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen 
+				name='golf_tee'
+				component={GolfTeeScreen}
+				options={{
+					title: 'Tee de práctica',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+			
+			<ModulesStackNavigator.Screen 
+				name='golf_regulations'
+				component={GolfRegulationsScreen}
+				options={{
+					title: 'Reglamento Golf',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
 				}}
 			/>
 
