@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { RFPercentage } from "react-native-responsive-fontsize";
+import { View, StyleSheet, TextInput, ScrollView, Alert } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
@@ -109,11 +108,9 @@ export default function GolfReservationsScreen(props) {
 		});
 	};
 
-	useEffect(() => {console.log(allReservations.length)}, [allReservations])
-
 	return (
-		<ScrollView>
-		<ScreenContainer style={{paddingTop: 0}} key={savedReservation}>
+		<ScreenContainer style={{paddingTop: 0, flex: 1}} key={savedReservation}>
+		<ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }} >
 			
 			{/* Hoyos a jugar y carritos */}
 			<View style={style.tableContainer}>
@@ -192,11 +189,13 @@ export default function GolfReservationsScreen(props) {
 			</View>
 			
 			{selectedReservationId ? (
-				<ActionBtn title="Guardar" onPress={onSubmit}/>
+				<View style={style.actionBtnContainer}>
+					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
+				</View>
 				) : null
 			}
-		</ScreenContainer>
 		</ScrollView>
+		</ScreenContainer>
 	);
 }
 
@@ -236,7 +235,10 @@ const style = StyleSheet.create({
 
 	actionBtnContainer: {
 		flexDirection: 'row',
-		justifyContent: 'space-around'
+		justifyContent: 'space-around',
+		width: '100%',
+		bottom: 20,
+		position: 'absolute'
 	},
 
 	textInput: {
