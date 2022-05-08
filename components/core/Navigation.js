@@ -1,6 +1,6 @@
 import React from 'react';
-import { createBottomTabNavigator, createStackNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {NewsDinamicIcon, ModulesDinamicIcon, TicketDinamicIcon} from '../ui/DinamicIcons';
 import { STYLES as styles } from '../../utils/constants';
 
 // Screens
@@ -23,8 +23,15 @@ export default MainNavigation = () => {
 							options={{
 								tabBarLabel: 'Anuncios',
 								headerShown: false,
-								tabBarIcon: ({ color, size}) => {
-									// Here goes an icon component
+								tabBarIcon: ({ focused, color, size }) => {
+									if (focused)
+										color = styles.color.contrastColor;
+									else
+										color = styles.color.primaryColor;
+									return (
+										<NewsDinamicIcon color={color} />
+									);
+											
 								}
 							}}
 				/>
@@ -33,8 +40,15 @@ export default MainNavigation = () => {
 							options={{
 								tabBarLabel: 'Módulos',
 								headerShown: false,
-								tabBarIcon: ({ color, size}) => {
-									// Here goes an icon component
+								tabBarIcon: ({ focused, color, size }) => {
+									if (focused)
+										color = styles.color.contrastColor;
+									else
+										color = styles.color.primaryColor;
+									return (
+										<ModulesDinamicIcon color={color} />
+									);
+											
 								}
 							}}
 				/>
@@ -43,8 +57,15 @@ export default MainNavigation = () => {
 							options={{
 								tabBarLabel: 'Mis Reservaciones',
 								headerShown: false,
-								tabBarIcon: ({ color, size}) => {
-									// Here goes an icon component
+								tabBarIcon: ({ focused, color, size }) => {
+									if (focused)
+										color = styles.color.contrastColor;
+									else
+										color = styles.color.primaryColor;
+									return (
+										<TicketDinamicIcon color={color} />
+									);
+											
 								}
 							}}
 				/>

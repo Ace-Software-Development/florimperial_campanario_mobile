@@ -231,7 +231,8 @@ const defaultStyles = StyleSheet.create({
 		backgroundColor: c.color.darkGrey,
         borderColor: c.color.darkGrey,
         marginVertical: 10,
-	//Guests styles
+	},
+
 	item: {
         backgroundColor: c.color.lightGrey,
         padding: 12,

@@ -3,10 +3,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import { ScreenContainer, Subtitle } from '../../../ui/CampanarioComponents';
 import { ModulesMenuList, ModulesMenuListItem } from '../../../ui/ModulesMenuList';
 import { useNavigation } from '@react-navigation/native';
-//import ClockIcon from '../../../ui/svg/ClockIcon';
 import ClockIcon from '../../../../assets/icons/clock-icon.svg';
 import TeePracticeIcon from '../../../../assets/icons/tee-practice-icon.svg';
 import Golf2Icon from '../../../../assets/icons/golf2-icon.svg';
+import BookIcon from '../../../../assets/icons/book-icon.svg';
 
 export default function GolfMenuScreen(props) {
 	const navigation = useNavigation();
@@ -31,7 +31,9 @@ export default function GolfMenuScreen(props) {
 			<View style={style.container}>
 				<Subtitle style={{marginBottom: 10}}>Reglamentos</Subtitle>
 				<ModulesMenuList>
-					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('golf_regulations')} />
+					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('golf_regulations')}>
+						<BookIcon width={30} height={30} />
+					</ModulesMenuListItem>
 				</ModulesMenuList>
 			</View>
 			

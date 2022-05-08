@@ -5,7 +5,7 @@ const RESERVACION_MODEL = Parse.Object.extend("Reservacion");
 const AREA_MODEL = Parse.Object.extend("Area");
 const SITIO_MODEL = Parse.Object.extend("Sitio");
 const INVITADO_MODEL = Parse.Object.extend("Invitado");
-
+const USER_MODEL = Parse.Object.extend("_User");
 
 export async function getAllAvailableReservationsGolf(filterCoaches=false){
 	
