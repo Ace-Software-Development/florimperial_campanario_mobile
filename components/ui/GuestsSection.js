@@ -73,7 +73,7 @@ export default function GuestsSection(props) {
     return (
         /* Agrega los invitados */
         <View style={style.guestsContainer}>
-            <Subtitle>Agrega más asistentes</Subtitle>
+            <Subtitle>Agrega más socios o invitados</Subtitle>
             <KeyboardAvoidingView
                     behavior={Platform.OS == "ios" ? "padding" : "height"}
                     style={style.keyboardContainer}

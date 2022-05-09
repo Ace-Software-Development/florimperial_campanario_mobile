@@ -19,7 +19,7 @@ export default function GolfReservationsScreen(props) {
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState(0);
+	const [karts, setKarts] = useState('0');
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
 
@@ -117,7 +117,7 @@ export default function GolfReservationsScreen(props) {
 
 				<View style={style.tableRow}>
 					<View style={style.tableCol1}>
-						<P >Hoyos a jugar:</P>
+						<P >Hoyos a jugar</P>
 					</View>
 					<View style={style.tableCol2}>
 						<Switch defaultValue={true} 
@@ -130,13 +130,14 @@ export default function GolfReservationsScreen(props) {
 
 				<View style={style.tableRow}>
 					<View style={style.tableCol1}>
-						<P >Carritos rentados:</P>
+						<P >Rentar carritos</P>
 					</View>
 					<View style={style.tableCol2}>
 							<TextInput style={style.textInput}
 								keyboardType='numeric'
 								onChangeText={val => setKarts(val)}
 								maxLength={2}
+								value={karts}
 								keyboard
 								/>
 					</View>

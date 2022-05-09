@@ -5,7 +5,7 @@ import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../../ui/Campana
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
-import { STYLES as c } from '../../../../utils/constants'
+import { STYLES as c } from '../../../../utils/constants';
 import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
 
 export default function GolfClassesScreen(props) {
@@ -105,7 +105,7 @@ export default function GolfClassesScreen(props) {
 
 				<View style={style.tableRow}>
 					<View style={style.tableCol1}>
-						<P >Hoyos a jugar:</P>
+						<P >Hoyos a jugar</P>
 					</View>
 					<View style={style.tableCol2}>
 						<Switch defaultValue={true} 
@@ -118,7 +118,7 @@ export default function GolfClassesScreen(props) {
 
 				<View style={style.tableRow}>
 					<View style={style.tableCol1}>
-						<P >Carritos rentados:</P>
+						<P >Rentar carritos</P>
 					</View>
 					<View style={style.tableCol2}>
 							<TextInput style={style.textInput}
