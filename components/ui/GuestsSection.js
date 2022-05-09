@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { View, StyleSheet, TextInput, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { P, Subtitle, Guests, Btn } from '../ui/CampanarioComponents';
+import { P, Subtitle, Guests } from '../ui/CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
 import { getAllActiveUsers } from '../../utils/client';
 import { ScrollView } from 'react-native-gesture-handler';
+import { set } from 'parse/lib/browser/CoreManager';
 
 export default function GuestsSection(props) {
     //Invitados
 	const [guest, setGuest] = useState();
     const [guests, setGuests] = useState([]);
     const [partnersList, setPartnersList] = useState([]);
-    //const [showList, setShowList] = useState(true);
     const maxGuests = props.maxGuests;
 	var pressed = 0;
 
@@ -55,6 +55,21 @@ export default function GuestsSection(props) {
 		setGuests(gsts);
 	}
 
+    const filterPartners = (i) => {
+        let guestsSet = new Set();
+        for(let j of guests){
+            if(j.id != undefined){
+                guestsSet.add(j.id);
+            }
+        }
+
+        if(!guestsSet.has(i.id)){
+            return i.username.toLowerCase().includes(guest.toLowerCase());
+        }else{
+            return false;
+        }
+    }
+
     return (
         /* Agrega los invitados */
         <View style={style.guestsContainer}>
@@ -67,8 +82,6 @@ export default function GuestsSection(props) {
                     placeholder={'Escribe el nombre del invitado'}
                     style={style.input}
                     value={guest}
-                    //onFocus={() => retrieveDataFromDB()}
-                    //onEndEditing={() => setShowList(false)}
                     onChangeText={text => setGuest(text)}
                 />
                 <TouchableOpacity onPress={() => handleAddGuests()}>
@@ -82,7 +95,7 @@ export default function GuestsSection(props) {
             {guest ? (
                     <ScrollView>
                         {
-                            partnersList.filter(i => i.username.toLowerCase().includes(guest.toLowerCase())).map(index => {
+                            partnersList.filter(i => filterPartners(i)).map(index => {
                                 return (
                                         <TouchableOpacity
                                             key={index.id}
