@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { RFPercentage } from "react-native-responsive-fontsize";
+import { View, StyleSheet, TextInput, ScrollView, Alert } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
-import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
+import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
+import GuestsSection from '../../../ui/GuestsSection';
 
 export default function GolfClassesScreen(props) {
 	const [allReservations, setAllReservations] = useState([]);
@@ -15,10 +15,8 @@ export default function GolfClassesScreen(props) {
 	const [shownReservations, setShownReservations] = useState([]);
 	const [selectedReservationId, setSelectedReservationId] = useState(null);
 	//Invitados
-	const [guest, setGuest] = useState();
-    const [guests, setGuests] = useState([]);
-    const maxGuests = 4;
-	var pressed = 0;
+	const [guests, setGuests] = useState([]);
+	const [maxGuests, setMaxGuests] = useState(1);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState(0);
@@ -30,32 +28,14 @@ export default function GolfClassesScreen(props) {
 		retrieveDataFromDB().then(data => setAllReservations(data));
 	}, []);
 
-	/* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
-    const handleAddGuests = () => {
-        Keyboard.dismiss();
-		if(guests.length < maxGuests && guest != null){
-			setGuests([...guests, guest]);
-            setGuest(null);
-        }else if(guest == null){
-			pressed++;
-			if(pressed > 5){
-				Alert.alert('No se ha introducido ningún nombre', 'Escriba el nombre del invitado', [
-					{text: 'Aceptar'}
-				])
-				pressed = 0;
-			}
-		}else{
-			Alert.alert('Máximo alcanzado', 'Ya no se pueden agregar mas invitados', [
-				{text: 'Aceptar'}
-			])
-        }
-    }
+	/* Guardar invitados del componente en useState del padre */
+	const saveGuest = (gst) => {
+		setGuests([...guests, gst])
+	}
 
-	/* Se borran los invitados seleccionados */
-	const deleteGuest = (index) => {
-		let guestsCopy = [...guests];
-		guestsCopy.splice(index, 1);
-		setGuests(guestsCopy);
+	/* Elimina el invitado seleccionado del padre */
+	const deleteGuest = (gsts) => {
+		setGuests(gsts)
 	}
 
 	/* When the selected Date changes, we need to update the reservations available */
@@ -76,7 +56,6 @@ export default function GolfClassesScreen(props) {
 		const reservationData = {
 			objectId: selectedReservationId,
 			estatus: 2,
-			//socio: ""
 		};
 		const reservationGolfData = {
 			carritosReservados: parseInt(karts),
@@ -169,7 +148,7 @@ export default function GolfClassesScreen(props) {
 														title={i.datetime.toISOString().slice(11,16)}
 														subtitle={i.hoyo_inicio}
 														value={i.id}
-														onClick={id => setSelectedReservationId(id)}
+														onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}
 														selectedReservationId={selectedReservationId}
 														key={`${i.id}-capsule`}
 													/>
@@ -188,34 +167,8 @@ export default function GolfClassesScreen(props) {
 			</View>
 
 			{/* Agrega los invitados */}
-			<View style={style.guestsContainer}>
-				<Subtitle>Agrega más asistentes</Subtitle>
-				<KeyboardAvoidingView
-					behavior={Platform.OS == "ios" ? "padding" : "height"}
-					style={style.keyboardContainer}
-				>
-					<TextInput 
-						placeholder={'Escribe el nombre del invitado'}
-						style={style.input}
-						value={guest}
-						onChangeText={text => setGuest(text)}/>
-					<TouchableOpacity onPress={() => handleAddGuests()}>
-						<View style={style.addWrapper}>
-							<P color="light">+</P>
-						</View>
-					</TouchableOpacity>
-				</KeyboardAvoidingView>
-				<View>
-					{/* Aqui van a ir los invitados agregados */}
-					{
-						guests.map((item, index) => {
-							return (
-								<TouchableOpacity key={index} onPress={() => deleteGuest(index)}>
-									<Guests text={item} />
-								</TouchableOpacity>)
-						})
-					}
-				</View>
+			<View>
+				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
 			</View>
 			
 			{selectedReservationId ? (
@@ -325,34 +278,5 @@ const style = StyleSheet.create({
         marginVertical: 20,
         flexDirection: 'row',
         justifyContent: 'space-between'
-    },
-
-    input: {
-        backgroundColor: c.color.grey,
-        paddingVertical: 7,
-        paddingHorizontal: 20,
-        borderRadius: 10,
-		width: '80%',
-		fontSize: RFPercentage(2.1)
-    }, 
-
-    addWrapper: {
-        width: 35,
-        height: 35,
-		backgroundColor: c.color.primaryColor,
-        borderRadius: 60,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-	reservationsGroup: {
-		width: '100%',
-	},
-
-	reservationsContainer: {
-		width: '100%',
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		marginTop: 10
-	}
+    }
 })

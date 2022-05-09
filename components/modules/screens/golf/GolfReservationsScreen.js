@@ -5,7 +5,7 @@ import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
-import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
+import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
 import GuestsSection from '../../../ui/GuestsSection';
 
 export default function GolfReservationsScreen(props) {
@@ -174,7 +174,7 @@ export default function GolfReservationsScreen(props) {
 								title={i.datetime.toISOString().slice(11,16)}
 								subtitle={i.hoyo_inicio}
 								value={i.id}
-								onClick={id => setSelectedReservationId(id)}
+								onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}
 								selectedReservationId={selectedReservationId}
 								key={i.id}
 							/>

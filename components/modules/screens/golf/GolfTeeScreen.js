@@ -6,7 +6,7 @@ import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
-import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf } from '../../../../utils/client';
+import { getAllAvailableReservationsGolfTee, createReservationGolf } from '../../../../utils/client';
 import GuestsSection from '../../../ui/GuestsSection';
 
 export default function GolfTeeScreen(props) {
@@ -20,7 +20,7 @@ export default function GolfTeeScreen(props) {
 	const [karts, setKarts] = useState(0);
 	//Invitados
 	const [guests, setGuests] = useState([]);
-	const [maxGuests, setMaxGuests] = useState(4);
+	const [maxGuests, setMaxGuests] = useState(0);
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
 
