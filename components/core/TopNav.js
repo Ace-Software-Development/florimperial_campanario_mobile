@@ -7,6 +7,7 @@ import{ Subtitle } from '../ui/CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
 
 
+
 export default function TopNav(props) {
 
 	const [modalVisible, setModalVisible] = useState(false);
@@ -62,7 +63,7 @@ export default function TopNav(props) {
 
 			</Modal>
 
-			<TouchableOpacity style={styles.perfilBtn} onPress={() => setModalVisible(true)}>
+			<TouchableOpacity hitSlop={{top: 50, left: 50, bottom: 50, right: 50}} style={styles.perfilBtn} onPress={() => setModalVisible(true)}>
 				<Image style={styles.perfilImg} source={perfilIMG}/>
 			</TouchableOpacity>
 
@@ -85,10 +86,10 @@ const styles = StyleSheet.create({
 	}, 
 
 	perfilBtn: {
-		padding: 10,
+		padding: 50,
 		position: 'absolute',
-		right: -10,
-		
+		right: -50, 
+		bottom: -45,
 	}, 
 
 	profileName: {

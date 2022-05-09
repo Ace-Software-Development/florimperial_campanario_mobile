@@ -119,6 +119,24 @@ export function AnnoucementCard(props) {
 	);
 }
 
+export function ReservationCard(props) {
+	return (
+		<View style={defaultStyles.reservCard} >
+				<View style={defaultStyles.reservDetails}>
+					<Text style={defaultStyles.reservModule}>{props.area}</Text>
+					<Text style={defaultStyles.reservContext}>{props.sitio}</Text>
+					<Text style={defaultStyles.reservHourText}>Hora</Text>
+					<Text style={defaultStyles.reservHour}>{props.hour} Hrs</Text>
+				</View>
+				<View style={defaultStyles.reservDate}>
+					<Text style={defaultStyles.month}>{props.month}</Text>
+					<Text style={defaultStyles.day}>{props.day}</Text>
+				</View>
+			</View>
+
+	);
+}
+
 
 const defaultStyles = StyleSheet.create({
 	
@@ -196,5 +214,72 @@ const defaultStyles = StyleSheet.create({
 		right: 5,
 		marginHorizontal: 10,
 		marginTop: 10
+	},
+
+	reservCard: {
+		marginVertical: 10,
+		height: 140,
+		width: "100%",
+		marginBottom: 10
+	}, 
+
+	reservDetails: {
+		paddingVertical: 10,
+		paddingLeft: 15,
+		backgroundColor: '#56738B',
+		borderRadius: 10,
+		height:  "100%",
+	},
+
+	reservDate: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#EBEBEB',
+		borderTopRightRadius: 10,
+		borderBottomRightRadius: 10,
+		position: 'absolute',
+		right: 0,
+		width: "25%", 
+		paddingVertical: 5,
+		height:  "100%",
+	}, 
+
+	reservModule: {
+		color: 'white',
+		fontSize: RFPercentage(2.6),
+		fontWeight: 'bold',
+		marginVertical: 3
+	},
+
+	reservContext: {
+		color: 'white',
+		fontSize: RFPercentage(2.2),
+		marginVertical: 3
+	},
+
+	reservHourText: {
+		color: '#D5D5D5',
+		fontSize: RFPercentage(1.8),
+		marginVertical: 3
+	},
+
+	reservHour: {
+		color: 'white',
+		fontSize: RFPercentage(2.4),
+		marginVertical: 3
+	},
+
+	month: {
+		fontSize: RFPercentage(2.8),
+		color: c.color.primaryColor,
+		textTransform: 'uppercase',
+		includeFontPadding: false, 
+	},
+
+	day: {
+		fontSize: RFPercentage(5.6),
+		color: c.color.primaryColor,
+		includeFontPadding: false,
 	}
 });

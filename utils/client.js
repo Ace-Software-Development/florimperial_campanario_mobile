@@ -50,7 +50,7 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 
 		// Crer entrada de invitados
 		for(let i = 0; i < guests.length; i++){
-			let guestObj = new Parse.Object('Invitados');
+			let guestObj = new Parse.Object('Invitado');
 			guestObj.set('nombre', guests[i]);
 			guestObj.save();
 		}
@@ -59,4 +59,41 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 	}catch(error) {
 		console.log(error)
 	}
+}
+
+export async function getReservation() {
+	/*const userObj = await Parse.User.currentAsync();
+	const areaQuery = new Parse.Query(AREA_MODEL);
+
+	const sitioQuery = new Parse.Query(SITIO_MODEL);
+	sitioQuery.matchesQuery('area', areaQuery);
+	sitioQuery.include('area');
+
+	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	reservationQuery.matchesQuery('sitio', sitioQuery);
+	reservationQuery.equalTo('user', userObj);*/
+	
+	const userObj = await Parse.User.currentAsync();
+
+	const areaQuery = new Parse.Query(AREA_MODEL);
+
+	const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	sitiosQuery.select("nombre");
+	sitiosQuery.equalTo('eliminado', false);
+	sitiosQuery.matchesQuery('area', areaQuery);
+	sitiosQuery.include(areaQuery);
+
+	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	reservationQuery.select('fechaInicio', 'sitio', 'objectId');
+	reservationQuery.equalTo('user', userObj);
+	reservationQuery.equalTo('eliminado', false);
+	reservationQuery.equalTo('estatus', 1);
+	reservationQuery.matchesQuery('sitio', sitiosQuery);
+	reservationQuery.include('sitio');
+
+	let data = await reservationQuery.find();
+	for (let i of data) {
+		console.log(i);
+	}
+	console.log("------------------------------------");
 }
