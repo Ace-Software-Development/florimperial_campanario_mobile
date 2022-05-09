@@ -109,8 +109,6 @@ export default function GolfReservationsScreen(props) {
 		});
 	};
 
-	useEffect(() => {console.log(allReservations.length)}, [allReservations])
-
 	return (
 		<ScrollView>
 		<ScreenContainer style={{paddingTop: 0}} key={savedReservation}>

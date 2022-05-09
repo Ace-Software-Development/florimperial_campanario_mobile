@@ -20,7 +20,7 @@ export default function GolfTeeScreen(props) {
 	const [karts, setKarts] = useState(0);
 	//Invitados
 	const [guests, setGuests] = useState([]);
-	const [maxGuests, setMaxGuests] = useState(0);
+	const [maxGuests, setMaxGuests] = useState(4);
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
 
