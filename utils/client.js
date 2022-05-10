@@ -1,4 +1,5 @@
 import Parse from "parse/react-native.js";
+import { Guests } from "../components/ui/CampanarioComponents";
 
 // Declaration of models
 const RESERVACION_MODEL = Parse.Object.extend("Reservacion");
@@ -17,7 +18,7 @@ export async function getAllAvailableReservationsGolf(filterCoaches=false){
 	const sitiosQuery = new Parse.Query(SITIO_MODEL);
 	sitiosQuery.select("nombre");
 	sitiosQuery.equalTo('eliminado', false);
-	//sitiosQuery.doesNotMatchQuery('nombre', 'Tee de practica');
+	sitiosQuery.notEqualTo('nombre', 'Tee practica');
 	sitiosQuery.matchesQuery('area', areaQuery);
 	sitiosQuery.include('area');
 
@@ -39,11 +40,10 @@ export async function getAllAvailableReservationsGolfTee(){
 	// Query todos los sitios que pertenecen al tee de práctica
 	const areaQuery = new Parse.Query(AREA_MODEL);
 	areaQuery.equalTo('eliminado', false);
-	areaQuery.equalTo('nombre', 'Golf_tee');
+	areaQuery.equalTo('nombre', 'Golf');
 
 	const sitiosQuery = new Parse.Query(SITIO_MODEL);
-	sitiosQuery.select("nombre");
-	sitiosQuery.equalTo('eliminado', false);
+	sitiosQuery.equalTo('nombre', 'Tee practica');
 	sitiosQuery.matchesQuery('area', areaQuery);
 	sitiosQuery.include('area');
 
@@ -81,8 +81,15 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 		// Crer entrada de invitados
 		for(let i = 0; i < guests.length; i++){
 			let guestObj = new Parse.Object('Invitado');
-			guestObj.set('nombre', guests[i]);
-			guestObj.set('socio', userObj);
+			guestObj.set('nombre', guests[i].username);
+			guestObj.set('user', userObj);
+
+			if (guests[i].id != "") {
+				const user = new Parse.Object('_User');
+				user.id = guests[i].id;
+				guestObj.set('socioInvitado', user);
+			}
+
 			guestObj.save();
 		}
 
@@ -93,10 +100,9 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 }
 
 export async function getAllActiveUsers(){
-	// Query all Socios
+	// Query all Users
 	const userQuery = new Parse.Query(USER_MODEL);
 	userQuery.equalTo('isAdmin', false);
-	//userQuery.fullText('username', text);
 	userQuery.descending('username');
 
 	let data = await userQuery.find();

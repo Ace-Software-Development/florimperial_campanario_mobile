@@ -91,7 +91,6 @@ export default function GolfTeeScreen(props) {
 		const reservationData = {
 			objectId: selectedReservationId,
 			estatus: 2,
-			//socio: ""
 		};
 		const reservationGolfData = {
 			carritosReservados: parseInt(karts),
