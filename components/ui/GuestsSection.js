@@ -5,7 +5,6 @@ import { P, Subtitle, Guests } from '../ui/CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
 import { getAllActiveUsers } from '../../utils/client';
 import { ScrollView } from 'react-native-gesture-handler';
-import { set } from 'parse/lib/browser/CoreManager';
 
 export default function GuestsSection(props) {
     //Invitados
@@ -32,7 +31,7 @@ export default function GuestsSection(props) {
         if(guests.length < maxGuests && guest != null){
             let guestDic = {id: "", username: guest}
             setGuests([...guests, guestDic]);
-            props.setList(guest);
+            props.setList(guestDic);
             setGuest(null);
         }else if(guest == null){
 			pressed++;
@@ -49,12 +48,27 @@ export default function GuestsSection(props) {
         }
     }
 
+    /* Adds partners from DB to guests list if maxGuests hasn't been reached  */
+    const handleAddPartners = (index) => {
+        if (guests.length < maxGuests){
+            let guestDic = {id: index.id, username: index.username}
+            setGuests([...guests, {id: index.id, username: index.username}]);
+            props.setList(guestDic);
+            setGuest(null);
+        }else{
+			Alert.alert('Máximo alcanzado', 'Ya no se pueden agregar mas invitados', [
+				{text: 'Aceptar'}
+			])
+        }
+    }
+
 	/* Selected guests are deleted */
 	const deleteGuest = (gsts) => {
         props.deleteGuest(gsts);
 		setGuests(gsts);
 	}
 
+    /* Filters partners that aren't in list guests and that matches text written on text input */
     const filterPartners = (i) => {
         let guestsSet = new Set();
         for(let j of guests){
@@ -100,10 +114,7 @@ export default function GuestsSection(props) {
                                         <TouchableOpacity
                                             key={index.id}
                                             style={style.deployableList} 
-                                            onPress={() => {
-                                                setGuests([...guests, {id: index.id, username: index.username}]);
-                                                setGuest(null);
-                                                }}>
+                                            onPress={() => handleAddPartners(index)}>
                                                 <P>{index.username}</P>
                                         </TouchableOpacity>
                                 )
@@ -159,6 +170,10 @@ const style = StyleSheet.create({
         alignItems: 'center'
     },
     deployableList: {
-        marginVertical: 10
+        backgroundColor: c.color.lightBg,
+        padding: 5,
+        width: '80%',
+        borderWidth: 0.2,
+        borderColor: c.color.lightGrey
     }
 })
