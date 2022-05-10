@@ -127,9 +127,9 @@ export function Hr(props) {
 
 export function Guests(props) {
     const deleteGuest = (index) => {
-		let guestsCopy = [...props.guestsList];
+		let guestsCopy = [...props.guests];
 		guestsCopy.splice(index, 1);
-		props.deleteGuest(guestsCopy);
+		props.setGuests(guestsCopy);
 	}
 	
 	return (

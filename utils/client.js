@@ -9,7 +9,6 @@ const INVITADO_MODEL = Parse.Object.extend("Invitado");
 const USER_MODEL = Parse.Object.extend("_User");
 
 export async function getAllAvailableReservationsGolf(filterCoaches=false){
-	
 	// Query all sitios belonging to Golf
 	const areaQuery = new Parse.Query(AREA_MODEL);
 	areaQuery.equalTo('eliminado', false);
@@ -100,9 +99,13 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 }
 
 export async function getAllActiveUsers(){
+	// Get current user loged in
+	const userObj = await Parse.User.currentAsync();
+
 	// Query all Users
 	const userQuery = new Parse.Query(USER_MODEL);
 	userQuery.equalTo('isAdmin', false);
+	userQuery.notEqualTo('objectId', userObj.id);
 	userQuery.descending('username');
 
 	let data = await userQuery.find();

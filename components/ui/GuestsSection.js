@@ -9,7 +9,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 export default function GuestsSection(props) {
     //Invitados
 	const [guest, setGuest] = useState();
-    const [guests, setGuests] = useState([]);
+    //const [guests, props.setGuests] = useState([]);
     const [partnersList, setPartnersList] = useState([]);
     const maxGuests = props.maxGuests;
 	var pressed = 0;
@@ -28,10 +28,9 @@ export default function GuestsSection(props) {
     /* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
     const handleAddGuests = () => {
 		Keyboard.dismiss();
-        if(guests.length < maxGuests && guest != null){
+        if(props.guests.length < maxGuests && guest != null){
             let guestDic = {id: "", username: guest}
-            setGuests([...guests, guestDic]);
-            props.setList(guestDic);
+            props.setGuests([...props.guests, guestDic]);
             setGuest(null);
         }else if(guest == null){
 			pressed++;
@@ -50,10 +49,9 @@ export default function GuestsSection(props) {
 
     /* Adds partners from DB to guests list if maxGuests hasn't been reached  */
     const handleAddPartners = (index) => {
-        if (guests.length < maxGuests){
+        if (props.guests.length < maxGuests){
             let guestDic = {id: index.id, username: index.username}
-            setGuests([...guests, {id: index.id, username: index.username}]);
-            props.setList(guestDic);
+            props.setGuests([...props.guests, {id: index.id, username: index.username}]);
             setGuest(null);
         }else{
 			Alert.alert('Máximo alcanzado', 'Ya no se pueden agregar mas invitados', [
@@ -62,16 +60,10 @@ export default function GuestsSection(props) {
         }
     }
 
-	/* Selected guests are deleted */
-	const deleteGuest = (gsts) => {
-        props.deleteGuest(gsts);
-		setGuests(gsts);
-	}
-
     /* Filters partners that aren't in list guests and that matches text written on text input */
     const filterPartners = (i) => {
         let guestsSet = new Set();
-        for(let j of guests){
+        for(let j of props.guests){
             if(j.id != undefined){
                 guestsSet.add(j.id);
             }
@@ -126,14 +118,15 @@ export default function GuestsSection(props) {
             <View>
                 {/* Here goes the added guests */}
                 {   
-                guests.map((item, index) => {
+                props.guests.map((item, index) => {
                     return (
                         <Guests 
                             key={index}
                             text={item.username}
-                            index={index} 
-                            deleteGuest={deleteGuest} 
-                            guestsList={guests}/>
+                            index={index}
+                            guests={props.guests}
+                            setGuests={props.setGuests}
+                        />
                         )
                 })
                 }

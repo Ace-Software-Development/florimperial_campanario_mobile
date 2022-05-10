@@ -16,7 +16,7 @@ export default function GolfClassesScreen(props) {
 	const [selectedReservationId, setSelectedReservationId] = useState(null);
 	//Invitados
 	const [guests, setGuests] = useState([]);
-	const [maxGuests, setMaxGuests] = useState(1);
+	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState(0);
@@ -148,7 +148,10 @@ export default function GolfClassesScreen(props) {
 														title={i.datetime.toISOString().slice(11,16)}
 														subtitle={i.hoyo_inicio}
 														value={i.id}
-														onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}
+														onClick={id => {
+																setSelectedReservationId(id);
+																setMaxGuests(i.maximoJugadores);
+															}}
 														selectedReservationId={selectedReservationId}
 														key={`${i.id}-capsule`}
 													/>
@@ -168,7 +171,14 @@ export default function GolfClassesScreen(props) {
 
 			{/* Agrega los invitados */}
 			<View>
-				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
+				{ selectedReservationId && 
+					<GuestsSection guests={guests} 
+									setGuests={setGuests} 
+									setList={saveGuest} 
+									deleteGuest={deleteGuest} 
+									maxGuests={maxGuests}
+					/>
+				}
 			</View>
 			
 			{selectedReservationId ? (
@@ -188,7 +198,8 @@ const retrieveDataFromDB = async () => {
 		data.push({id: i.id, 
 					datetime: i.get('fechaInicio').toISOString(), 
 					profesor: {id:i.get('profesor').get('id'), nombre: i.get('profesor').get('nombre')},
-					hoyo_inicio: i.get('sitio').get('nombre')})
+					hoyo_inicio: i.get('sitio').get('nombre'),
+					maximoJugadores: i.get('maximoJugadores')})
 		});
 	return data;
 }
