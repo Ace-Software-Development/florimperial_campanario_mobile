@@ -1,21 +1,42 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { Title, Subtitle, P, ActionBtn } from '../../../ui/CampanarioComponents';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView } from 'react-native';
+import { ScreenContainer } from '../../../ui/CampanarioComponents';
+import Poster from '../../../ui/Poster';
+import TopNav from '../../../core/TopNav';
+import Parse from 'parse/react-native.js';
+import { normalizeDayMonthFormat } from '../../../../utils/timeHelpers';
+
 
 export default function NewsletterHomeScreen(props) {
+	const [posters, setPosters] = useState([]);
+
+	// Component did mount
+	useEffect(() => {
+		const fetchImages = async () => {
+			let query = new Parse.Query('Anuncio');
+			query.equalTo('eliminado', false);
+			const results = await query.find();
+			setPosters(results);
+		};
+		fetchImages();
+	}, []);
+
 	return (
-		<View style={{paddingTop: '15%', paddingHorizontal: 15,}}>
-			<Title>Newsletter Home</Title>
-			<Title>Title</Title>
-			<Title color='light' >Title (light style)</Title>
-			<Title style={{color: 'red'}} >Title (custom styles)</Title>
-			<Subtitle>Subtitle</Subtitle>
-			<Subtitle color='light'>Subtitle (light style)</Subtitle>
-			<P>Regular Text</P>
-			<P color='light'>Regular Text (light style)</P>
-			<P size='small'>Regular Text (small style)</P>
-			<P size='large'>Regular Text (large style)</P>
-			<ActionBtn title='Action Button' />
-		</View>
+		<ScrollView>
+			<ScreenContainer>
+				<TopNav title='Anuncios' />
+				<View>
+				{ posters.map( (poster, i) => {
+					return (
+					<Poster key={i} 
+							source={poster.get('imagen').url()}
+							timeTitle={normalizeDayMonthFormat(poster.get('createdAt'))}
+							style={{marginBottom: 20}}
+					/>
+					)
+				}) }
+				</View>
+			</ScreenContainer>
+		</ScrollView>
 	);
 }

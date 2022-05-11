@@ -1,7 +1,12 @@
 import React from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
 import ModulesScreen from '../screens/ModulesScreen';
+import { Title } from '../../ui/CampanarioComponents';
+import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
+import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
+import GolfTeeScreen from '../screens/golf/GolfTeeScreen';
+import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
+import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -17,6 +22,58 @@ export default function NewsletterStack(props) {
 					headerShown: false,
 				}}
 			/>
+
+			<ModulesStackNavigator.Screen
+				name='golf_module'
+				component={GolfMenuScreen}
+				options={{
+					title: 'Golf',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
+			{/* TODO: Pass these component to a Golf Stack */}
+			<ModulesStackNavigator.Screen 
+				name='golf_reservations'
+				component={GolfReservationsScreen}
+				options={{
+					title: 'Horarios y Reservaciones',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen
+				name='golf_classes_reservations'
+				component={GolfClassesScreen}
+				options={{
+					title: 'Clases personalizadas Golf',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen 
+				name='golf_tee'
+				component={GolfTeeScreen}
+				options={{
+					title: 'Tee de práctica',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+			
+			<ModulesStackNavigator.Screen 
+				name='golf_regulations'
+				component={GolfRegulationsScreen}
+				options={{
+					title: 'Reglamento Golf',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
 		</ModulesStackNavigator.Navigator>
 	);
 }
