@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, ScrollView }
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CloseIcon from '../../assets/icons/close-btn.svg'
 
 export function Title(props) {
 	const localStyles = {
@@ -141,7 +142,7 @@ export function Guests(props) {
 			<TouchableOpacity 
 				style={defaultStyles.delete} 
 				onPress={() => deleteGuest(props.index)}>
-					<Icon name='trash' size={25}/>
+					<CloseIcon />
 			</TouchableOpacity>
         </View>
     )
@@ -255,7 +256,10 @@ const defaultStyles = StyleSheet.create({
     },
 
 	delete: {
-		backgroundColor: 'red'
+		width: 25,
+		height: 25,
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 	
 });

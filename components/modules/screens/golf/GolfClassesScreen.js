@@ -22,21 +22,30 @@ export default function GolfClassesScreen(props) {
 	const [karts, setKarts] = useState(0);
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
 	/* When app did mount */
 	useEffect(() => {
 		retrieveDataFromDB().then(data => setAllReservations(data));
+
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+			  setKeyboardVisible(true);
+			}
+		  );
+		  const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+			  setKeyboardVisible(false);
+			}
+		  );
+	  
+		  return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		  }; 
 	}, []);
-
-	/* Guardar invitados del componente en useState del padre */
-	const saveGuest = (gst) => {
-		setGuests([...guests, gst])
-	}
-
-	/* Elimina el invitado seleccionado del padre */
-	const deleteGuest = (gsts) => {
-		setGuests(gsts)
-	}
 
 	/* When the selected Date changes, we need to update the reservations available */
 	useEffect(() => {
@@ -179,7 +188,7 @@ export default function GolfClassesScreen(props) {
 				}
 			</View>
 			
-			{selectedReservationId ? (
+			{selectedReservationId && !isKeyboardVisible ? (
 				<View style={style.actionBtnContainer}>
 					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
 				</View>

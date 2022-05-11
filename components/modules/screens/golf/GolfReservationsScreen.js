@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
@@ -22,6 +22,7 @@ export default function GolfReservationsScreen(props) {
 	const [karts, setKarts] = useState('0');
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
 	const retrieveDataFromDB = () => {
 		getAllAvailableReservationsGolf().then( response => {
@@ -41,6 +42,24 @@ export default function GolfReservationsScreen(props) {
 	useEffect(() => {
 		/* Get data from DB */
 		retrieveDataFromDB();
+
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+			  setKeyboardVisible(true);
+			}
+		  );
+		  const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+			  setKeyboardVisible(false);
+			}
+		  );
+	  
+		  return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		  }; 
 	}, []);
 
 	/* Obtener todas las fechas de las reservaciones */
@@ -184,7 +203,7 @@ export default function GolfReservationsScreen(props) {
 			}
 			</View>
 			
-			{selectedReservationId ? (
+			{selectedReservationId && !isKeyboardVisible ? (
 				<View style={style.actionBtnContainer}>
 					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
 				</View>

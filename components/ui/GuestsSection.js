@@ -5,11 +5,11 @@ import { P, Subtitle, Guests } from '../ui/CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
 import { getAllActiveUsers } from '../../utils/client';
 import { ScrollView } from 'react-native-gesture-handler';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 export default function GuestsSection(props) {
     //Invitados
 	const [guest, setGuest] = useState();
-    //const [guests, props.setGuests] = useState([]);
     const [partnersList, setPartnersList] = useState([]);
     const maxGuests = props.maxGuests;
 	var pressed = 0;
@@ -80,6 +80,27 @@ export default function GuestsSection(props) {
         /* Agrega los invitados */
         <View style={style.guestsContainer}>
             <Subtitle>Agrega más socios o invitados</Subtitle>
+
+            {/* Partners list */}
+            {guest ? (
+                <View style={style.partnersContainer}>
+                    <ScrollView contentContainerStyle={style.scrollPartnerContainer}>
+                        {
+                            partnersList.filter(i => filterPartners(i)).map(index => {
+                                return (
+                                        <TouchableOpacity
+                                            key={index.id}
+                                            style={style.deployableList} 
+                                            onPress={() => handleAddPartners(index)}>
+                                                <P>{index.username}</P>
+                                        </TouchableOpacity>
+                                )
+                            })
+                        }
+                    </ScrollView>
+                </View>
+                    ) : null}
+
             <KeyboardAvoidingView
                     behavior={Platform.OS == "ios" ? "padding" : "height"}
                     style={style.keyboardContainer}
@@ -96,24 +117,6 @@ export default function GuestsSection(props) {
                     </View>
                 </TouchableOpacity>
             </KeyboardAvoidingView>
-
-            {/* Partners list */}
-            {guest ? (
-                    <ScrollView>
-                        {
-                            partnersList.filter(i => filterPartners(i)).map(index => {
-                                return (
-                                        <TouchableOpacity
-                                            key={index.id}
-                                            style={style.deployableList} 
-                                            onPress={() => handleAddPartners(index)}>
-                                                <P>{index.username}</P>
-                                        </TouchableOpacity>
-                                )
-                            })
-                        }
-                    </ScrollView>
-                    ) : null}
 
             <View>
                 {/* Here goes the added guests */}
@@ -168,5 +171,16 @@ const style = StyleSheet.create({
         width: '80%',
         borderWidth: 0.2,
         borderColor: c.color.lightGrey
-    }
+    },
+    partnersContainer: {
+        width: '100%',
+        height: 200,
+        position: 'absolute',
+        top: '-100%',
+        paddingBottom: 50,
+    },
+    scrollPartnerContainer: {
+        flexGrow: 1, 
+        justifyContent: 'flex-end',
+    } 
 })

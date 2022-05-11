@@ -18,6 +18,8 @@ export default function GolfTeeScreen(props) {
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
 
 	const retrieveDataFromDB = () => {
 		getAllAvailableReservationsGolfTee().then( response => {
@@ -37,6 +39,24 @@ export default function GolfTeeScreen(props) {
 	useEffect(() => {
 		/* Get data from DB */
 		retrieveDataFromDB();
+
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+			  setKeyboardVisible(true);
+			}
+		  );
+		  const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+			  setKeyboardVisible(false);
+			}
+		  );
+	  
+		  return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		  }; 
 	}, []);
 
 	/* Obtener todas las fechas de las reservaciones */
@@ -143,7 +163,7 @@ export default function GolfTeeScreen(props) {
 			}
 			</View>
 			
-			{selectedReservationId ? (
+			{selectedReservationId && !isKeyboardVisible ? (
 				<View style={style.actionBtnContainer}>
 					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
 				</View>

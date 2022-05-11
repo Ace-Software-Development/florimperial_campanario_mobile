@@ -106,6 +106,7 @@ export async function getAllActiveUsers(){
 	// Query all Users
 	const userQuery = new Parse.Query(USER_MODEL);
 	userQuery.equalTo('isAdmin', false);
+	userQuery.equalTo('active', true);
 	userQuery.notEqualTo('objectId', userObj.id);
 	userQuery.descending('username');
 
