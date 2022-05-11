@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, ScrollView }
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import CloseIcon from '../../assets/icons/close-btn.svg'
 
 export function Title(props) {
 	const localStyles = {
@@ -128,22 +128,22 @@ export function Hr(props) {
 
 export function Guests(props) {
     const deleteGuest = (index) => {
-		let guestsCopy = [...props.guestsList];
+		let guestsCopy = [...props.guests];
 		guestsCopy.splice(index, 1);
-		props.deleteGuest(guestsCopy);
+		props.setGuests(guestsCopy);
 	}
 	
 	return (
-        <View style={defaultStyles.item}>
-            <View style={defaultStyles.itemLeft}>
+        <View style={defaultStyles.guestContainer}>
+            <View style={defaultStyles.guest}>
                 <Icon name='user' size={20} style={defaultStyles.icon}/>
                 <P>{props.text}</P>
-					<TouchableOpacity 
-						style={defaultStyles.delete} 
-						onPress={() => deleteGuest(props.index)}>
-							<Icon name='trash' size={20}/>
-					</TouchableOpacity>
             </View>
+			<TouchableOpacity 
+				style={defaultStyles.delete} 
+				onPress={() => deleteGuest(props.index)}>
+					<CloseIcon />
+			</TouchableOpacity>
         </View>
     )
 }
@@ -233,7 +233,7 @@ const defaultStyles = StyleSheet.create({
         marginVertical: 10,
 	},
 
-	item: {
+	guestContainer: {
         backgroundColor: c.color.lightGrey,
         padding: 12,
         paddingLeft: 20,
@@ -244,7 +244,7 @@ const defaultStyles = StyleSheet.create({
         marginBottom: 10
     },
 
-    itemLeft: {
+    guest: {
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'wrap'
@@ -256,6 +256,10 @@ const defaultStyles = StyleSheet.create({
     },
 
 	delete: {
-		backgroundColor: c.color.contrastColor
+		width: 25,
+		height: 25,
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
+	
 });

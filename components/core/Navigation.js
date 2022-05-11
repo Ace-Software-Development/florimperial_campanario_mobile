@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {NewsDinamicIcon, ModulesDinamicIcon, TicketDinamicIcon} from '../ui/DinamicIcons';
+import {NewsDinamicIcon, ModulesDinamicIcon, TicketDinamicIcon} from '../ui/DynamicIcons';
 import { STYLES as styles } from '../../utils/constants';
 
 // Screens

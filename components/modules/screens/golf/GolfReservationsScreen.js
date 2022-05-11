@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
@@ -19,9 +19,10 @@ export default function GolfReservationsScreen(props) {
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState(0);
+	const [karts, setKarts] = useState('0');
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
 	const retrieveDataFromDB = () => {
 		getAllAvailableReservationsGolf().then( response => {
@@ -41,17 +42,25 @@ export default function GolfReservationsScreen(props) {
 	useEffect(() => {
 		/* Get data from DB */
 		retrieveDataFromDB();
+
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+			  setKeyboardVisible(true);
+			}
+		  );
+		  const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+			  setKeyboardVisible(false);
+			}
+		  );
+	  
+		  return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		  }; 
 	}, []);
-
-	/* Guardar invitados del componente en useState del padre */
-	const saveGuest = (gst) => {
-		setGuests([...guests, gst])
-	}
-
-	/* Elimina el invitado seleccionado del padre */
-	const deleteGuest = (gsts) => {
-		setGuests(gsts)
-	}
 
 	/* Obtener todas las fechas de las reservaciones */
 	const getCalendarOptions = data => {
@@ -117,7 +126,7 @@ export default function GolfReservationsScreen(props) {
 
 				<View style={style.tableRow}>
 					<View style={style.tableCol1}>
-						<P >Hoyos a jugar:</P>
+						<P >Hoyos a jugar</P>
 					</View>
 					<View style={style.tableCol2}>
 						<Switch defaultValue={true} 
@@ -130,13 +139,14 @@ export default function GolfReservationsScreen(props) {
 
 				<View style={style.tableRow}>
 					<View style={style.tableCol1}>
-						<P >Carritos rentados:</P>
+						<P >Rentar carritos</P>
 					</View>
 					<View style={style.tableCol2}>
 							<TextInput style={style.textInput}
 								keyboardType='numeric'
 								onChangeText={val => setKarts(val)}
 								maxLength={2}
+								value={karts}
 								keyboard
 								/>
 					</View>
@@ -185,10 +195,15 @@ export default function GolfReservationsScreen(props) {
 
 			{/* Agrega los invitados */}
 			<View>
-				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
+			{ selectedReservationId &&
+				<GuestsSection guests={guests} 
+								setGuests={setGuests}
+								maxGuests={maxGuests} 
+				/>
+			}
 			</View>
 			
-			{selectedReservationId ? (
+			{selectedReservationId && !isKeyboardVisible ? (
 				<View style={style.actionBtnContainer}>
 					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
 				</View>

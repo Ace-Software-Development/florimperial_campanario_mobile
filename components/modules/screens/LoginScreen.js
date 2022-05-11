@@ -8,7 +8,8 @@ import {
   TextInput,
   TouchableHighlight
 } from 'react-native';
-
+import { CampanarioLogoIcon } from "../../ui/DynamicIcons";
+import { STYLES as c } from '../../../utils/constants';
 import { Parse } from "parse/react-native";
 const image = require('../../../assets/img/LogoLogin.png');
 
@@ -95,7 +96,9 @@ export default class LogInScreen extends React.Component{
   render() {
     return (
       <View style={styles.container}>
-        <Image source={image} style={styles.imageStl}/>
+        <View style={{marginBottom: '15%'}}>
+          <CampanarioLogoIcon color={c.color.secondaryColor} />
+        </View>
         <View style={styles.inputContainer}>
           <TextInput style={styles.inputs}
             keyboardType="email-address"
@@ -203,6 +206,7 @@ const styles = StyleSheet.create({
   },  
   loginText: {
 	color: '#2B4066',
+	fontWeight: 'bold'
   },
   imageStl: {
 	marginBottom: 50,

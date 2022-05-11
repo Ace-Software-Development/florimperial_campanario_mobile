@@ -5,12 +5,11 @@ import { P, Subtitle, Guests } from '../ui/CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
 import { getAllActiveUsers } from '../../utils/client';
 import { ScrollView } from 'react-native-gesture-handler';
-import { set } from 'parse/lib/browser/CoreManager';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 export default function GuestsSection(props) {
     //Invitados
 	const [guest, setGuest] = useState();
-    const [guests, setGuests] = useState([]);
     const [partnersList, setPartnersList] = useState([]);
     const maxGuests = props.maxGuests;
 	var pressed = 0;
@@ -29,10 +28,9 @@ export default function GuestsSection(props) {
     /* Se agregan invitado a la lista unicamente si no se ha alcanzado el máximo de invitados */
     const handleAddGuests = () => {
 		Keyboard.dismiss();
-        if(guests.length < maxGuests && guest != null){
+        if(props.guests.length < maxGuests && guest != null){
             let guestDic = {id: "", username: guest}
-            setGuests([...guests, guestDic]);
-            props.setList(guest);
+            props.setGuests([...props.guests, guestDic]);
             setGuest(null);
         }else if(guest == null){
 			pressed++;
@@ -49,15 +47,23 @@ export default function GuestsSection(props) {
         }
     }
 
-	/* Selected guests are deleted */
-	const deleteGuest = (gsts) => {
-        props.deleteGuest(gsts);
-		setGuests(gsts);
-	}
+    /* Adds partners from DB to guests list if maxGuests hasn't been reached  */
+    const handleAddPartners = (index) => {
+        if (props.guests.length < maxGuests){
+            let guestDic = {id: index.id, username: index.username}
+            props.setGuests([...props.guests, {id: index.id, username: index.username}]);
+            setGuest(null);
+        }else{
+			Alert.alert('Máximo alcanzado', 'Ya no se pueden agregar mas invitados', [
+				{text: 'Aceptar'}
+			])
+        }
+    }
 
+    /* Filters partners that aren't in list guests and that matches text written on text input */
     const filterPartners = (i) => {
         let guestsSet = new Set();
-        for(let j of guests){
+        for(let j of props.guests){
             if(j.id != undefined){
                 guestsSet.add(j.id);
             }
@@ -73,7 +79,28 @@ export default function GuestsSection(props) {
     return (
         /* Agrega los invitados */
         <View style={style.guestsContainer}>
-            <Subtitle>Agrega más asistentes</Subtitle>
+            <Subtitle>Agrega más socios o invitados</Subtitle>
+
+            {/* Partners list */}
+            {guest ? (
+                <View style={style.partnersContainer}>
+                    <ScrollView contentContainerStyle={style.scrollPartnerContainer}>
+                        {
+                            partnersList.filter(i => filterPartners(i)).map(index => {
+                                return (
+                                        <TouchableOpacity
+                                            key={index.id}
+                                            style={style.deployableList} 
+                                            onPress={() => handleAddPartners(index)}>
+                                                <P>{index.username}</P>
+                                        </TouchableOpacity>
+                                )
+                            })
+                        }
+                    </ScrollView>
+                </View>
+                    ) : null}
+
             <KeyboardAvoidingView
                     behavior={Platform.OS == "ios" ? "padding" : "height"}
                     style={style.keyboardContainer}
@@ -91,38 +118,18 @@ export default function GuestsSection(props) {
                 </TouchableOpacity>
             </KeyboardAvoidingView>
 
-            {/* Partners list */}
-            {guest ? (
-                    <ScrollView>
-                        {
-                            partnersList.filter(i => filterPartners(i)).map(index => {
-                                return (
-                                        <TouchableOpacity
-                                            key={index.id}
-                                            style={style.deployableList} 
-                                            onPress={() => {
-                                                setGuests([...guests, {id: index.id, username: index.username}]);
-                                                setGuest(null);
-                                                }}>
-                                                <P>{index.username}</P>
-                                        </TouchableOpacity>
-                                )
-                            })
-                        }
-                    </ScrollView>
-                    ) : null}
-
             <View>
                 {/* Here goes the added guests */}
                 {   
-                guests.map((item, index) => {
+                props.guests.map((item, index) => {
                     return (
                         <Guests 
                             key={index}
                             text={item.username}
-                            index={index} 
-                            deleteGuest={deleteGuest} 
-                            guestsList={guests}/>
+                            index={index}
+                            guests={props.guests}
+                            setGuests={props.setGuests}
+                        />
                         )
                 })
                 }
@@ -159,6 +166,21 @@ const style = StyleSheet.create({
         alignItems: 'center'
     },
     deployableList: {
-        marginVertical: 10
-    }
+        backgroundColor: c.color.lightBg,
+        padding: 5,
+        width: '80%',
+        borderWidth: 0.2,
+        borderColor: c.color.lightGrey
+    },
+    partnersContainer: {
+        width: '100%',
+        height: 200,
+        position: 'absolute',
+        top: '-100%',
+        paddingBottom: 50,
+    },
+    scrollPartnerContainer: {
+        flexGrow: 1, 
+        justifyContent: 'flex-end',
+    } 
 })
