@@ -43,16 +43,6 @@ export default function GolfReservationsScreen(props) {
 		retrieveDataFromDB();
 	}, []);
 
-	/* Guardar invitados del componente en useState del padre */
-	const saveGuest = (gst) => {
-		setGuests([...guests, gst])
-	}
-
-	/* Elimina el invitado seleccionado del padre */
-	const deleteGuest = (gsts) => {
-		setGuests(gsts)
-	}
-
 	/* Obtener todas las fechas de las reservaciones */
 	const getCalendarOptions = data => {
 		if (data.length == 0)
@@ -186,7 +176,12 @@ export default function GolfReservationsScreen(props) {
 
 			{/* Agrega los invitados */}
 			<View>
-				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
+			{ selectedReservationId &&
+				<GuestsSection guests={guests} 
+								setGuests={setGuests}
+								maxGuests={maxGuests} 
+				/>
+			}
 			</View>
 			
 			{selectedReservationId ? (

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { ScreenContainer, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
-import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolfTee, createReservationGolf } from '../../../../utils/client';
 import GuestsSection from '../../../ui/GuestsSection';
@@ -15,9 +13,6 @@ export default function GolfTeeScreen(props) {
 	const [selectedDate, setSelectedDate] = useState(null);
 	const [shownReservations, setShownReservations] = useState([]);
 	const [selectedReservationId, setSelectedReservationId] = useState(null);
-	//Hoyos y carritos
-	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState(0);
 	//Invitados
 	const [guests, setGuests] = useState([]);
 	const [maxGuests, setMaxGuests] = useState(0);
@@ -77,26 +72,12 @@ export default function GolfTeeScreen(props) {
 		}
 	} , [selectedDate]);
 
-	/* Guardar invitados del componente en useState del padre */
-	const saveGuest = (gst) => {
-		setGuests([...guests, gst])
-	}
-
-	/* Elimina el invitado seleccionado del padre */
-	const deleteGuest = (gsts) => {
-		setGuests(gsts)
-	}
-
 	const onSubmit = () => {
 		const reservationData = {
 			objectId: selectedReservationId,
 			estatus: 2,
 		};
-		const reservationGolfData = {
-			carritosReservados: parseInt(karts),
-			cantidadHoyos: holesEnabled ? 18 : 9,
-		};
-		createReservationGolf(reservationData, reservationGolfData, guests, () => {
+		createReservationGolf(reservationData, undefined, guests, () => {
 			setSavedReservation(true);
 			setShownReservations([]);
 			setSelectedDate(null);
@@ -154,11 +135,18 @@ export default function GolfTeeScreen(props) {
 			
 			{/* Invitados */}
 			<View>
-				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
+			{ selectedReservationId &&
+				<GuestsSection guests={guests} 
+								setGuests={setGuests}
+								maxGuests={maxGuests} 
+				/>
+			}
 			</View>
 			
 			{selectedReservationId ? (
-				<ActionBtn title="Guardar" onPress={onSubmit}/>
+				<View style={style.actionBtnContainer}>
+					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
+				</View>
 				) : null
 			}
 		</ScreenContainer>

@@ -139,9 +139,9 @@ export function Guests(props) {
                 <P>{props.text}</P>
             </View>
 			<TouchableOpacity 
-						style={defaultStyles.delete} 
-						onPress={() => deleteGuest(props.index)}>
-							<Icon name='trash' size={25}/>
+				style={defaultStyles.delete} 
+				onPress={() => deleteGuest(props.index)}>
+					<Icon name='trash' size={25}/>
 			</TouchableOpacity>
         </View>
     )

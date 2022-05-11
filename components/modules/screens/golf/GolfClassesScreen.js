@@ -173,16 +173,16 @@ export default function GolfClassesScreen(props) {
 			<View>
 				{ selectedReservationId && 
 					<GuestsSection guests={guests} 
-									setGuests={setGuests} 
-									setList={saveGuest} 
-									deleteGuest={deleteGuest} 
+									setGuests={setGuests}
 									maxGuests={maxGuests}
 					/>
 				}
 			</View>
 			
 			{selectedReservationId ? (
-				<ActionBtn title="Guardar" onPress={onSubmit}/>
+				<View style={style.actionBtnContainer}>
+					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
+				</View>
 				) : null
 			}
 		</ScreenContainer>

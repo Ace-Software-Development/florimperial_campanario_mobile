@@ -48,7 +48,6 @@ export async function getAllAvailableReservationsGolfTee(){
 
 	// Query all reservations
 	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
-	reservationQuery.select('fechaInicio', 'sitio', 'objectId');
 	reservationQuery.equalTo('eliminado', false);
 	reservationQuery.equalTo('estatus', 1);
 	reservationQuery.matchesQuery('sitio', sitiosQuery);
@@ -71,11 +70,13 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 		await reservationObj.save();
 
 		// Create GolfReservation entry
-		let reservationGolfObj = new Parse.Object('ReservacionGolf');
-		reservationGolfObj.set('carritosReservados', dataReservationGolf.carritosReservados);
-		reservationGolfObj.set('cantidadHoyos', dataReservationGolf.cantidadHoyos);
-		reservationGolfObj.set('reservacion', reservationObj);
-		await reservationGolfObj.save();
+		if(dataReservationGolf != undefined){
+			let reservationGolfObj = new Parse.Object('ReservacionGolf');
+			reservationGolfObj.set('carritosReservados', dataReservationGolf.carritosReservados);
+			reservationGolfObj.set('cantidadHoyos', dataReservationGolf.cantidadHoyos);
+			reservationGolfObj.set('reservacion', reservationObj);
+			await reservationGolfObj.save();
+		}
 
 		// Crer entrada de invitados
 		for(let i = 0; i < guests.length; i++){
