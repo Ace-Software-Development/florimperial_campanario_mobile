@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
@@ -111,11 +111,11 @@ export default function GolfTeeScreen(props) {
 	};
 
 	return (
-		<ScrollView>
-		<ScreenContainer style={{paddingTop: 0}} key={savedReservation}>
+		<ScreenContainer style={{paddingTop: 0, flex: 1}} key={savedReservation}>
+		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }}>
 
 			{/* Selecciona la fecha y hora de la reservacion */}
-			<View>
+			<View style={style.reservationsContianer}>
 				<Subtitle>Selecciona la fecha y la hora</Subtitle>
 
 				{/* Date picker */}
@@ -169,32 +169,14 @@ export default function GolfTeeScreen(props) {
 				</View>
 				) : null
 			}
-		</ScreenContainer>
 		</ScrollView>
+		</ScreenContainer>
 	);
 }
 
 const style = StyleSheet.create({
-	tableContainer: {
-		justifyContent: 'flex-start',
+	reservationsContianer: {
 		marginVertical: 20
-	},
-
-	tableRow: {
-		alignSelf: 'flex-start',
-		flexDirection: 'row',
-		alignItems: 'flex-start',
-		marginVertical: 5
-	},
-
-	tableCol1: {
-		alignSelf: 'center',
-		flex: 2
-	},
-
-	tableCol2: {
-		alignSelf: 'flex-start',
-		flex: 3
 	},
 
 	datePickerContainer: {
@@ -210,16 +192,9 @@ const style = StyleSheet.create({
 
 	actionBtnContainer: {
 		flexDirection: 'row',
-		justifyContent: 'space-around'
-	},
-
-	textInput: {
-		color: c.color.primaryColor,
-		backgroundColor: c.color.grey,
-		paddingVertical: 3,
-		paddingHorizontal: 10,
-		borderRadius: 10,
-		width: 100,
-		height: 33
+		justifyContent: 'space-around',
+		width: '100%',
+		bottom: 20,
+		position: 'absolute'
 	}
 })

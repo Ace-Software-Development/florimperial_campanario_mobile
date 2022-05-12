@@ -85,8 +85,8 @@ export default function GolfClassesScreen(props) {
 	};
 
 	return (
-		<ScrollView>
-		<ScreenContainer style={{paddingTop: 0}} key={savedReservation}>
+		<ScreenContainer style={{paddingTop: 0, flex: 1}} key={savedReservation}>
+		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }}>
 			
 			{/* Hoyos a jugar y carritos */}
 			<View style={style.tableContainer}>
@@ -195,8 +195,8 @@ export default function GolfClassesScreen(props) {
 				</View>
 				) : null
 			}
-		</ScreenContainer>
 		</ScrollView>
+		</ScreenContainer>
 	);
 }
 
@@ -281,7 +281,10 @@ const style = StyleSheet.create({
 
 	actionBtnContainer: {
 		flexDirection: 'row',
-		justifyContent: 'space-around'
+		justifyContent: 'space-around',
+		width: '100%',
+		bottom: 20,
+		position: 'absolute'
 	},
 
 	textInput: {
@@ -292,12 +295,5 @@ const style = StyleSheet.create({
 		borderRadius: 10,
 		width: 100,
 		height: 33
-	},
-
-	keyboardContainer: {
-        alignItems: 'center',
-        marginVertical: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    }
+	}
 })

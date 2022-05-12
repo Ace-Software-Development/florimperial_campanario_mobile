@@ -119,7 +119,7 @@ export default function GolfReservationsScreen(props) {
 
 	return (
 		<ScreenContainer style={{paddingTop: 0, flex: 1}} key={savedReservation}>
-		<ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }} >
+		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }} >
 			
 			{/* Hoyos a jugar y carritos */}
 			<View style={style.tableContainer}>
