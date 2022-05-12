@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
-import { getAllAvailableReservationsGolf, createReservationGolf, createGuest } from '../../../../utils/client';
+import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
 import GuestsSection from '../../../ui/GuestsSection';
 
 export default function GolfReservationsScreen(props) {
@@ -22,6 +22,7 @@ export default function GolfReservationsScreen(props) {
 	const [karts, setKarts] = useState('0');
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
 	const retrieveDataFromDB = () => {
 		getAllAvailableReservationsGolf().then( response => {
@@ -41,17 +42,25 @@ export default function GolfReservationsScreen(props) {
 	useEffect(() => {
 		/* Get data from DB */
 		retrieveDataFromDB();
+
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+			  setKeyboardVisible(true);
+			}
+		  );
+		  const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+			  setKeyboardVisible(false);
+			}
+		  );
+	  
+		  return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		  }; 
 	}, []);
-
-	/* Guardar invitados del componente en useState del padre */
-	const saveGuest = (gst) => {
-		setGuests([...guests, gst])
-	}
-
-	/* Elimina el invitado seleccionado del padre */
-	const deleteGuest = (gsts) => {
-		setGuests(gsts)
-	}
 
 	/* Obtener todas las fechas de las reservaciones */
 	const getCalendarOptions = data => {
@@ -175,7 +184,7 @@ export default function GolfReservationsScreen(props) {
 								title={i.datetime.toISOString().slice(11,16)}
 								subtitle={i.hoyo_inicio}
 								value={i.id}
-								onClick={id => setSelectedReservationId(id)}
+								onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}
 								selectedReservationId={selectedReservationId}
 								key={i.id}
 							/>
@@ -186,10 +195,15 @@ export default function GolfReservationsScreen(props) {
 
 			{/* Agrega los invitados */}
 			<View>
-				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
+			{ selectedReservationId &&
+				<GuestsSection guests={guests} 
+								setGuests={setGuests}
+								maxGuests={maxGuests} 
+				/>
+			}
 			</View>
 			
-			{selectedReservationId ? (
+			{selectedReservationId && !isKeyboardVisible ? (
 				<View style={style.actionBtnContainer}>
 					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
 				</View>

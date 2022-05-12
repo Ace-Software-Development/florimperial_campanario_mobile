@@ -1,4 +1,5 @@
 import Parse from "parse/react-native.js";
+import { Guests } from "../components/ui/CampanarioComponents";
 
 // Declaration of models
 const RESERVACION_MODEL = Parse.Object.extend("Reservacion");
@@ -8,7 +9,6 @@ const INVITADO_MODEL = Parse.Object.extend("Invitado");
 const USER_MODEL = Parse.Object.extend("_User");
 
 export async function getAllAvailableReservationsGolf(filterCoaches=false){
-	
 	// Query all sitios belonging to Golf
 	const areaQuery = new Parse.Query(AREA_MODEL);
 	areaQuery.equalTo('eliminado', false);
@@ -17,7 +17,7 @@ export async function getAllAvailableReservationsGolf(filterCoaches=false){
 	const sitiosQuery = new Parse.Query(SITIO_MODEL);
 	sitiosQuery.select("nombre");
 	sitiosQuery.equalTo('eliminado', false);
-	//sitiosQuery.doesNotMatchQuery('nombre', 'Tee de practica');
+	sitiosQuery.notEqualTo('nombre', 'Tee practica');
 	sitiosQuery.matchesQuery('area', areaQuery);
 	sitiosQuery.include('area');
 
@@ -39,17 +39,15 @@ export async function getAllAvailableReservationsGolfTee(){
 	// Query todos los sitios que pertenecen al tee de práctica
 	const areaQuery = new Parse.Query(AREA_MODEL);
 	areaQuery.equalTo('eliminado', false);
-	areaQuery.equalTo('nombre', 'Golf_tee');
+	areaQuery.equalTo('nombre', 'Golf');
 
 	const sitiosQuery = new Parse.Query(SITIO_MODEL);
-	sitiosQuery.select("nombre");
-	sitiosQuery.equalTo('eliminado', false);
+	sitiosQuery.equalTo('nombre', 'Tee practica');
 	sitiosQuery.matchesQuery('area', areaQuery);
 	sitiosQuery.include('area');
 
 	// Query all reservations
 	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
-	reservationQuery.select('fechaInicio', 'sitio', 'objectId');
 	reservationQuery.equalTo('eliminado', false);
 	reservationQuery.equalTo('estatus', 1);
 	reservationQuery.matchesQuery('sitio', sitiosQuery);
@@ -72,17 +70,26 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 		await reservationObj.save();
 
 		// Create GolfReservation entry
-		let reservationGolfObj = new Parse.Object('ReservacionGolf');
-		reservationGolfObj.set('carritosReservados', dataReservationGolf.carritosReservados);
-		reservationGolfObj.set('cantidadHoyos', dataReservationGolf.cantidadHoyos);
-		reservationGolfObj.set('reservacion', reservationObj);
-		await reservationGolfObj.save();
+		if(dataReservationGolf != undefined){
+			let reservationGolfObj = new Parse.Object('ReservacionGolf');
+			reservationGolfObj.set('carritosReservados', dataReservationGolf.carritosReservados);
+			reservationGolfObj.set('cantidadHoyos', dataReservationGolf.cantidadHoyos);
+			reservationGolfObj.set('reservacion', reservationObj);
+			await reservationGolfObj.save();
+		}
 
 		// Crer entrada de invitados
 		for(let i = 0; i < guests.length; i++){
 			let guestObj = new Parse.Object('Invitado');
-			guestObj.set('nombre', guests[i]);
-			guestObj.set('socio', userObj);
+			guestObj.set('nombre', guests[i].username);
+			guestObj.set('user', userObj);
+
+			if (guests[i].id != "") {
+				const user = new Parse.Object('_User');
+				user.id = guests[i].id;
+				guestObj.set('socioInvitado', user);
+			}
+
 			guestObj.save();
 		}
 
@@ -93,10 +100,14 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 }
 
 export async function getAllActiveUsers(){
-	// Query all Socios
+	// Get current user loged in
+	const userObj = await Parse.User.currentAsync();
+
+	// Query all Users
 	const userQuery = new Parse.Query(USER_MODEL);
 	userQuery.equalTo('isAdmin', false);
-	//userQuery.fullText('username', text);
+	userQuery.equalTo('active', true);
+	userQuery.notEqualTo('objectId', userObj.id);
 	userQuery.descending('username');
 
 	let data = await userQuery.find();
