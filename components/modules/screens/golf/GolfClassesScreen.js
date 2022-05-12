@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
@@ -19,7 +19,7 @@ export default function GolfClassesScreen(props) {
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState(0);
+	const [karts, setKarts] = useState('0');
 	//Guardar reservación
 	const [savedReservation, setSavedReservation] = useState(false);
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -113,6 +113,7 @@ export default function GolfClassesScreen(props) {
 								keyboardType='numeric'
 								onChangeText={val => setKarts(val)}
 								maxLength={2}
+								value={karts}
 								keyboard
 								/>
 					</View>
