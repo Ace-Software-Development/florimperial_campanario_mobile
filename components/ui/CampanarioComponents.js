@@ -36,7 +36,13 @@ export function P(props) {
 	};
 
 	if ('size' in props)
-		localStyles.fontSize = props.size === 'large' ? 21 : 20
+		if (props.size === 'large')
+			localStyles.fontSize = 21
+		else if (props.size === 'small')
+			localStyles.fontSize = 18
+		else 
+			localStyles.fontSize = 20
+
 
 	return (
 		<Text style={[defaultStyles.p, localStyles]}>
