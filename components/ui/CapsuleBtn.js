@@ -19,6 +19,8 @@ export default function CapsuleBtn(props) {
 	useEffect(() => {
 		if (active)
 			props.onClick(props.value);
+		else if (props.selectedReservationId === props.value)
+			props.setSelectedReservationId(null);
 		
 		statusContainerStyle = active ? style.containerActive : style.containerInactive;
 		statusTitleStyle = active ? style.titleActive : style.titleInactive;

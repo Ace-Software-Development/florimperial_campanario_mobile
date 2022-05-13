@@ -81,11 +81,13 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 		// Crer entrada de invitados
 		for(let i = 0; i < guests.length; i++){
 			let guestObj = new Parse.Object('Invitado');
+			//let reservationGuest = new Parse.Object('ReservacionInvitado');
 			guestObj.set('nombre', guests[i].username);
 			guestObj.set('user', userObj);
 
 			if (guests[i].id != "") {
 				const user = new Parse.Object('_User');
+				
 				user.id = guests[i].id;
 				guestObj.set('socioInvitado', user);
 			}

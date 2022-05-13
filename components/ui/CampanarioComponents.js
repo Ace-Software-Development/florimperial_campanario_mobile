@@ -63,13 +63,14 @@ export function Btn(props) {
 export function ActionBtn(props) {
 	const textLocalStyles = {};
 	const containerLocalStyles = { ...props.style };
-	const [activeOnce, setActiveOnce] = useState(true);
+	//const [activeOnce, setActiveOnce] = useState(true);
 
 	const preSave = () => {
-		if(activeOnce){
-			props.onPress();
-			setActiveOnce(false);
-		}
+		// if(activeOnce){
+		// 	props.onPress();
+		// 	setActiveOnce(false);
+		// }
+		props.onPress();
 	}
 
 	return (

@@ -80,6 +80,7 @@ export default function GuestsSection(props) {
         /* Agrega los invitados */
         <View style={style.guestsContainer}>
             <Subtitle>Agrega más socios o invitados</Subtitle>
+            <P size='small'>Máximo de invitados: {maxGuests}</P>
 
             {/* Partners list */}
             {guest ? (
@@ -176,7 +177,7 @@ const style = StyleSheet.create({
         width: '100%',
         height: 200,
         position: 'absolute',
-        top: '-100%',
+        top: '-70%',
         paddingBottom: 50,
     },
     scrollPartnerContainer: {

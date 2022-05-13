@@ -62,26 +62,32 @@ export default function GolfClassesScreen(props) {
 	} , [selectedDate]);
 
 	const onSubmit = () => {
-		const reservationData = {
-			objectId: selectedReservationId,
-			estatus: 2,
-		};
-		const reservationGolfData = {
-			carritosReservados: parseInt(karts),
-			cantidadHoyos: holesEnabled ? 18 : 9,
-		};
-		createReservationGolf(reservationData, reservationGolfData, guests, () => {
-			setSavedReservation(true);
-			setShownReservations([]);
-			setSelectedDate(null);
-			setSelectedReservationId(null);
-			setGuests([]);
-			Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
+		if (guests.length <= maxGuests) {
+			const reservationData = {
+				objectId: selectedReservationId,
+				estatus: 2,
+			};
+			const reservationGolfData = {
+				carritosReservados: parseInt(karts),
+				cantidadHoyos: holesEnabled ? 18 : 9,
+			};
+			createReservationGolf(reservationData, reservationGolfData, guests, () => {
+				setSavedReservation(true);
+				setShownReservations([]);
+				setSelectedDate(null);
+				setSelectedReservationId(null);
+				setGuests([]);
+				Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
+					{text: 'Aceptar'}
+				])
+				retrieveDataFromDB().then(data => setAllReservations(data))
+				.catch(error => console.log(error));
+			});
+		}else {
+			Alert.alert('Máximo de invitados alcanzado', 'Se ha rebasado el máximo de invitados en el horario seleccionado', [
 				{text: 'Aceptar'}
 			])
-			retrieveDataFromDB().then(data => setAllReservations(data))
-			.catch(error => console.log(error));
-		});
+		}
 	};
 
 	return (
@@ -163,6 +169,7 @@ export default function GolfClassesScreen(props) {
 																setMaxGuests(i.maximoJugadores);
 															}}
 														selectedReservationId={selectedReservationId}
+														setSelectedReservationId={setSelectedReservationId}
 														key={`${i.id}-capsule`}
 													/>
 												);
