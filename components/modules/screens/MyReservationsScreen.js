@@ -10,32 +10,16 @@ import { async } from 'parse/lib/browser/Storage';
 
 export default function MyReservationsScreen(props) {
 	const [reservations, setReservations] = useState([]);
+	const areas = new Map();
+	areas.set('f2oIvY3kdW', 'Golf');
+	areas.set('BNgcGycR5Y', 'Raqueta');
+	areas.set('d4XN05i9zx', 'Alberca');
 
 
-	useEffect( () => {
-		getReservations().then( data => {
-			console.log(data);
-			data.forEach(  i => {
-				const area = i.get('sitio').get('area');
-				getArea(area.id).then( dataArea => {
-					const tempData = {
-						area : dataArea[0].get('nombre'),
-						sitio : i.get('sitio').get('nombre'),
-						hour : i.get('fechaInicio').toISOString().slice(11,16),
-						month : getMonthFormat(i.get('fechaInicio')),
-						day : i.get('fechaInicio').getDate()
-					}
-					setReservations([...reservations, tempData])
-				})
-			}
-			)
-		})
-		
+	useEffect( async () => {
+		const data = await getReservations();
+		setReservations(data);	
 	}, []);
-
-	useEffect( () => {
-		console.log(reservations);
-	},[reservations])
 
 	return (
 		
@@ -46,11 +30,11 @@ export default function MyReservationsScreen(props) {
 				{reservations.map((reservation, i) =>{
 					return (
 					<ReservationCard key={i}
-						area={reservation.area}
-						sitio={reservation.sitio}
-						hour={reservation.hour}
-						month={reservation.month}
-						day={reservation.day}
+						area={areas.get(reservation.get('sitio').get('area').id)}
+						sitio={reservation.get('sitio').get('nombre')}
+						hour={reservation.get('fechaInicio').toISOString().slice(11,16)}
+						month={getMonthFormat(reservation.get('fechaInicio'))}
+						day={reservation.get('fechaInicio').getDate()}
 					/>
 					)
 				}
