@@ -47,6 +47,20 @@ export default function TopNav(props) {
 		  });
 	};
 
+	const logOutAlert = () => {
+		Alert.alert(
+			'Cerrar sesión',
+			'¿Estás seguro de que quieres cerrar sesión?',
+			[
+				{
+				  text: "Cancelar",
+				  style: "cancel"
+				},
+				{ text: "OK", onPress: () => doUserLogOut() }
+			  ]
+		);
+	}
+
 	return (
 		<View style={styles.container}>
 
@@ -81,7 +95,7 @@ export default function TopNav(props) {
 							<P style={styles.elementText}> Número de apoyo </P>
 						</TouchableOpacity>
 
-						<TouchableOpacity style={styles.profileListItem} onPress={() => doUserLogOut()}>
+						<TouchableOpacity style={styles.profileListItem} onPress={() => logOutAlert()}>
 							<Image style={styles.profileListIcon} source={adptvIcon}/>
 							<P style={styles.elementText}> Cerrar sesión</P>
 						</TouchableOpacity>
