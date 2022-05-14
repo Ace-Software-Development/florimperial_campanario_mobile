@@ -16,13 +16,13 @@ export default function GolfMenuScreen(props) {
 			<View style={style.container}>
 				<Subtitle style={{marginBottom: 10}}>Reservaciones</Subtitle>
 				<ModulesMenuList>
-					<ModulesMenuListItem title="Horarios y reservaciones" onPress={() => navigation.navigate('golf_reservations')}>
+					<ModulesMenuListItem title="Reservaciones generales" onPress={() => navigation.navigate('golf_reservations')}>
 						<ClockIcon width={30} height={30} />
 					</ModulesMenuListItem>
-					<ModulesMenuListItem title="Clases grupales" onPress={() => navigation.navigate('golf_classes_reservations')}>
+					<ModulesMenuListItem title="Reservar con profesor" onPress={() => navigation.navigate('golf_classes_reservations')}>
 						<TeePracticeIcon width={30} height={30} />
 					</ModulesMenuListItem>
-					<ModulesMenuListItem title="Tee de práctica" onPress={() => navigation.navigate('golf_tee')}>
+					<ModulesMenuListItem title="Reservar Tee de práctica" onPress={() => navigation.navigate('golf_tee')}>
 						<Golf2Icon width={30} height={30} />
 					</ModulesMenuListItem>
 				</ModulesMenuList>

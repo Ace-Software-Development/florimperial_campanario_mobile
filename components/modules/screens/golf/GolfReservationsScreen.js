@@ -105,7 +105,7 @@ export default function GolfReservationsScreen(props) {
 				carritosReservados: parseInt(karts),
 				cantidadHoyos: holesEnabled ? 18 : 9,
 			};
-			createReservationGolf(reservationData, reservationGolfData, guests,() => {
+			createReservationGolf(reservationData, reservationGolfData, guests, () => {
 				setSavedReservation(true);
 				setShownReservations([]);
 				setSelectedDate(null);
