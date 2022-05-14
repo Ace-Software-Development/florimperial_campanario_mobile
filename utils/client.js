@@ -118,3 +118,38 @@ export async function getAllActiveUsers(){
 	let data = await userQuery.find();
 	return data;
 }
+
+export async function getReservations() {
+	const userObj = await Parse.User.currentAsync();
+
+	const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.select('nombre');
+	areaQuery.equalTo('eliminado', false);
+
+	const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	sitiosQuery.select('nombre');
+	sitiosQuery.equalTo('eliminado', false);
+	sitiosQuery.matchesQuery('area', areaQuery);
+	sitiosQuery.include('area');
+
+	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	reservationQuery.equalTo('user', userObj);
+	reservationQuery.equalTo('eliminado', false);
+	reservationQuery.equalTo('estatus', 2);
+	reservationQuery.matchesQuery('sitio', sitiosQuery);
+	reservationQuery.include('sitio');
+
+	let data = await reservationQuery.find();
+	return data; 
+}
+
+export async function getArea(areaId) {
+	console.log(areaId);
+	const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.select('nombre');
+	areaQuery.equalTo('eliminado', false);
+	areaQuery.equalTo('objectId', areaId);
+
+	let area = await areaQuery.find();
+	return area;
+}
