@@ -57,7 +57,7 @@ export async function getAllAvailableReservationsGolfTee(){
 	return data;
 }
 
-export async function createReservationGolf(dataReservation, dataReservationGolf, guests, callBackFunction) {
+export async function createReservationGolf(dataReservation, dataReservationGolf, guests) {
 	try{
 		// Get current user loged in
 		const userObj = await Parse.User.currentAsync();
@@ -98,9 +98,10 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 			reservationGuest.save();
 		}
 
-		callBackFunction();
+		return true;
 	}catch(error) {
 		console.log(error);
+		return false;
 	}
 }
 

@@ -92,28 +92,40 @@ export default function GolfTeeScreen(props) {
 		}
 	} , [selectedDate]);
 
-	const onSubmit = () => {
-		if (guests.length <= maxGuests) {
-			const reservationData = {
-				objectId: selectedReservationId,
-				estatus: 2,
-			};
-			createReservationGolf(reservationData, undefined, guests, () => {
-				setSavedReservation(true);
-				setShownReservations([]);
-				setSelectedDate(null);
-				setSelectedReservationId(null);
-				setGuests([]);
-				Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
-					{text: 'Aceptar'}
-				])
-				retrieveDataFromDB();
-			});
-		}else {
+	const onSubmit = async () => {
+		if (guests.length > maxGuests) {
 			Alert.alert('Máximo de invitados alcanzado', 'Se ha rebasado el máximo de invitados en el horario seleccionado', [
-				{text: 'Aceptar'}
-			])
+				{text: 'Cerrar'}
+			]);
+			return false;
 		}
+
+		const reservationData = {
+			objectId: selectedReservationId,
+			estatus: 2,
+		};
+
+		const reservationCompleted = await createReservationGolf(reservationData, undefined, guests);
+
+		// Si hubo un error al tratar de guardar la reservación
+		if (!reservationCompleted) {
+			Alert.alert('Guardar reservación fallida', 'Ocurrió un error al tratar de guardar la reservación.', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
+
+		// Si llegamos hasta esta parte, podemos actualizar todo
+		setSavedReservation(true);
+		setShownReservations([]);
+		setSelectedDate(null);
+		setSelectedReservationId(null);
+		setGuests([]);
+		retrieveDataFromDB();
+		Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
+			{text: 'Aceptar'}
+		])
+		return true;
 	};
 
 	return (

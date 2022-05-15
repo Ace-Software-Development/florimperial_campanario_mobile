@@ -61,33 +61,45 @@ export default function GolfClassesScreen(props) {
 		}
 	} , [selectedDate]);
 
-	const onSubmit = () => {
-		if (guests.length <= maxGuests) {
-			const reservationData = {
-				objectId: selectedReservationId,
-				estatus: 2,
-			};
-			const reservationGolfData = {
-				carritosReservados: parseInt(karts),
-				cantidadHoyos: holesEnabled ? 18 : 9,
-			};
-			createReservationGolf(reservationData, reservationGolfData, guests, () => {
-				setSavedReservation(true);
-				setShownReservations([]);
-				setSelectedDate(null);
-				setSelectedReservationId(null);
-				setGuests([]);
-				Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
-					{text: 'Aceptar'}
-				])
-				retrieveDataFromDB().then(data => setAllReservations(data))
-				.catch(error => console.log(error));
-			});
-		}else {
+	const onSubmit = async () => {
+		if (guests.length > maxGuests) {
 			Alert.alert('Máximo de invitados alcanzado', 'Se ha rebasado el máximo de invitados en el horario seleccionado', [
-				{text: 'Aceptar'}
-			])
+				{text: 'Cerrar'}
+			]);
+			return false;
 		}
+		
+		const reservationData = {
+			objectId: selectedReservationId,
+			estatus: 2,
+		};
+		const reservationGolfData = {
+			carritosReservados: parseInt(karts),
+			cantidadHoyos: holesEnabled ? 18 : 9,
+		};
+
+		const reservationCompleted = await createReservationGolf(reservationData, reservationGolfData, guests);
+
+		// Si hubo un error al tratar de guardar la reservación
+		if (!reservationCompleted) {
+			Alert.alert('Guardar reservación fallida', 'Ocurrió un error al tratar de guardar la reservación.', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
+
+		// Si llegamos hasta esta parte, podemos actualizar todo
+		setSavedReservation(true);
+		setShownReservations([]);
+		setSelectedDate(null);
+		setSelectedReservationId(null);
+		setGuests([]);
+		retrieveDataFromDB().then(data => setAllReservations(data))
+		.catch(error => console.log(error));
+		Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
+			{text: 'Aceptar'}
+		])
+		return true;
 	};
 
 	return (
