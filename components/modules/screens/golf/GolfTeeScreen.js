@@ -3,9 +3,10 @@ import { View, StyleSheet, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
-import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolfTee, createReservationGolf } from '../../../../utils/client';
 import GuestsSection from '../../../ui/GuestsSection';
+import { reservationMadeContext } from '../../../../utils/context';
+
 
 export default function GolfTeeScreen(props) {
 	const [allReservations, setAllReservations] = useState([]);
@@ -17,43 +18,42 @@ export default function GolfTeeScreen(props) {
 	const [guests, setGuests] = useState([]);
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Guardar reservación
-	const [savedReservation, setSavedReservation] = useState(false);
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
-
-	const retrieveDataFromDB = () => {
-		getAllAvailableReservationsGolfTee().then( response => {
-			const data = [];
-			response.forEach(i => {
-				data.push({id: i.id, 
-							datetime: i.get('fechaInicio').toISOString(), 
-							hoyo_inicio: i.get('sitio').get('nombre'),
-							maximoJugadores: i.get('maximoJugadores')
-						})
-				});
-			setAllReservations(data);
-		});
-	}
+	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
 
 	/* When app did mount */
 	useEffect(() => {
-		/* Get data from DB */
-		retrieveDataFromDB();
+		let componentMounted = true;
 
 		const keyboardDidShowListener = Keyboard.addListener(
 			'keyboardDidShow',
 			() => {
 			  setKeyboardVisible(true);
 			}
-		  );
-		  const keyboardDidHideListener = Keyboard.addListener(
+		);
+		const keyboardDidHideListener = Keyboard.addListener(
 			'keyboardDidHide',
 			() => {
-			  setKeyboardVisible(false);
+				setKeyboardVisible(false);
 			}
-		  );
-	  
-		  return () => {
+		);
+		
+		getAllAvailableReservationsGolf().then( response => {
+			const data = [];
+			response.forEach(i => {
+				data.push({id: i.id, 
+							datetime: i.get('fechaInicio').toISOString(), 
+							hoyo_inicio: i.get('sitio').get('nombre'),
+							maximoJugadores: i.get('maximoJugadores')
+						});
+			});
+
+			if (componentMounted)
+				setAllReservations(data);
+		});
+
+		/* ComponentWillUnmount */
+		return () => {
 			keyboardDidHideListener.remove();
 			keyboardDidShowListener.remove();
 		  }; 
@@ -115,21 +115,19 @@ export default function GolfTeeScreen(props) {
 			return false;
 		}
 
-		// Si llegamos hasta esta parte, podemos actualizar todo
-		setSavedReservation(true);
-		setShownReservations([]);
-		setSelectedDate(null);
-		setSelectedReservationId(null);
-		setGuests([]);
-		retrieveDataFromDB();
+		// Si llegamos hasta esta parte, podemos forzar un reMount
 		Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
-			{text: 'Aceptar'}
-		])
+			{text: 'Cerrar', 
+			onPress: () => {
+				setReservationMade(!reservationMade);
+				props.navigation.navigate('module_main');
+			}}
+		]);
 		return true;
 	};
 
 	return (
-		<ScreenContainer style={{paddingTop: 0, flex: 1}} key={savedReservation}>
+		<ScreenContainer style={{paddingTop: 0, flex: 1}}>
 		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }}>
 
 			{/* Selecciona la fecha y hora de la reservacion */}

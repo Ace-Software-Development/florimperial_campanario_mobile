@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ModulesScreen from '../screens/ModulesScreen';
 import { Title } from '../../ui/CampanarioComponents';
@@ -7,6 +7,7 @@ import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
 import GolfTeeScreen from '../screens/golf/GolfTeeScreen';
 import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
+import { reservationMadeContext } from '../../../utils/context';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 

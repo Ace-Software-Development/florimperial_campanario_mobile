@@ -1,28 +1,27 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ScrollView } from 'react-native';
 import { ScreenContainer, ReservationCard } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
-import { getReservations, getArea } from '../../../utils/client';
+import { getReservations } from '../../../utils/client';
 import { getMonthFormat } from '../../../utils/timeHelpers';
-import { async } from 'parse/lib/browser/Storage';
-
+import { reservationMadeContext } from '../../../utils/context';
 
 
 export default function MyReservationsScreen(props) {
 	const [reservations, setReservations] = useState([]);
+	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
+
 	const areas = new Map();
 	areas.set('f2oIvY3kdW', 'Golf');
 	areas.set('BNgcGycR5Y', 'Raqueta');
 	areas.set('d4XN05i9zx', 'Alberca');
 
-
-	useEffect( async () => {
-		const data = await getReservations();
-		setReservations(data);	
-	}, []);
+	useEffect( () => {
+		getReservations()
+		.then(data => setReservations(data));	
+	}, [reservationMade]);
 
 	return (
-		
 		<ScreenContainer>
 			<TopNav title='Mis Reservaciones' />
 
@@ -43,7 +42,6 @@ export default function MyReservationsScreen(props) {
 			</ScrollView>
 			
 		</ScreenContainer>
-
 	);
 }
 

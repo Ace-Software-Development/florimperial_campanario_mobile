@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {NewsDinamicIcon, ModulesDinamicIcon, TicketDinamicIcon} from '../ui/DynamicIcons';
 import { STYLES as styles } from '../../utils/constants';
+import { reservationMadeContext as ReservationMadeContext } from '../../utils/context';
 
 // Screens
 import NewsletterStack from '../modules/stacks/NewsletterStack';
@@ -11,7 +12,11 @@ import MyReservationsScreen from '../modules/screens/MyReservationsScreen';
 const TAB = createBottomTabNavigator();
 
 export default MainNavigation = () => {
+	// We don't actually care about the value, we will use it only to re-redering components
+	const [reservationMade, setReservationMade] = useState(false);
+
 	return (
+		<ReservationMadeContext.Provider value={{reservationMade, setReservationMade}}>
 			<TAB.Navigator
 				initialRouteName="newsletter"
 				screenOptions={{
@@ -70,5 +75,6 @@ export default MainNavigation = () => {
 							}}
 				/>
 			</TAB.Navigator>
+		</ReservationMadeContext.Provider>
 	);
 }
