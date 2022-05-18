@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
@@ -38,7 +38,7 @@ export default function GolfTeeScreen(props) {
 			}
 		);
 		
-		getAllAvailableReservationsGolf().then( response => {
+		getAllAvailableReservationsGolfTee().then( response => {
 			const data = [];
 			response.forEach(i => {
 				data.push({id: i.id, 

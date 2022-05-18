@@ -15,6 +15,7 @@ export default function NewsletterHomeScreen(props) {
 		const fetchImages = async () => {
 			let query = new Parse.Query('Anuncio');
 			query.equalTo('eliminado', false);
+			query.addDescending('createdAt');
 			const results = await query.find();
 			setPosters(results);
 		};

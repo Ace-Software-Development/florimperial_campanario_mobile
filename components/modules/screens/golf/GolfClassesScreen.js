@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
@@ -44,11 +44,12 @@ export default function GolfClassesScreen(props) {
 			}
 		  );
 
-		  getAllAvailableReservationsGolf().then( response => {
+		  getAllAvailableReservationsGolf(true).then( response => {
 			const data = [];
 			response.forEach(i => {
 				data.push({id: i.id, 
 							datetime: i.get('fechaInicio').toISOString(), 
+							profesor: {id:i.get('profesor').get('id'), nombre: i.get('profesor').get('nombre')},
 							hoyo_inicio: i.get('sitio').get('nombre'),
 							maximoJugadores: i.get('maximoJugadores')
 						});
