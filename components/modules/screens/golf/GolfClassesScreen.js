@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
 import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
+import { reservationMadeContext } from '../../../../utils/context';
 import GuestsSection from '../../../ui/GuestsSection';
+
 
 export default function GolfClassesScreen(props) {
 	const [allReservations, setAllReservations] = useState([]);
@@ -19,24 +21,50 @@ export default function GolfClassesScreen(props) {
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState(0);
+	const [karts, setKarts] = useState('0');
 	//Guardar reservación
-	const [savedReservation, setSavedReservation] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
 
 	/* When app did mount */
 	useEffect(() => {
-		retrieveDataFromDB().then(data => setAllReservations(data));
+		let componentMounted = true;
+
+		/* Add keyboard listener */
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+			  setKeyboardVisible(true);
+			}
+		  );
+		  const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+			  setKeyboardVisible(false);
+			}
+		  );
+
+		  getAllAvailableReservationsGolf(true).then( response => {
+			const data = [];
+			response.forEach(i => {
+				data.push({id: i.id, 
+							datetime: i.get('fechaInicio').toISOString(), 
+							profesor: {id:i.get('profesor').get('id'), nombre: i.get('profesor').get('nombre')},
+							hoyo_inicio: i.get('sitio').get('nombre'),
+							maximoJugadores: i.get('maximoJugadores')
+						});
+			});
+
+			if (componentMounted)
+				setAllReservations(data);
+		});
+	  
+		/* ComponentWillUnmount */
+		return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		  }; 
 	}, []);
-
-	/* Guardar invitados del componente en useState del padre */
-	const saveGuest = (gst) => {
-		setGuests([...guests, gst])
-	}
-
-	/* Elimina el invitado seleccionado del padre */
-	const deleteGuest = (gsts) => {
-		setGuests(gsts)
-	}
 
 	/* When the selected Date changes, we need to update the reservations available */
 	useEffect(() => {
@@ -52,7 +80,14 @@ export default function GolfClassesScreen(props) {
 		}
 	} , [selectedDate]);
 
-	const onSubmit = () => {
+	const onSubmit = async () => {
+		if (guests.length > maxGuests) {
+			Alert.alert('Máximo de invitados alcanzado', 'Se ha rebasado el máximo de invitados en el horario seleccionado', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
+		
 		const reservationData = {
 			objectId: selectedReservationId,
 			estatus: 2,
@@ -61,23 +96,30 @@ export default function GolfClassesScreen(props) {
 			carritosReservados: parseInt(karts),
 			cantidadHoyos: holesEnabled ? 18 : 9,
 		};
-		createReservationGolf(reservationData, reservationGolfData, guests, () => {
-			setSavedReservation(true);
-			setShownReservations([]);
-			setSelectedDate(null);
-			setSelectedReservationId(null);
-			setGuests([]);
-			Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
-				{text: 'Aceptar'}
-			])
-			retrieveDataFromDB().then(data => setAllReservations(data))
-			.catch(error => console.log(error));
-		});
+		const reservationCompleted = await createReservationGolf(reservationData, reservationGolfData, guests);
+
+		// Si hubo un error al tratar de guardar la reservación
+		if (!reservationCompleted) {
+			Alert.alert('Guardar reservación fallida', 'Ocurrió un error al tratar de guardar la reservación.', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
+
+		// Si llegamos hasta esta parte, podemos forzar un reMount
+		Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
+			{text: 'Cerrar', 
+			onPress: () => {
+				setReservationMade(!reservationMade);
+				props.navigation.navigate('module_main');
+			}}
+		]);
+		return true;
 	};
 
 	return (
-		<ScrollView>
-		<ScreenContainer style={{paddingTop: 0}} key={savedReservation}>
+		<ScreenContainer style={{paddingTop: 0, flex: 1}}>
+		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }}>
 			
 			{/* Hoyos a jugar y carritos */}
 			<View style={style.tableContainer}>
@@ -104,6 +146,7 @@ export default function GolfClassesScreen(props) {
 								keyboardType='numeric'
 								onChangeText={val => setKarts(val)}
 								maxLength={2}
+								value={karts}
 								keyboard
 								/>
 					</View>
@@ -153,6 +196,7 @@ export default function GolfClassesScreen(props) {
 																setMaxGuests(i.maximoJugadores);
 															}}
 														selectedReservationId={selectedReservationId}
+														setSelectedReservationId={setSelectedReservationId}
 														key={`${i.id}-capsule`}
 													/>
 												);
@@ -173,35 +217,21 @@ export default function GolfClassesScreen(props) {
 			<View>
 				{ selectedReservationId && 
 					<GuestsSection guests={guests} 
-									setGuests={setGuests} 
-									setList={saveGuest} 
-									deleteGuest={deleteGuest} 
+									setGuests={setGuests}
 									maxGuests={maxGuests}
 					/>
 				}
 			</View>
 			
-			{selectedReservationId ? (
-				<ActionBtn title="Guardar" onPress={onSubmit}/>
+			{selectedReservationId && !isKeyboardVisible ? (
+				<View style={style.actionBtnContainer}>
+					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
+				</View>
 				) : null
 			}
-		</ScreenContainer>
 		</ScrollView>
+		</ScreenContainer>
 	);
-}
-
-
-const retrieveDataFromDB = async () => {
-	const response = await getAllAvailableReservationsGolf(true);
-	const data = [];
-	response.forEach(i => {
-		data.push({id: i.id, 
-					datetime: i.get('fechaInicio').toISOString(), 
-					profesor: {id:i.get('profesor').get('id'), nombre: i.get('profesor').get('nombre')},
-					hoyo_inicio: i.get('sitio').get('nombre'),
-					maximoJugadores: i.get('maximoJugadores')})
-		});
-	return data;
 }
 
 const groupByProfessor = reservationsList => {
@@ -271,7 +301,10 @@ const style = StyleSheet.create({
 
 	actionBtnContainer: {
 		flexDirection: 'row',
-		justifyContent: 'space-around'
+		justifyContent: 'space-around',
+		width: '100%',
+		bottom: 20,
+		position: 'absolute'
 	},
 
 	textInput: {
@@ -282,12 +315,5 @@ const style = StyleSheet.create({
 		borderRadius: 10,
 		width: 100,
 		height: 33
-	},
-
-	keyboardContainer: {
-        alignItems: 'center',
-        marginVertical: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    }
+	}
 })

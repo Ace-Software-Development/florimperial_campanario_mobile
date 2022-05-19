@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
+import GuestsSection from '../../../ui/GuestsSection';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
 import Switch from '../../../ui/Switch';
-import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
-import GuestsSection from '../../../ui/GuestsSection';
+import { reservationMadeContext } from '../../../../utils/context';
+import { STYLES as c } from '../../../../utils/constants';
+
 
 export default function GolfReservationsScreen(props) {
 	const [allReservations, setAllReservations] = useState([]);
@@ -21,9 +23,24 @@ export default function GolfReservationsScreen(props) {
 	const [holesEnabled, setHolesEnabled] = useState(true);
 	const [karts, setKarts] = useState('0');
 	//Guardar reservación
-	const [savedReservation, setSavedReservation] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
 
-	const retrieveDataFromDB = () => {
+	/* ComponentDidMount */
+	useEffect(() => {
+		let componentMounted = true;
+
+		/* Add keyboard listener */
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow', () => {
+			  setKeyboardVisible(true);
+			}
+		);
+		const keyboardDidHideListener = Keyboard.addListener(
+		'keyboardDidHide', () => {
+			setKeyboardVisible(false);
+		});
+
 		getAllAvailableReservationsGolf().then( response => {
 			const data = [];
 			response.forEach(i => {
@@ -33,46 +50,19 @@ export default function GolfReservationsScreen(props) {
 							maximoJugadores: i.get('maximoJugadores')
 						});
 			});
-			setAllReservations(data);
-		});
-	}
 
-	/* When app did mount */
-	useEffect(() => {
-		/* Get data from DB */
-		retrieveDataFromDB();
+			if (componentMounted)
+				setAllReservations(data);
+		});
+	  
+		/* ComponentWillUnmount */
+		return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		  }; 
 	}, []);
 
-	/* Guardar invitados del componente en useState del padre */
-	const saveGuest = (gst) => {
-		setGuests([...guests, gst])
-	}
-
-	/* Elimina el invitado seleccionado del padre */
-	const deleteGuest = (gsts) => {
-		setGuests(gsts)
-	}
-
-	/* Obtener todas las fechas de las reservaciones */
-	const getCalendarOptions = data => {
-		if (data.length == 0)
-			return [];
-
-		const dates = [];
-		const seen = new Set();
-		data.forEach(row => {
-			const d = row.datetime.split('T')[0];
-			if (!seen.has(d)){
-				const date = new Date(row.datetime);
-				dates.push(date);
-				seen.add(d);
-			}
-		});
-		dates.sort( (a,b) => a.getFullYear()-b.getFullYear() || a.getMonth()-b.getMonth() || a.getDate()-b.getDate());
-		return dates;
-	};
-
-	/* When the selected Date changes, we need to update the reservations available */
+	/* selectedDate changed value */
 	useEffect(() => {
 		if (selectedDate !== null && selectedDate !== undefined) {
 			let reservations = JSON.parse(JSON.stringify(allReservations));
@@ -86,7 +76,15 @@ export default function GolfReservationsScreen(props) {
 		}
 	} , [selectedDate]);
 
-	const onSubmit = () => {
+
+	const onSubmit = async () => {
+		if (guests.length > maxGuests) {
+			Alert.alert('Máximo de invitados alcanzado', 'Se ha rebasado el máximo de invitados en el horario seleccionado', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
+
 		const reservationData = {
 			objectId: selectedReservationId,
 			estatus: 2,
@@ -95,22 +93,30 @@ export default function GolfReservationsScreen(props) {
 			carritosReservados: parseInt(karts),
 			cantidadHoyos: holesEnabled ? 18 : 9,
 		};
-		createReservationGolf(reservationData, reservationGolfData, guests,() => {
-			setSavedReservation(true);
-			setShownReservations([]);
-			setSelectedDate(null);
-			setSelectedReservationId(null);
-			setGuests([]);
-			Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
-				{text: 'Aceptar'}
-			])
-			retrieveDataFromDB();
-		});
+		const reservationCompleted = await createReservationGolf(reservationData, reservationGolfData, guests);
+
+		// Si hubo un error al tratar de guardar la reservación
+		if (!reservationCompleted) {
+			Alert.alert('Guardar reservación fallida', 'Ocurrió un error al tratar de guardar la reservación.', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
+
+		// Si llegamos hasta esta parte, podemos forzar un reMount
+		Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
+			{text: 'Cerrar', 
+			onPress: () => {
+				setReservationMade(!reservationMade);
+				props.navigation.navigate('module_main');
+			}}
+		]);
+		return true;
 	};
 
 	return (
-		<ScreenContainer style={{paddingTop: 0, flex: 1}} key={savedReservation}>
-		<ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }} >
+		<ScreenContainer style={{paddingTop: 0, flex: 1}}>
+		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }} >
 			
 			{/* Hoyos a jugar y carritos */}
 			<View style={style.tableContainer}>
@@ -177,6 +183,7 @@ export default function GolfReservationsScreen(props) {
 								value={i.id}
 								onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}
 								selectedReservationId={selectedReservationId}
+								setSelectedReservationId={setSelectedReservationId}
 								key={i.id}
 							/>
 						);
@@ -186,10 +193,15 @@ export default function GolfReservationsScreen(props) {
 
 			{/* Agrega los invitados */}
 			<View>
-				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
+			{ selectedReservationId &&
+				<GuestsSection guests={guests} 
+								setGuests={setGuests}
+								maxGuests={maxGuests} 
+				/>
+			}
 			</View>
 			
-			{selectedReservationId ? (
+			{selectedReservationId && !isKeyboardVisible ? (
 				<View style={style.actionBtnContainer}>
 					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
 				</View>
@@ -252,3 +264,22 @@ const style = StyleSheet.create({
 		height: 33
 	}
 });
+
+
+const getCalendarOptions = data => {
+	if (data.length == 0)
+		return [];
+
+	const dates = [];
+	const seen = new Set();
+	data.forEach(row => {
+		const d = row.datetime.split('T')[0];
+		if (!seen.has(d)){
+			const date = new Date(row.datetime);
+			dates.push(date);
+			seen.add(d);
+		}
+	});
+	dates.sort( (a,b) => a.getFullYear()-b.getFullYear() || a.getMonth()-b.getMonth() || a.getDate()-b.getDate());
+	return dates;
+};

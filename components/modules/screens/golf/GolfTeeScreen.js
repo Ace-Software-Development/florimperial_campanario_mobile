@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, KeyboardAvoidingView, TouchableOpacity, Alert, Keyboard } from 'react-native';
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, StyleSheet, ScrollView, Alert, Keyboard } from 'react-native';
+import { ScreenContainer, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
 import DateOption from '../../../ui/DateOption';
 import CapsuleBtn from '../../../ui/CapsuleBtn';
-import Switch from '../../../ui/Switch';
-import { STYLES as c } from '../../../../utils/constants'
 import { getAllAvailableReservationsGolfTee, createReservationGolf } from '../../../../utils/client';
 import GuestsSection from '../../../ui/GuestsSection';
+import { reservationMadeContext } from '../../../../utils/context';
+
 
 export default function GolfTeeScreen(props) {
 	const [allReservations, setAllReservations] = useState([]);
@@ -15,16 +14,30 @@ export default function GolfTeeScreen(props) {
 	const [selectedDate, setSelectedDate] = useState(null);
 	const [shownReservations, setShownReservations] = useState([]);
 	const [selectedReservationId, setSelectedReservationId] = useState(null);
-	//Hoyos y carritos
-	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState(0);
 	//Invitados
 	const [guests, setGuests] = useState([]);
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Guardar reservación
-	const [savedReservation, setSavedReservation] = useState(false);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
 
-	const retrieveDataFromDB = () => {
+	/* When app did mount */
+	useEffect(() => {
+		let componentMounted = true;
+
+		const keyboardDidShowListener = Keyboard.addListener(
+			'keyboardDidShow',
+			() => {
+			  setKeyboardVisible(true);
+			}
+		);
+		const keyboardDidHideListener = Keyboard.addListener(
+			'keyboardDidHide',
+			() => {
+				setKeyboardVisible(false);
+			}
+		);
+		
 		getAllAvailableReservationsGolfTee().then( response => {
 			const data = [];
 			response.forEach(i => {
@@ -32,16 +45,18 @@ export default function GolfTeeScreen(props) {
 							datetime: i.get('fechaInicio').toISOString(), 
 							hoyo_inicio: i.get('sitio').get('nombre'),
 							maximoJugadores: i.get('maximoJugadores')
-						})
-				});
-			setAllReservations(data);
-		});
-	}
+						});
+			});
 
-	/* When app did mount */
-	useEffect(() => {
-		/* Get data from DB */
-		retrieveDataFromDB();
+			if (componentMounted)
+				setAllReservations(data);
+		});
+
+		/* ComponentWillUnmount */
+		return () => {
+			keyboardDidHideListener.remove();
+			keyboardDidShowListener.remove();
+		  }; 
 	}, []);
 
 	/* Obtener todas las fechas de las reservaciones */
@@ -77,44 +92,46 @@ export default function GolfTeeScreen(props) {
 		}
 	} , [selectedDate]);
 
-	/* Guardar invitados del componente en useState del padre */
-	const saveGuest = (gst) => {
-		setGuests([...guests, gst])
-	}
+	const onSubmit = async () => {
+		if (guests.length > maxGuests) {
+			Alert.alert('Máximo de invitados alcanzado', 'Se ha rebasado el máximo de invitados en el horario seleccionado', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
 
-	/* Elimina el invitado seleccionado del padre */
-	const deleteGuest = (gsts) => {
-		setGuests(gsts)
-	}
-
-	const onSubmit = () => {
 		const reservationData = {
 			objectId: selectedReservationId,
 			estatus: 2,
 		};
-		const reservationGolfData = {
-			carritosReservados: parseInt(karts),
-			cantidadHoyos: holesEnabled ? 18 : 9,
-		};
-		createReservationGolf(reservationData, reservationGolfData, guests, () => {
-			setSavedReservation(true);
-			setShownReservations([]);
-			setSelectedDate(null);
-			setSelectedReservationId(null);
-			setGuests([]);
-			Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
-				{text: 'Aceptar'}
-			])
-			retrieveDataFromDB();
-		});
+
+		const reservationCompleted = await createReservationGolf(reservationData, undefined, guests);
+
+		// Si hubo un error al tratar de guardar la reservación
+		if (!reservationCompleted) {
+			Alert.alert('Guardar reservación fallida', 'Ocurrió un error al tratar de guardar la reservación.', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
+
+		// Si llegamos hasta esta parte, podemos forzar un reMount
+		Alert.alert('Guardado exitoso', 'Se ha guardado la reservación', [
+			{text: 'Cerrar', 
+			onPress: () => {
+				setReservationMade(!reservationMade);
+				props.navigation.navigate('module_main');
+			}}
+		]);
+		return true;
 	};
 
 	return (
-		<ScrollView>
-		<ScreenContainer style={{paddingTop: 0}} key={savedReservation}>
+		<ScreenContainer style={{paddingTop: 0, flex: 1}}>
+		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }}>
 
 			{/* Selecciona la fecha y hora de la reservacion */}
-			<View>
+			<View style={style.reservationsContianer}>
 				<Subtitle>Selecciona la fecha y la hora</Subtitle>
 
 				{/* Date picker */}
@@ -145,6 +162,7 @@ export default function GolfTeeScreen(props) {
 								value={i.id}
 								onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}
 								selectedReservationId={selectedReservationId}
+								setSelectedReservationId={setSelectedReservationId}
 								key={i.id}
 							/>
 						);
@@ -154,39 +172,28 @@ export default function GolfTeeScreen(props) {
 			
 			{/* Invitados */}
 			<View>
-				<GuestsSection setList={saveGuest} deleteGuest={deleteGuest} maxGuests={maxGuests}/>
+			{ selectedReservationId &&
+				<GuestsSection guests={guests} 
+								setGuests={setGuests}
+								maxGuests={maxGuests} 
+				/>
+			}
 			</View>
 			
-			{selectedReservationId ? (
-				<ActionBtn title="Guardar" onPress={onSubmit}/>
+			{selectedReservationId && !isKeyboardVisible ? (
+				<View style={style.actionBtnContainer}>
+					<ActionBtn title="Hacer Reservación" onPress={onSubmit}/>
+				</View>
 				) : null
 			}
-		</ScreenContainer>
 		</ScrollView>
+		</ScreenContainer>
 	);
 }
 
 const style = StyleSheet.create({
-	tableContainer: {
-		justifyContent: 'flex-start',
+	reservationsContianer: {
 		marginVertical: 20
-	},
-
-	tableRow: {
-		alignSelf: 'flex-start',
-		flexDirection: 'row',
-		alignItems: 'flex-start',
-		marginVertical: 5
-	},
-
-	tableCol1: {
-		alignSelf: 'center',
-		flex: 2
-	},
-
-	tableCol2: {
-		alignSelf: 'flex-start',
-		flex: 3
 	},
 
 	datePickerContainer: {
@@ -202,16 +209,9 @@ const style = StyleSheet.create({
 
 	actionBtnContainer: {
 		flexDirection: 'row',
-		justifyContent: 'space-around'
-	},
-
-	textInput: {
-		color: c.color.primaryColor,
-		backgroundColor: c.color.grey,
-		paddingVertical: 3,
-		paddingHorizontal: 10,
-		borderRadius: 10,
-		width: 100,
-		height: 33
+		justifyContent: 'space-around',
+		width: '100%',
+		bottom: 20,
+		position: 'absolute'
 	}
 })

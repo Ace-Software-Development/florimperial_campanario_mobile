@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, ScrollView }
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CloseIcon from '../../assets/icons/close-btn.svg'
 
 export function Title(props) {
 	const localStyles = {
@@ -35,7 +36,13 @@ export function P(props) {
 	};
 
 	if ('size' in props)
-		localStyles.fontSize = props.size === 'large' ? 21 : 20
+		if (props.size === 'large')
+			localStyles.fontSize = 21
+		else if (props.size === 'small')
+			localStyles.fontSize = 18
+		else 
+			localStyles.fontSize = 20
+
 
 	return (
 		<Text style={[defaultStyles.p, localStyles]}>
@@ -58,10 +65,13 @@ export function ActionBtn(props) {
 	const containerLocalStyles = { ...props.style };
 	const [activeOnce, setActiveOnce] = useState(true);
 
-	const preSave = () => {
-		if(activeOnce){
-			props.onPress();
+	const preSave = async () => {
+		if (activeOnce) {
 			setActiveOnce(false);
+			const condition = await props.onPress();
+			if (!condition) {
+				setActiveOnce(true);
+			}
 		}
 	}
 
@@ -139,13 +149,31 @@ export function Guests(props) {
                 <P>{props.text}</P>
             </View>
 			<TouchableOpacity 
-						style={defaultStyles.delete} 
-						onPress={() => deleteGuest(props.index)}>
-							<Icon name='trash' size={25}/>
+				style={defaultStyles.delete} 
+				onPress={() => deleteGuest(props.index)}>
+					<CloseIcon />
 			</TouchableOpacity>
         </View>
     )
 }
+export function ReservationCard(props) {
+	return (
+		<View style={defaultStyles.reservCard} >
+				<View style={defaultStyles.reservDetails}>
+					<Text style={defaultStyles.reservModule}>{props.area}</Text>
+					<Text style={defaultStyles.reservContext}>{props.sitio}</Text>
+					<Text style={defaultStyles.reservHourText}>Hora</Text>
+					<Text style={defaultStyles.reservHour}>{props.hour} Hrs</Text>
+				</View>
+				<View style={defaultStyles.reservDate}>
+					<Text style={defaultStyles.month}>{props.month}</Text>
+					<Text style={defaultStyles.day}>{props.day}</Text>
+				</View>
+			</View>
+
+	);
+}
+
 
 const defaultStyles = StyleSheet.create({
 	
@@ -255,7 +283,77 @@ const defaultStyles = StyleSheet.create({
     },
 
 	delete: {
-		backgroundColor: 'red'
+		width: 25,
+		height: 25,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	
+	reservCard: {
+		marginVertical: 10,
+		height: 140,
+		width: "100%",
+		marginBottom: 10
+	}, 
+
+	reservDetails: {
+		paddingVertical: 10,
+		paddingLeft: 15,
+		backgroundColor: '#56738B',
+		borderRadius: 10,
+		height:  "100%",
+	},
+
+	reservDate: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#EBEBEB',
+		borderTopRightRadius: 10,
+		borderBottomRightRadius: 10,
+		position: 'absolute',
+		right: 0,
+		width: "25%", 
+		paddingVertical: 5,
+		height:  "100%",
+	}, 
+
+	reservModule: {
+		color: 'white',
+		fontSize: RFPercentage(2.6),
+		fontWeight: 'bold',
+		marginVertical: 3
+	},
+
+	reservContext: {
+		color: 'white',
+		fontSize: RFPercentage(2.2),
+		marginVertical: 3
+	},
+
+	reservHourText: {
+		color: '#D5D5D5',
+		fontSize: RFPercentage(1.8),
+		marginVertical: 3
+	},
+
+	reservHour: {
+		color: 'white',
+		fontSize: RFPercentage(2.4),
+		marginVertical: 3
+	},
+
+	month: {
+		fontSize: RFPercentage(2.8),
+		color: c.color.primaryColor,
+		textTransform: 'uppercase',
+		includeFontPadding: false, 
+	},
+
+	day: {
+		fontSize: RFPercentage(5.6),
+		color: c.color.primaryColor,
+		includeFontPadding: false,
 	}
 	
 });

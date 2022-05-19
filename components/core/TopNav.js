@@ -1,12 +1,12 @@
-import React, { FC, ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity } from 'react-native';
-import { Title } from '../ui/CampanarioComponents';
-import perfilIMG from '../../assets/img/perfilIMG.png';
+import { Title, Subtitle, P } from '../ui/CampanarioComponents';
+import ProfileIcon from '../../assets/icons/profile-icon.svg';
 import adptvIcon from '../../assets/img/adaptive-icon.png';
-import{ Subtitle } from '../ui/CampanarioComponents';
 import { STYLES as c } from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 import Parse from 'parse/react-native';
+
 
 
 export default function TopNav(props) {
@@ -47,6 +47,20 @@ export default function TopNav(props) {
 		  });
 	};
 
+	const logOutAlert = () => {
+		Alert.alert(
+			'Cerrar sesión',
+			'¿Estás seguro de que quieres cerrar sesión?',
+			[
+				{
+				  text: "Cancelar",
+				  style: "cancel"
+				},
+				{ text: "OK", onPress: () => doUserLogOut() }
+			  ]
+		);
+	}
+
 	return (
 		<View style={styles.container}>
 
@@ -60,49 +74,47 @@ export default function TopNav(props) {
 				}}>
 
 				<View style={styles.centeredView}>
-				<View style={styles.modalView}>
-					<View style={{borderBottomColor: c.color.grey, borderBottomWidth: 1, marginBottom: 15}}> 
-						<Subtitle style={styles.profileName}>{username}</Subtitle>
-						<Text style={styles.profileID}>{email}</Text>
+					<View style={styles.modalView}>
+						<View style={{borderBottomColor: c.color.grey, borderBottomWidth: 1, marginBottom: 15}}> 
+							<Title>{username}</Title>
+							<P size="small">{email}</P>
+						</View>
+
+						<TouchableOpacity style={styles.profileListItem}>
+							<Image style={styles.profileListIcon} source={adptvIcon}/>
+							<P style={styles.elementText}> Reglamento </P>
+						</TouchableOpacity>
+
+						<TouchableOpacity style={styles.profileListItem}>
+							<Image style={styles.profileListIcon} source={adptvIcon}/>
+							<P style={styles.elementText}> Sugerencias </P>
+						</TouchableOpacity>
+
+						<TouchableOpacity style={styles.profileListItem}>
+							<Image style={styles.profileListIcon} source={adptvIcon}/>
+							<P style={styles.elementText}> Número de apoyo </P>
+						</TouchableOpacity>
+
+						<TouchableOpacity style={styles.profileListItem} onPress={() => logOutAlert()}>
+							<Image style={styles.profileListIcon} source={adptvIcon}/>
+							<P style={styles.elementText}> Cerrar sesión</P>
+						</TouchableOpacity>
+
+						<TouchableOpacity style={[styles.button, styles.buttonClose]}
+									onPress={() => setModalVisible(!modalVisible)}>
+							<P style={styles.textStyle}>Cerrar</P>
+						</TouchableOpacity>
 					</View>
-
-					<Pressable >
-						<Image style={styles.profileListIcon} source={adptvIcon}/>
-						<Text style={styles.elementText}> Reglamento </Text>
-					</Pressable>
-
-					<Pressable>
-						<Image style={styles.profileListIcon} source={adptvIcon}/>
-						<Text style={styles.elementText}> Sugerencias </Text>
-					</Pressable>
-
-					<Pressable>
-						<Image style={styles.profileListIcon} source={adptvIcon}/>
-						<Text style={styles.elementText}> Número de apoyo </Text>
-					</Pressable>
-
-					<Pressable onPress={() => doUserLogOut()}>
-						<Image style={styles.profileListIcon} source={adptvIcon}/>
-						<Text style={styles.elementText}> Cerrar sesión</Text>
-					</Pressable>
-
-					
-
-					<Pressable
-					style={[styles.button, styles.buttonClose]}
-					onPress={() => setModalVisible(!modalVisible)}>
-					<Text style={styles.textStyle}>Cerrar</Text>
-					</Pressable>
-				</View>
 				</View>
 
 			</Modal>
 
+			<Title>{props.title}</Title>
+
 			<TouchableOpacity style={styles.perfilBtn} onPress={() => setModalVisible(true)}>
-				<Image style={styles.perfilImg} source={perfilIMG}/>
+				<ProfileIcon height={30} width={30} />
 			</TouchableOpacity>
 
-			<Title style={{marginTop: 10}}>{props.title}</Title>
 		</View>
 	);
 }
@@ -110,42 +122,22 @@ export default function TopNav(props) {
 const styles = StyleSheet.create({
 	container: {
 		width: "100%", 
-		height: 50,
-		marginBottom: 15
+		height: 60,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
 	},
-
-	perfilImg: {
-		resizeMode: "contain",
-		position: 'absolute',
-		width: 36,
-		height: 34,
-	}, 
 
 	perfilBtn: {
-		padding: 10,
-		position: 'absolute',	
-		right: 10,
-		top: 10
-	}, 
-
-	profileName: {
-		color: c.color.primaryColor,
-		fontSize: 25,
-		marginBottom: 0
-	},
-
-	profileID: {
-		marginTop: 0,
-		color: "#EBEBEB",
-		fontSize: 16,
-		marginBottom: 5
+		height: 40,
+		width: 40,
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 
 	elementText: {
 		color: c.color.primaryColor,
-		fontSize: 16,
-		marginBottom: 15,
-		marginHorizontal: 35
+		marginLeft: 35
 	},
 
 	profileListIcon: {
@@ -155,48 +147,43 @@ const styles = StyleSheet.create({
 		position: 'absolute'
 	}, 
 
+	profileListItem: {
+		marginVertical: 7,
+	},
 
 	centeredView: {
 		flex: 1,
 		justifyContent: 'center',
+		elevation: 10,
 		marginTop: 22
-	  },
-	  modalView: {
+	},
+
+	modalView: {
 		margin: 20,
 		backgroundColor: 'white',
 		borderRadius: 20,
 		padding: 35,
-		
 		shadowColor: '#000',
-		shadowOffset: {
-		  width: 0,
-		  height: 2,
-		},
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
 		elevation: 5,
-	  },
-	  button: {
+	},	
+		
+	button: {
 		borderRadius: 20,
 		padding: 10,
-		elevation: 2,
-	  },
-	  buttonOpen: {
-		backgroundColor: '#F194FF',
-	  },
-	  buttonClose: {
+	},
+
+	buttonClose: {
 		marginTop: 15,
 		backgroundColor: c.color.grey,
 		alignSelf: 'center'
-	  },
-	  textStyle: {
+	},
+
+	textStyle: {
 		color: c.color.primaryColor,
 		fontWeight: 'bold',
 		textAlign: 'center',
 		marginHorizontal: 45
-	  },
-	  modalText: {
-		marginBottom: 15,
-		textAlign: 'center',
-	  },
+	}
 })
