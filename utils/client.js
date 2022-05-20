@@ -34,6 +34,9 @@ export async function getAllAvailableReservationsGolf(filterCoaches=false){
 	return data;
 }
 
+/** 
+ * Retrieves all available golf reservations from DB 
+ */
 export async function getAllAvailableReservationsGolfTee(){
 	// Query todos los sitios que pertenecen al tee de práctica
 	const areaQuery = new Parse.Query(AREA_MODEL);
@@ -56,6 +59,39 @@ export async function getAllAvailableReservationsGolfTee(){
 	return data;
 }
 
+/** 
+ * Retrieves all available gym reservations from DB 
+ */
+export async function getAllAvailableReservationsGym(){
+	//Query all areas belonging to Gym
+	const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.equalTo('eliminado', false);
+	areaQuery.equalTo('nombre', 'Gimnasio');
+
+	const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	sitiosQuery.equalTo('nombre', 'Gimnasio');
+	sitiosQuery.matchesQuery('area', areaQuery);
+	sitiosQuery.include('area');
+
+	// Query all reservations
+	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	reservationQuery.equalTo('eliminado', false);
+	reservationQuery.equalTo('estatus', 1);
+	reservationQuery.matchesQuery('sitio', sitiosQuery);
+	reservationQuery.include('sitio');
+
+	let data = await reservationQuery.find();
+	return data;
+}
+
+/**
+ * Saves reservation data in DB
+ * @param {array} dataReservation 
+ * @param {array} dataReservationGolf 
+ * @param {array} guests 
+ * @returns true if reservation data saved succesfully
+ * else @returns false
+ */
 export async function createReservationGolf(dataReservation, dataReservationGolf, guests) {
 	try{
 		// Get current user loged in
@@ -96,6 +132,31 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 			guestObj.save();
 			reservationGuest.save();
 		}
+
+		return true;
+	}catch(error) {
+		console.log(error);
+		return false;
+	}
+}
+
+/**
+ * 
+ * @param {array} dataReservation 
+ * @returns true if reservation data saved succesfully
+ * else @returns false
+ */
+export async function createReservationGym(dataReservation) {
+	try{
+		// Get current user loged in
+		const userObj = await Parse.User.currentAsync();
+
+		// Update Reservation entry
+		let reservationObj = new Parse.Object('Reservacion');
+		reservationObj.set('objectId', dataReservation.objectId);
+		reservationObj.set('estatus', dataReservation.estatus);
+		reservationObj.set('user', userObj);
+		await reservationObj.save();
 
 		return true;
 	}catch(error) {

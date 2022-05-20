@@ -8,6 +8,7 @@ import GolfTeeScreen from '../screens/golf/GolfTeeScreen';
 import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
 import GymMenuScreen from '../screens/gym/GymMenuScreen';
+import ReservationsScreen from '../screens/ReservationsScreen';
 import GymReservationsScreen from '../screens/gym/GymReservationsScreen';
 import { reservationMadeContext } from '../../../utils/context';
 
@@ -39,7 +40,11 @@ export default function NewsletterStack(props) {
 			{/* Golf Stack */}
 			<ModulesStackNavigator.Screen 
 				name='golf_reservations'
-				component={GolfReservationsScreen}
+				component={ReservationsScreen}
+				initialParams={{
+					module: 'golf',
+					showGuests: true
+				}}
 				options={{
 					title: 'Horarios y Reservaciones',
 					headerTitle: (props) => <Title {...props}/>,
@@ -90,7 +95,11 @@ export default function NewsletterStack(props) {
 			
 			<ModulesStackNavigator.Screen 
 				name='gym_reservations'
-				component={GymReservationsScreen}
+				component={ReservationsScreen}
+				initialParams={{
+					module: 'gym',
+					showGuests: false
+				}}
 				options={{
 					title: 'Reservaciones Gimnasio',
 					headerTitle: (props) => <Title {...props}/>,
