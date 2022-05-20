@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity  } from 'react-native';
+import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ScrollView  } from 'react-native';
 import { ScreenContainer, ModuleCard } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
-import golfIMG from '../../../assets/img/golfIMG.png'
+import golfIMG from '../../../assets/img/golfIMG.png';
+import gymIMG from '../../../assets/img/gymIMG.jpeg';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ModulesScreen(props) {
@@ -11,7 +12,7 @@ export default function ModulesScreen(props) {
 		<ScreenContainer>
 			<TopNav title='Módulos' />
 
-			<View>
+			<ScrollView>
 
 				<ModuleCard  
 					title='Golf'
@@ -19,7 +20,13 @@ export default function ModulesScreen(props) {
 					onPress={() => navigation.navigate('golf_module')}
 				/>
 
-			</View>
+				<ModuleCard  
+					title='Gimnasio'
+					source={gymIMG}
+					onPress={() => navigation.navigate('gym_module')}
+				/>
+
+			</ScrollView>
 
 		</ScreenContainer>
 	);
