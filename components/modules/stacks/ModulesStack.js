@@ -69,7 +69,11 @@ export default function NewsletterStack(props) {
 
 			<ModulesStackNavigator.Screen 
 				name='golf_tee'
-				component={GolfTeeScreen}
+				component={ReservationsScreen}
+				initialParams={{
+					module: 'golf_tee',
+					showGuests: true
+				}}
 				options={{
 					title: 'Tee de Práctica',
 					headerTitle: (props) => <Title {...props}/>,

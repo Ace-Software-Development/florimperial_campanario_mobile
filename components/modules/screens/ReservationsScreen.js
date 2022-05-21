@@ -5,7 +5,7 @@ import GuestsSection from '../../ui/GuestsSection';
 import DateOption from '../../ui/DateOption';
 import CapsuleBtn from '../../ui/CapsuleBtn';
 import Switch from '../../ui/Switch';
-import { getAllAvailableReservationsGolf, createReservationGolf, createReservationGym, getAllAvailableReservationsGym } from '../../../utils/client';
+import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym } from '../../../utils/client';
 import { reservationMadeContext } from '../../../utils/context';
 import { getCalendarOptions } from '../../../utils/timeHelpers';
 import { STYLES as c } from '../../../utils/constants';
@@ -26,7 +26,13 @@ export default function ReservationsScreen({route, navigation}) {
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
     
-    const fetchReservationsData = route.params.module == 'golf' ? getAllAvailableReservationsGolf : getAllAvailableReservationsGym;
+	let fetchReservationsData = null;
+	if (route.params.module == 'golf')
+    	fetchReservationsData = getAllAvailableReservationsGolf;
+	else if (route.params.module == 'golf_tee')
+		fetchReservationsData = getAllAvailableReservationsGolfTee;
+	else if (route.params.module == 'gym')
+		fetchReservationsData = getAllAvailableReservationsGym;
 
     /* ComponentDidMount */
 	useEffect(() => {
@@ -106,6 +112,10 @@ export default function ReservationsScreen({route, navigation}) {
                     cantidadHoyos: holesEnabled ? 18 : 9,
                 };
                 reservationCompleted = await createReservationGolf(reservationData, reservationGolfData, guests);
+                break;
+			
+			case 'golf_tee':
+				reservationCompleted = await createReservationGolf(reservationData, undefined, guests);
                 break;
 
             case 'gym':
