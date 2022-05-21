@@ -7,6 +7,8 @@ const AREA_MODEL = Parse.Object.extend("Area");
 const SITIO_MODEL = Parse.Object.extend("Sitio");
 const USER_MODEL = Parse.Object.extend("_User");
 
+
+// Golf module
 export async function getAllAvailableReservationsGolf(filterCoaches=false){
 	// Query all sitios belonging to Golf
 	const areaQuery = new Parse.Query(AREA_MODEL);
@@ -34,10 +36,11 @@ export async function getAllAvailableReservationsGolf(filterCoaches=false){
 	return data;
 }
 
-/** 
- * Retrieves all available golf reservations from DB 
- */
 export async function getAllAvailableReservationsGolfTee(){
+	/** 
+	 * Retrieves all available golf reservations from DB 
+	 */
+	
 	// Query todos los sitios que pertenecen al tee de práctica
 	const areaQuery = new Parse.Query(AREA_MODEL);
 	areaQuery.equalTo('eliminado', false);
@@ -59,40 +62,15 @@ export async function getAllAvailableReservationsGolfTee(){
 	return data;
 }
 
-/** 
- * Retrieves all available gym reservations from DB 
- */
-export async function getAllAvailableReservationsGym(){
-	//Query all areas belonging to Gym
-	const areaQuery = new Parse.Query(AREA_MODEL);
-	areaQuery.equalTo('eliminado', false);
-	areaQuery.equalTo('nombre', 'Gimnasio');
-
-	const sitiosQuery = new Parse.Query(SITIO_MODEL);
-	sitiosQuery.equalTo('nombre', 'Gimnasio');
-	sitiosQuery.matchesQuery('area', areaQuery);
-	sitiosQuery.include('area');
-
-	// Query all reservations
-	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
-	reservationQuery.equalTo('eliminado', false);
-	reservationQuery.equalTo('estatus', 1);
-	reservationQuery.matchesQuery('sitio', sitiosQuery);
-	reservationQuery.include('sitio');
-
-	let data = await reservationQuery.find();
-	return data;
-}
-
-/**
- * Saves reservation data in DB
- * @param {array} dataReservation 
- * @param {array} dataReservationGolf 
- * @param {array} guests 
- * @returns true if reservation data saved succesfully
- * else @returns false
- */
 export async function createReservationGolf(dataReservation, dataReservationGolf, guests) {
+	/**
+	 * Saves reservation data in DB
+	 * @param {array} dataReservation 
+	 * @param {array} dataReservationGolf 
+	 * @param {array} guests 
+	 * @returns true if reservation data saved succesfully
+	 * else @returns false
+	 */
 	try{
 		// Get current user loged in
 		const userObj = await Parse.User.currentAsync();
@@ -140,13 +118,44 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 	}
 }
 
-/**
- * 
- * @param {array} dataReservation 
- * @returns true if reservation data saved succesfully
- * else @returns false
- */
+// Gym module
+export async function getAllAvailableReservationsGym(filterCoaches=false){
+	/** 
+	 * Retrieves all available gym reservations from DB 
+	 */
+
+	//Query all areas belonging to Gym
+	const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.equalTo('eliminado', false);
+	areaQuery.equalTo('nombre', 'Gimnasio');
+
+	const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	sitiosQuery.equalTo('nombre', 'Gimnasio');
+	sitiosQuery.matchesQuery('area', areaQuery);
+	sitiosQuery.include('area');
+
+	// Query all reservations
+	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	reservationQuery.equalTo('eliminado', false);
+	reservationQuery.equalTo('estatus', 1);
+	reservationQuery.matchesQuery('sitio', sitiosQuery);
+	reservationQuery.include('sitio');
+	reservationQuery.include('profesor');
+	if (filterCoaches) {
+		reservationQuery.exists('profesor');
+	}
+
+	let data = await reservationQuery.find();
+	return data;
+}
+
 export async function createReservationGym(dataReservation) {
+	/**
+	 * 
+	 * @param {array} dataReservation 
+	 * @returns true if reservation data saved succesfully
+	 * else @returns false
+	 */
 	try{
 		// Get current user loged in
 		const userObj = await Parse.User.currentAsync();
@@ -165,6 +174,7 @@ export async function createReservationGym(dataReservation) {
 	}
 }
 
+// General API calls
 export async function getAllActiveUsers(){
 	// Get current user loged in
 	const userObj = await Parse.User.currentAsync();
