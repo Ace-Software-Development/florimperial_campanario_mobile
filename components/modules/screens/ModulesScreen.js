@@ -4,6 +4,7 @@ import { ScreenContainer, ModuleCard } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
 import golfIMG from '../../../assets/img/golfIMG.png';
 import gymIMG from '../../../assets/img/gymIMG.jpeg';
+import raquetaIMG from '../../../assets/img/raquetaIMG.jpg';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ModulesScreen(props) {
@@ -24,6 +25,12 @@ export default function ModulesScreen(props) {
 					title='Gimnasio'
 					source={gymIMG}
 					onPress={() => navigation.navigate('gym_module')}
+				/>
+
+				<ModuleCard  
+					title='Raqueta'
+					source={raquetaIMG}
+					onPress={() => navigation.navigate('raqueta_module')}
 				/>
 
 			</ScrollView>

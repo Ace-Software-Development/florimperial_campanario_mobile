@@ -1,14 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { ScreenContainer, Subtitle } from '../../../ui/CampanarioComponents';
 import { ModulesMenuList, ModulesMenuListItem } from '../../../ui/ModulesMenuList';
 import { useNavigation } from '@react-navigation/native';
 import ClockIcon from '../../../../assets/icons/clock-icon.svg';
-import GymIcon from '../../../../assets/icons/gym-icon.svg';
-import Golf2Icon from '../../../../assets/icons/golf2-icon.svg';
-import RutinasIcon from '../../../../assets/icons/rutinas-icon.svg';
+import RaquetaIcon from '../../../../assets/icons/raqueta-icon.svg';
 
-export default function GymReservationsScreen(props) {
+export default function RaquetaMenuScreen(props) {
     const navigation = useNavigation();
     return (
         <ScreenContainer>
@@ -19,11 +17,8 @@ export default function GymReservationsScreen(props) {
 					<ModulesMenuListItem title="Horarios y resevaciones" /*onPress={() => navigation.navigate()} */>
 						<ClockIcon width={30} height={30} />
 					</ModulesMenuListItem>
-					<ModulesMenuListItem title="Clases personalizadas" /*onPress={() => navigation.navigate()}*/>
-						<GymIcon width={30} height={30} />
-					</ModulesMenuListItem>
-					<ModulesMenuListItem title="Rutinas" /*onPress={() => navigation.navigate()}*/>
-						<RutinasIcon width={30} height={30} />
+					<ModulesMenuListItem title="Clases personalizadas" onPress={() => navigation.navigate('raqueta_classes_reservations')}>
+						<RaquetaIcon width={30} height={30} />
 					</ModulesMenuListItem>
 				</ModulesMenuList>
             </View>

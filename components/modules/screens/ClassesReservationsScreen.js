@@ -40,6 +40,9 @@ export default function ClassesReservationsScreen({route, navigation}){
 		else if (route.params.module == 'gym') {
 			fetchReservationsData = () => getAllAvailableReservationsGym(true);
 		}
+		else if (route.params.module == 'raqueta') {
+			fetchReservationsData = () => getAllAvailableReservationsGym(true);
+		}
 
 		/* Add keyboard listener */
 		const keyboardDidShowListener = Keyboard.addListener(

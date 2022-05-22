@@ -5,6 +5,7 @@ import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GymMenuScreen from '../screens/gym/GymMenuScreen';
+import RaquetaMenuScreen from '../screens/raqueta/RaquetaMenuScreen';
 import ReservationsScreen from '../screens/ReservationsScreen';
 import ClassesReservationsScreen from '../screens/ClassesReservationsScreen';
 
@@ -120,6 +121,31 @@ export default function NewsletterStack(props) {
 				}}
 				options={{
 					title: 'Clases Personalizadas Gimnasio',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
+			{/* Raqueta Stack */}
+			<ModulesStackNavigator.Screen
+				name='raqueta_module'
+				component={RaquetaMenuScreen}
+				options={{
+					title: 'Raqueta',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen
+				name='raqueta_classes_reservations'
+				component={ClassesReservationsScreen}
+				initialParams={{
+					module: 'gym',
+					showGuests: false
+				}}
+				options={{
+					title: 'Clases Personalizadas Raqueta',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
 				}}
