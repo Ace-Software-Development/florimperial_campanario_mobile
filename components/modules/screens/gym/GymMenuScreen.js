@@ -4,9 +4,9 @@ import { ScreenContainer, Subtitle } from '../../../ui/CampanarioComponents';
 import { ModulesMenuList, ModulesMenuListItem } from '../../../ui/ModulesMenuList';
 import { useNavigation } from '@react-navigation/native';
 import ClockIcon from '../../../../assets/icons/clock-icon.svg';
-import TeePracticeIcon from '../../../../assets/icons/tee-practice-icon.svg';
+import GymIcon from '../../../../assets/icons/gym-icon.svg';
 import Golf2Icon from '../../../../assets/icons/golf2-icon.svg';
-import BookIcon from '../../../../assets/icons/book-icon.svg';
+import RutinasIcon from '../../../../assets/icons/rutinas-icon.svg';
 
 export default function GymReservationsScreen(props) {
     const navigation = useNavigation();
@@ -14,16 +14,16 @@ export default function GymReservationsScreen(props) {
         <ScreenContainer>
 
             <View style={style.container}>
-            <Subtitle style={{marginBottom: 10}}>Reservaciones</Subtitle>
+            	<Subtitle style={{marginBottom: 10}}>Reservaciones</Subtitle>
 				<ModulesMenuList>
 					<ModulesMenuListItem title="Horarios y resevaciones" onPress={() => navigation.navigate('gym_reservations')}>
 						<ClockIcon width={30} height={30} />
 					</ModulesMenuListItem>
-					<ModulesMenuListItem title="Clases personalizadas" /*onPress={() => navigation.navigate()}*/>
-						<TeePracticeIcon width={30} height={30} />
+					<ModulesMenuListItem title="Clases personalizadas" onPress={() => navigation.navigate('gym_classes_reservations')}>
+						<GymIcon width={30} height={30} />
 					</ModulesMenuListItem>
 					<ModulesMenuListItem title="Rutinas" /*onPress={() => navigation.navigate()}*/>
-						<Golf2Icon width={30} height={30} />
+						<RutinasIcon width={30} height={30} />
 					</ModulesMenuListItem>
 				</ModulesMenuList>
             </View>

@@ -9,6 +9,7 @@ import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
 import GymMenuScreen from '../screens/gym/GymMenuScreen';
 import ReservationsScreen from '../screens/ReservationsScreen';
+import ClassesReservationsScreen from '../screens/ClassesReservationsScreen';
 import GymReservationsScreen from '../screens/gym/GymReservationsScreen';
 import { reservationMadeContext } from '../../../utils/context';
 
@@ -54,9 +55,13 @@ export default function NewsletterStack(props) {
 
 			<ModulesStackNavigator.Screen
 				name='golf_classes_reservations'
-				component={GolfClassesScreen}
+				component={ClassesReservationsScreen}
+				initialParams={{
+					module: 'golf',
+					showGuests: true
+				}}
 				options={{
-					title: 'Clases personalizadas Golf',
+					title: 'Clases Personalizadas Golf',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
 				}}
@@ -70,7 +75,7 @@ export default function NewsletterStack(props) {
 					showGuests: true
 				}}
 				options={{
-					title: 'Tee de práctica',
+					title: 'Tee de Práctica',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true,
 				}}
@@ -108,6 +113,20 @@ export default function NewsletterStack(props) {
 					title: 'Reservaciones Gimnasio',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true,
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen
+				name='gym_classes_reservations'
+				component={ClassesReservationsScreen}
+				initialParams={{
+					module: 'gym',
+					showGuests: false
+				}}
+				options={{
+					title: 'Clases Personalizadas Gimnasio',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
 				}}
 			/>
 
