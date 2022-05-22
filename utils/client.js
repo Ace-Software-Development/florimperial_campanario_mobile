@@ -1,5 +1,4 @@
 import Parse from "parse/react-native.js";
-import { Guests } from "../components/ui/CampanarioComponents";
 
 // Declaration of models
 const RESERVACION_MODEL = Parse.Object.extend("Reservacion");

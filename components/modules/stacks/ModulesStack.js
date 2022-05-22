@@ -1,17 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ModulesScreen from '../screens/ModulesScreen';
 import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
-import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
-import GolfTeeScreen from '../screens/golf/GolfTeeScreen';
 import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
-import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
 import GymMenuScreen from '../screens/gym/GymMenuScreen';
 import ReservationsScreen from '../screens/ReservationsScreen';
 import ClassesReservationsScreen from '../screens/ClassesReservationsScreen';
-import GymReservationsScreen from '../screens/gym/GymReservationsScreen';
-import { reservationMadeContext } from '../../../utils/context';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
