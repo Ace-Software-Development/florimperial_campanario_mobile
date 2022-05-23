@@ -249,6 +249,61 @@ export async function createReservationRaqueta(dataReservation, guests) {
 	}
 }
 
+//Pool module
+export async function getAllAvailableReservationsPool(filterCoaches=false){
+	/** 
+	 * Retrieves all available pool reservations from DB 
+	 */
+
+	//Query all areas belonging to Raqueta
+	const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.equalTo('eliminado', false);
+	areaQuery.equalTo('nombre', 'Alberca');
+
+	const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	sitiosQuery.matchesQuery('area', areaQuery);
+	sitiosQuery.include('area');
+
+	// Query all reservations
+	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	reservationQuery.equalTo('eliminado', false);
+	reservationQuery.equalTo('estatus', 1);
+	reservationQuery.matchesQuery('sitio', sitiosQuery);
+	reservationQuery.include('sitio');
+	reservationQuery.include('profesor');
+	if (filterCoaches) {
+		reservationQuery.exists('profesor');
+	}
+
+	let data = await reservationQuery.find();
+	return data;
+}
+
+export async function createReservationPool(dataReservation) {
+	/**
+	 * 
+	 * @param {array} dataReservation
+	 * @returns true if reservation data saved succesfully
+	 * else @returns false
+	 */
+	try{
+		// Get current user loged in
+		const userObj = await Parse.User.currentAsync();
+
+		// Update Reservation entry
+		let reservationObj = new Parse.Object('Reservacion');
+		reservationObj.set('objectId', dataReservation.objectId);
+		reservationObj.set('estatus', dataReservation.estatus);
+		reservationObj.set('user', userObj);
+		await reservationObj.save();
+
+		return true;
+	}catch(error) {
+		console.log(error);
+		return false;
+	}
+}
+
 // General API calls
 export async function getAllActiveUsers(){
 	// Get current user loged in

@@ -6,6 +6,7 @@ import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GymMenuScreen from '../screens/gym/GymMenuScreen';
 import RaquetaMenuScreen from '../screens/raqueta/RaquetaMenuScreen';
+import PoolMenuScreen from '../screens/pool/PoolMenuScreen';
 import ReservationsScreen from '../screens/ReservationsScreen';
 import ClassesReservationsScreen from '../screens/ClassesReservationsScreen';
 
@@ -160,6 +161,31 @@ export default function NewsletterStack(props) {
 				}}
 				options={{
 					title: 'Clases Personalizadas Raqueta',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
+			{/* Pool stack */}
+			<ModulesStackNavigator.Screen
+				name='pool_module'
+				component={PoolMenuScreen}
+				options={{
+					title: 'Alberca',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen
+				name='pool_reservations'
+				component={ReservationsScreen}
+				initialParams={{
+					module: 'pool',
+					showGuests: false
+				}}
+				options={{
+					title: 'Reservaciones Alberca',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
 				}}

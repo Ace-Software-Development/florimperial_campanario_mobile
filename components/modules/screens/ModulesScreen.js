@@ -33,6 +33,12 @@ export default function ModulesScreen(props) {
 					onPress={() => navigation.navigate('raqueta_module')}
 				/>
 
+				<ModuleCard  
+					title='Alberca'
+					source={raquetaIMG}
+					onPress={() => navigation.navigate('pool_module')}
+				/>
+
 			</ScrollView>
 
 		</ScreenContainer>
