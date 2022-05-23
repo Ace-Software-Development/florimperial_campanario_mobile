@@ -156,7 +156,7 @@ export default function NewsletterStack(props) {
 				component={ClassesReservationsScreen}
 				initialParams={{
 					module: 'raqueta',
-					showGuests: false
+					showGuests: true
 				}}
 				options={{
 					title: 'Clases Personalizadas Raqueta',
