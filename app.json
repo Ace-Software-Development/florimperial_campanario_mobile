@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "florimperial_campanario_mobile",
+    "name": "El Campanaria",
     "slug": "florimperial_campanario_mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "assets/img/icon.png",
+    "icon": "assets/img/app-icon.png",
     "splash": {
       "image": "assets/img/splashscreen.png",
       "resizeMode": "cover",
@@ -23,7 +23,10 @@
       "adaptiveIcon": {
         "foregroundImage": "assets/img/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.florimperial.campanario",
+      "permissions": [],
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
