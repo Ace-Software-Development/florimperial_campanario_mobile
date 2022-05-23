@@ -5,7 +5,7 @@ import GuestsSection from '../../ui/GuestsSection';
 import DateOption from '../../ui/DateOption';
 import CapsuleBtn from '../../ui/CapsuleBtn';
 import Switch from '../../ui/Switch';
-import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym } from '../../../utils/client';
+import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym, getAllAvailableReservationsRacket, createReservationRacket } from '../../../utils/client';
 import { reservationMadeContext } from '../../../utils/context';
 import { getCalendarOptions } from '../../../utils/timeHelpers';
 import { STYLES as c } from '../../../utils/constants';
@@ -33,6 +33,8 @@ export default function ReservationsScreen({route, navigation}) {
 		fetchReservationsData = getAllAvailableReservationsGolfTee;
 	else if (route.params.module == 'gym')
 		fetchReservationsData = getAllAvailableReservationsGym;
+	else if (route.params.module == 'raqueta')
+		fetchReservationsData = getAllAvailableReservationsRacket;
 
     /* ComponentDidMount */
 	useEffect(() => {
@@ -121,8 +123,11 @@ export default function ReservationsScreen({route, navigation}) {
             case 'gym':
                 reservationCompleted = await createReservationGym(reservationData);
                 break;
+
+			case 'raqueta':
+				reservationCompleted = await createReservationRacket(reservationData, guests);
+
         }
-        
 
 		// Si hubo un error al tratar de guardar la reservación
 		if (!reservationCompleted) {

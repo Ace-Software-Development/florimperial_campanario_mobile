@@ -138,6 +138,20 @@ export default function NewsletterStack(props) {
 			/>
 
 			<ModulesStackNavigator.Screen
+				name='raqueta_reservations'
+				component={ReservationsScreen}
+				initialParams={{
+					module: 'raqueta',
+					showGuests: true
+				}}
+				options={{
+					title: 'Reservaciones Raqueta',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen
 				name='raqueta_classes_reservations'
 				component={ClassesReservationsScreen}
 				initialParams={{
