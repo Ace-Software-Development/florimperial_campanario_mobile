@@ -5,7 +5,7 @@ import GuestsSection from '../../ui/GuestsSection';
 import DateOption from '../../ui/DateOption';
 import CapsuleBtn from '../../ui/CapsuleBtn';
 import Switch from '../../ui/Switch';
-import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym, getAllAvailableReservationsRacket, createReservationRacket } from '../../../utils/client';
+import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym, getAllAvailableReservationsRaqueta, createReservationRaqueta } from '../../../utils/client';
 import { reservationMadeContext } from '../../../utils/context';
 import { getCalendarOptions } from '../../../utils/timeHelpers';
 import { STYLES as c } from '../../../utils/constants';
@@ -34,7 +34,7 @@ export default function ReservationsScreen({route, navigation}) {
 	else if (route.params.module == 'gym')
 		fetchReservationsData = getAllAvailableReservationsGym;
 	else if (route.params.module == 'raqueta')
-		fetchReservationsData = getAllAvailableReservationsRacket;
+		fetchReservationsData = getAllAvailableReservationsRaqueta;
 
     /* ComponentDidMount */
 	useEffect(() => {
@@ -125,7 +125,7 @@ export default function ReservationsScreen({route, navigation}) {
                 break;
 
 			case 'raqueta':
-				reservationCompleted = await createReservationRacket(reservationData, guests);
+				reservationCompleted = await createReservationRaqueta(reservationData, guests);
 
         }
 
