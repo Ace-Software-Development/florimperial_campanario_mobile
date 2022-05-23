@@ -155,7 +155,7 @@ export default function NewsletterStack(props) {
 				name='raqueta_classes_reservations'
 				component={ClassesReservationsScreen}
 				initialParams={{
-					module: 'gym',
+					module: 'raqueta',
 					showGuests: false
 				}}
 				options={{

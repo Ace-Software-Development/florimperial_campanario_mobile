@@ -8,7 +8,9 @@ import { STYLES as c } from '../../../utils/constants'
 import { getAllAvailableReservationsGolf,
 		createReservationGolf,
 		getAllAvailableReservationsGym, 
-		createReservationGym } from '../../../utils/client';
+		createReservationGym,
+		getAllAvailableReservationsRaqueta,
+		createReservationRaqueta } from '../../../utils/client';
 import { getCalendarOptions } from '../../../utils/timeHelpers';
 import { reservationMadeContext } from '../../../utils/context';
 import GuestsSection from '../../ui/GuestsSection';
@@ -41,7 +43,7 @@ export default function ClassesReservationsScreen({route, navigation}){
 			fetchReservationsData = () => getAllAvailableReservationsGym(true);
 		}
 		else if (route.params.module == 'raqueta') {
-			fetchReservationsData = () => getAllAvailableReservationsGym(true);
+			fetchReservationsData = () => getAllAvailableReservationsRaqueta(true);
 		}
 
 		/* Add keyboard listener */
@@ -124,6 +126,9 @@ export default function ClassesReservationsScreen({route, navigation}){
 
 			case 'gym':
 				reservationCompleted = await createReservationGym(reservationData);
+
+			case 'raqueta':
+				reservationCompleted = await createReservationRaqueta(reservationData);
 		};
 
 		// Si hubo un error al tratar de guardar la reservación

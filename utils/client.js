@@ -173,13 +173,13 @@ export async function createReservationGym(dataReservation) {
 	}
 }
 
-//Racket module
-export async function getAllAvailableReservationsRacket(filterCoaches=false) {
+// Raqueta module
+export async function getAllAvailableReservationsRaqueta(filterCoaches=false){
 	/** 
-	 * Retrieves all available racket reservations from DB 
+	 * Retrieves all available raqueta reservations from DB 
 	 */
 
-	//Query all areas belonging to Racket
+	//Query all areas belonging to Raqueta
 	const areaQuery = new Parse.Query(AREA_MODEL);
 	areaQuery.equalTo('eliminado', false);
 	areaQuery.equalTo('nombre', 'Raqueta');
@@ -203,7 +203,7 @@ export async function getAllAvailableReservationsRacket(filterCoaches=false) {
 	return data;
 }
 
-export async function createReservationRacket(dataReservation, guests) {
+export async function createReservationRaqueta(dataReservation, guests) {
 	/**
 	 * 
 	 * @param {array} dataReservation
