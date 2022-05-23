@@ -9,6 +9,7 @@ import RaquetaMenuScreen from '../screens/raqueta/RaquetaMenuScreen';
 import PoolMenuScreen from '../screens/pool/PoolMenuScreen';
 import ReservationsScreen from '../screens/ReservationsScreen';
 import ClassesReservationsScreen from '../screens/ClassesReservationsScreen';
+import SalonesMenuScreen from '../screens/salones/SalonesMenuScreen';
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -188,6 +189,17 @@ export default function NewsletterStack(props) {
 					title: 'Reservaciones Alberca',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
+				}}
+			/>
+
+			{/* Salones stack */}
+			<ModulesStackNavigator.Screen
+				name='salones_module'
+				component={SalonesMenuScreen}
+				options={{
+					title: 'Salones',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
 				}}
 			/>
 
