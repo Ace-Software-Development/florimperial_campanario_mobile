@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity } from 'react-native';
 import { Title, Subtitle, P } from '../ui/CampanarioComponents';
 import ProfileIcon from '../../assets/icons/profile-icon.svg';
 import adptvIcon from '../../assets/img/adaptive-icon.png';
 import { STYLES as c } from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 import Parse from 'parse/react-native';
-
+import QRCode from 'react-native-qrcode-svg';
+import SupportNumberIcon from '../../assets/icons/support-number-icon.svg';
+import LogOutIcon from '../../assets/icons/log-out-icon.svg';
 
 
 export default function TopNav(props) {
@@ -80,23 +82,28 @@ export default function TopNav(props) {
 							<P size="small">{email}</P>
 						</View>
 
+						<SafeAreaView style={{ padding: 7}}>
+							<View style={styles.qrContainer}>
+								<QRCode
+								//QR code value
+								value={'https://youtu.be/eqd7biirRC4'}
+								//size of QR Code
+								size={200}
+								//Color of the QR Code
+								color="black"
+								//Background Color of the QR Code
+								backgroundColor="white"
+								/>
+							</View>
+						</SafeAreaView>
+						
 						<TouchableOpacity style={styles.profileListItem}>
-							<Image style={styles.profileListIcon} source={adptvIcon}/>
-							<P style={styles.elementText}> Reglamento </P>
-						</TouchableOpacity>
-
-						<TouchableOpacity style={styles.profileListItem}>
-							<Image style={styles.profileListIcon} source={adptvIcon}/>
-							<P style={styles.elementText}> Sugerencias </P>
-						</TouchableOpacity>
-
-						<TouchableOpacity style={styles.profileListItem}>
-							<Image style={styles.profileListIcon} source={adptvIcon}/>
+							<SupportNumberIcon style={styles.profileListIcon}/>
 							<P style={styles.elementText}> Número de apoyo </P>
 						</TouchableOpacity>
 
 						<TouchableOpacity style={styles.profileListItem} onPress={() => logOutAlert()}>
-							<Image style={styles.profileListIcon} source={adptvIcon}/>
+							<LogOutIcon style={styles.profileListIcon}/>
 							<P style={styles.elementText}> Cerrar sesión</P>
 						</TouchableOpacity>
 
@@ -142,9 +149,8 @@ const styles = StyleSheet.create({
 
 	profileListIcon: {
 		resizeMode: "contain",
-		width: 30,
-		height: 28,
-		position: 'absolute'
+		position: 'absolute',
+		top: 2
 	}, 
 
 	profileListItem: {
@@ -185,5 +191,13 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		textAlign: 'center',
 		marginHorizontal: 45
+	}, 
+	qrContainer: {
+		
+		backgroundColor: 'white',
+		justifyContent: 'center',
+		alignItems: 'center',
+		textAlign: 'center',
+		padding: 10,
 	}
 })

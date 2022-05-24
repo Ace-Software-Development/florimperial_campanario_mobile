@@ -44,4 +44,3 @@ export default function MyReservationsScreen(props) {
 		</ScreenContainer>
 	);
 }
-
