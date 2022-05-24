@@ -138,6 +138,7 @@ export async function getReservations() {
 	reservationQuery.equalTo('estatus', 2);
 	reservationQuery.matchesQuery('sitio', sitiosQuery);
 	reservationQuery.include('sitio');
+	reservationQuery.addDescending('fechaInicio');
 
 	let data = await reservationQuery.find();
 	return data; 

@@ -7,6 +7,8 @@ import GolfReservationsScreen from '../screens/golf/GolfReservationsScreen';
 import GolfTeeScreen from '../screens/golf/GolfTeeScreen';
 import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
+import GymMenuScreen from '../screens/gym/GymMenuScreen';
+import GymReservationsScreen from '../screens/gym/GymReservationsScreen';
 import { reservationMadeContext } from '../../../utils/context';
 
 const ModulesStackNavigator = createNativeStackNavigator();
@@ -34,7 +36,7 @@ export default function NewsletterStack(props) {
 				}}
 			/>
 
-			{/* TODO: Pass these component to a Golf Stack */}
+			{/* Golf Stack */}
 			<ModulesStackNavigator.Screen 
 				name='golf_reservations'
 				component={GolfReservationsScreen}
@@ -70,6 +72,27 @@ export default function NewsletterStack(props) {
 				component={GolfRegulationsScreen}
 				options={{
 					title: 'Reglamento Golf',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
+			{/* Gym Stack */}
+			<ModulesStackNavigator.Screen
+				name='gym_module'
+				component={GymMenuScreen}
+				options={{
+					title: 'Gimnasio',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+			
+			<ModulesStackNavigator.Screen 
+				name='gym_reservations'
+				component={GymReservationsScreen}
+				options={{
+					title: 'Reservaciones Gimnasio',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true,
 				}}
