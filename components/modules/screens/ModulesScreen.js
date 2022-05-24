@@ -6,6 +6,7 @@ import golfIMG from '../../../assets/img/golfIMG.png';
 import gymIMG from '../../../assets/img/gymIMG.jpeg';
 import raquetaIMG from '../../../assets/img/raquetaIMG.jpg';
 import poolIMG from '../../../assets/img/poolIMG.jpg';
+import salonesIMG from '../../../assets/img/salonesIMG.jpg';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ModulesScreen(props) {
@@ -42,7 +43,7 @@ export default function ModulesScreen(props) {
 
 				<ModuleCard  
 					title='Salones'
-					source={raquetaIMG}
+					source={salonesIMG}
 					onPress={() => navigation.navigate('salones_module')}
 				/>
 
