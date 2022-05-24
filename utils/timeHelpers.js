@@ -15,3 +15,21 @@ export function getMonthFormat(dateObj){
 	return formated;
 
 }
+
+export const getCalendarOptions = data => {
+	if (data.length == 0)
+		return [];
+
+	const dates = [];
+	const seen = new Set();
+	data.forEach(row => {
+		const d = row.datetime.split('T')[0];
+		if (!seen.has(d)){
+			const date = new Date(row.datetime);
+			dates.push(date);
+			seen.add(d);
+		}
+	});
+	dates.sort( (a,b) => a.getFullYear()-b.getFullYear() || a.getMonth()-b.getMonth() || a.getDate()-b.getDate());
+	return dates;
+};
