@@ -203,6 +203,20 @@ export default function NewsletterStack(props) {
 				}}
 			/>
 
+			<ModulesStackNavigator.Screen
+				name='salones_reservations'
+				component={ReservationsScreen}
+				initialParams={{
+					module: 'salones',
+					showGuests: false
+				}}
+				options={{
+					title: 'Reservaciones Salones',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
 		</ModulesStackNavigator.Navigator>
 	);
 }

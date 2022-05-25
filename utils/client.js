@@ -119,6 +119,7 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 }
 
 // Gym module
+// TODO Actualizar es status de la reservacion de 1 a 2 cuando se llene el cupo
 export async function getAllAvailableReservationsGym(filterCoaches=false){
 	/** 
 	 * Retrieves all available gym reservations from DB 
@@ -138,7 +139,6 @@ export async function getAllAvailableReservationsGym(filterCoaches=false){
 	// Query multiple reservations
 	const multipleReservation = new Parse.Query(MULTIPLE_RESERVATION_MODEL);
 	let multipleReservations = await multipleReservation.find();
-	//TODO: cambiar a la forma mamalona
 	let ids = {};
 	multipleReservations.forEach(reservation => {
 		const id = reservation.get("reservacion").id;
@@ -283,28 +283,52 @@ export async function getAllAvailableReservationsPool(filterCoaches=false){
 	 * Retrieves all available pool reservations from DB 
 	 */
 
-	//Query all areas belonging to Raqueta
-	const areaQuery = new Parse.Query(AREA_MODEL);
-	areaQuery.equalTo('eliminado', false);
-	areaQuery.equalTo('nombre', 'Alberca');
+	 const userObj = await Parse.User.currentAsync();
 
-	const sitiosQuery = new Parse.Query(SITIO_MODEL);
-	sitiosQuery.matchesQuery('area', areaQuery);
-	sitiosQuery.include('area');
-
-	// Query all reservations
-	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
-	reservationQuery.equalTo('eliminado', false);
-	reservationQuery.equalTo('estatus', 1);
-	reservationQuery.matchesQuery('sitio', sitiosQuery);
-	reservationQuery.include('sitio');
-	reservationQuery.include('profesor');
-	if (filterCoaches) {
-		reservationQuery.exists('profesor');
-	}
-
-	let data = await reservationQuery.find();
-	return data;
+	 //Query all areas belonging to Gym
+	 const areaQuery = new Parse.Query(AREA_MODEL);
+	 areaQuery.equalTo('eliminado', false);
+	 areaQuery.equalTo('nombre', 'Alberca');
+ 
+	 const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	 sitiosQuery.equalTo('nombre', 'Alberca');
+	 sitiosQuery.matchesQuery('area', areaQuery);
+	 sitiosQuery.include('area');
+ 
+	 // Query multiple reservations
+	 const multipleReservation = new Parse.Query(MULTIPLE_RESERVATION_MODEL);
+	 let multipleReservations = await multipleReservation.find();
+	 let ids = {};
+	 multipleReservations.forEach(reservation => {
+		 const id = reservation.get("reservacion").id;
+		 const userId = reservation.get("user").id;
+ 
+		 if(!(id in ids))
+			 ids[id] = {"count": 0, "reserved": false};
+		 ids[id].count++;
+		 if(userId == userObj.id)
+			 ids[id].reserved = true
+	 });
+		 
+	 // Query all reservations
+	 const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	 reservationQuery.equalTo('eliminado', false);
+	 reservationQuery.equalTo('estatus', 1);
+	 reservationQuery.matchesQuery('sitio', sitiosQuery);
+	 reservationQuery.include('sitio');
+	 reservationQuery.include('profesor');
+	 if (filterCoaches) {
+		 reservationQuery.exists('profesor');
+	 }
+ 
+	 let data = await reservationQuery.find();
+	 let response = data.filter(object => {
+		 if (object.id in ids && ids[object.id].reserved)
+			 return false;
+		 const count = object.id in ids ? ids[object.id].count : 0;
+		 return object.get('maximoJugadores') > count;
+	 })
+	 return response;
 }
 
 export async function createReservationPool(dataReservation) {
@@ -314,16 +338,103 @@ export async function createReservationPool(dataReservation) {
 	 * @returns true if reservation data saved succesfully
 	 * else @returns false
 	 */
-	try{
+	 try{
 		// Get current user loged in
 		const userObj = await Parse.User.currentAsync();
 
 		// Update Reservation entry
 		let reservationObj = new Parse.Object('Reservacion');
 		reservationObj.set('objectId', dataReservation.objectId);
-		reservationObj.set('estatus', dataReservation.estatus);
-		reservationObj.set('user', userObj);
-		await reservationObj.save();
+		
+		// Create Multiple Reservation entry
+		let multipleReservationObj = new Parse.Object('ReservacionMultiple');
+		multipleReservationObj.set('reservacion', reservationObj);
+		multipleReservationObj.set('user', userObj);
+
+		await multipleReservationObj.save();
+
+		return true;
+	}catch(error) {
+		console.log(error);
+		return false;
+	}
+}
+
+// Salones module
+export async function getAllAvailableReservationsSalones(filterCoaches=false){
+	/** 
+	 * Retrieves all available salones reservations from DB 
+	 */
+
+	 const userObj = await Parse.User.currentAsync();
+
+	 //Query all areas belonging to Gym
+	 const areaQuery = new Parse.Query(AREA_MODEL);
+	 areaQuery.equalTo('eliminado', false);
+	 areaQuery.equalTo('nombre', 'Salones');
+ 
+	 const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	 sitiosQuery.equalTo('nombre', 'Salones');
+	 sitiosQuery.matchesQuery('area', areaQuery);
+	 sitiosQuery.include('area');
+ 
+	 // Query multiple reservations
+	 const multipleReservation = new Parse.Query(MULTIPLE_RESERVATION_MODEL);
+	 let multipleReservations = await multipleReservation.find();
+	 let ids = {};
+	 multipleReservations.forEach(reservation => {
+		 const id = reservation.get("reservacion").id;
+		 const userId = reservation.get("user").id;
+ 
+		 if(!(id in ids))
+			 ids[id] = {"count": 0, "reserved": false};
+		 ids[id].count++;
+		 if(userId == userObj.id)
+			 ids[id].reserved = true
+	 });
+		 
+	 // Query all reservations
+	 const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	 reservationQuery.equalTo('eliminado', false);
+	 reservationQuery.equalTo('estatus', 1);
+	 reservationQuery.matchesQuery('sitio', sitiosQuery);
+	 reservationQuery.include('sitio');
+	 reservationQuery.include('profesor');
+	 if (filterCoaches) {
+		 reservationQuery.exists('profesor');
+	 }
+ 
+	 let data = await reservationQuery.find();
+	 let response = data.filter(object => {
+		 if (object.id in ids && ids[object.id].reserved)
+			 return false;
+		 const count = object.id in ids ? ids[object.id].count : 0;
+		 return object.get('maximoJugadores') > count;
+	 })
+	 return response;
+}
+
+export async function createReservationSalones(dataReservation) {
+	/**
+	 * 
+	 * @param {array} dataReservation
+	 * @returns true if reservation data saved succesfully
+	 * else @returns false
+	 */
+	 try{
+		// Get current user loged in
+		const userObj = await Parse.User.currentAsync();
+
+		// Update Reservation entry
+		let reservationObj = new Parse.Object('Reservacion');
+		reservationObj.set('objectId', dataReservation.objectId);
+		
+		// Create Multiple Reservation entry
+		let multipleReservationObj = new Parse.Object('ReservacionMultiple');
+		multipleReservationObj.set('reservacion', reservationObj);
+		multipleReservationObj.set('user', userObj);
+
+		await multipleReservationObj.save();
 
 		return true;
 	}catch(error) {

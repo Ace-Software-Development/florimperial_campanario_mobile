@@ -7,7 +7,7 @@ import GuestsSection from '../../ui/GuestsSection';
 import DateOption from '../../ui/DateOption';
 import CapsuleBtn from '../../ui/CapsuleBtn';
 import Switch from '../../ui/Switch';
-import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym, getAllAvailableReservationsRaqueta, createReservationRaqueta, getAllAvailableReservationsPool, createReservationPool } from '../../../utils/client';
+import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym, getAllAvailableReservationsRaqueta, createReservationRaqueta, getAllAvailableReservationsPool, createReservationPool, getAllAvailableReservationsSalones, createReservationSalones } from '../../../utils/client';
 import { reservationMadeContext } from '../../../utils/context';
 import { getCalendarOptions } from '../../../utils/timeHelpers';
 import { STYLES as c } from '../../../utils/constants';
@@ -39,6 +39,8 @@ export default function ReservationsScreen({route, navigation}) {
 		fetchReservationsData = getAllAvailableReservationsRaqueta;
 	else if (route.params.module == 'pool')
 		fetchReservationsData = getAllAvailableReservationsPool;
+	else
+		fetchReservationsData = getAllAvailableReservationsSalones;
 
     /* ComponentDidMount */
 	useEffect(() => {
@@ -134,6 +136,10 @@ export default function ReservationsScreen({route, navigation}) {
 
 			case 'pool':
 				reservationCompleted = await createReservationPool(reservationData);
+				break;
+
+			case 'salones':
+				reservationCompleted = await createReservationSalones(reservationData);
 				break;
 
         }
