@@ -5,12 +5,13 @@ import ProfileIcon from '../../assets/icons/profile-icon.svg';
 import adptvIcon from '../../assets/img/adaptive-icon.png';
 import { STYLES as c } from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
+import { AuthContext } from './RootStack';
 import Parse from 'parse/react-native';
 
 
 
 export default function TopNav(props) {
-
+	const { addUser } = useContext(AuthContext);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
@@ -35,9 +36,10 @@ export default function TopNav(props) {
 		  .then(async () => {
 			const currentUser = await Parse.User.currentAsync();
 			if (currentUser === null) {
+			  addUser(false);
 			  Alert.alert('Exito!', 'Ha cerrado sesión exitosamente');
 			  setModalVisible(!modalVisible)
-			  navigation.navigate('Login');
+			  //navigation.navigate('Login');
 			}
 			return true;
 		  })
