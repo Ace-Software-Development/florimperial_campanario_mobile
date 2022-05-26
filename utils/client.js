@@ -1,3 +1,7 @@
+/* Requirements:
+	MMOD009
+	MMOD012 */
+
 import Parse from "parse/react-native.js";
 
 // Declaration of models
