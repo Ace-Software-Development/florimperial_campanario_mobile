@@ -14,7 +14,7 @@ export default function SalonesMenuScreen(props) {
             <View style={style.container}>
             	<Subtitle style={{marginBottom: 10}}>Reservaciones</Subtitle>
 				<ModulesMenuList>
-					<ModulesMenuListItem title="Horarios y resevaciones" /*onPress={() => navigation.navigate()} */>
+					<ModulesMenuListItem title="Horarios y resevaciones" onPress={() => navigation.navigate('salones_reservations')} >
 						<ClockIcon width={30} height={30} />
 					</ModulesMenuListItem>
 				</ModulesMenuList>
