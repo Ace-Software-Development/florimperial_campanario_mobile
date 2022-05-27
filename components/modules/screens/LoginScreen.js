@@ -11,31 +11,33 @@ import {
 import { CampanarioLogoIcon } from "../../ui/DynamicIcons";
 import { STYLES as c } from '../../../utils/constants';
 import { Parse } from "parse/react-native";
-import { AuthContext } from '../../core/RootStack';
 import { useNavigation } from '@react-navigation/native';
 const image = require('../../../assets/img/LogoLogin.png');
 
 export default function LoginScreen(props){
-  const { addUser } = useContext(AuthContext);
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [password, setPassword] = useState(null);
   const [nameError, setNameError] = useState(null);
 
+ /*  Check for user */
   useEffect(() =>{
     Parse.User.currentAsync().then(user => {
-        if (user !== undefined || user !== null) { 
-          addUser(false);
+        if (user === undefined || user === null) { 
+          navigation.navigate('LogIn')
         } else {
           let sessionToken = user.getSessionToken();
           Parse.User.become(sessionToken).then(object => {
-          addUser(true);
+          navigation.reset({
+              index: 0,
+              routes: [{name: 'Home'}],
+          });
         }).catch(error => {
-          addUser(false);
+          navigation.navigate('LogIn')
         });
       }
     })
-  })
+  },[])
   
 
   alertAnError = (title,message) => {
@@ -48,26 +50,25 @@ export default function LoginScreen(props){
 	)
   }
 
+  /* User log in */
   const onLogin = async() =>{
-	let    
-	username = (user).trim(),
-	passwordT = (password).trim();
-  console.log('hola');
-
-    if (username === "" || passwordT === "" ) {
+    if (user === null || password === null ) {
       setNameError(`Favor de llenar los espacios correctamente`);
     } else {
       try {
+        let    
+	      username = (user).trim(),
+      	passwordT = (password).trim();
         await Parse.User.logIn(username.toString(), passwordT.toString());
-        setNameError(username);
-        //this.submitAndClear();
         textInput.clear();
         textInput1.clear(); 
         setUser('');
         setPassword('');
         setNameError(null);
-        addUser(true);
-        //navigation.navigate('Home');  
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Home'}],
+        });
       } catch (error) {                
         setNameError('Usuario o contraseña incorrectos');
         return (error)
