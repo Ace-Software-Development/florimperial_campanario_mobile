@@ -174,6 +174,18 @@ export function ReservationCard(props) {
 	);
 }
 
+export function TrainingCard(props) {
+	return (
+		<View style={defaultStyles.trainingCard} >
+				<View style={defaultStyles.trainingDetails}>
+					<Text style={defaultStyles.trainingModule}>{props.ejercicio}</Text>
+					<Text style={defaultStyles.trainingContext}>Repeticiones: {props.reps}	  			Series: {props.series}</Text>
+				</View>
+		</View>
+
+	);
+}
+
 
 const defaultStyles = StyleSheet.create({
 	
@@ -296,10 +308,25 @@ const defaultStyles = StyleSheet.create({
 		marginBottom: 10
 	}, 
 
+	trainingCard: {
+		marginVertical: 10,
+		height: 180,
+		width: "100%",
+		marginBottom: 10
+	}, 
+
 	reservDetails: {
 		paddingVertical: 10,
 		paddingLeft: 15,
 		backgroundColor: '#56738B',
+		borderRadius: 10,
+		height:  "100%",
+	},
+
+	trainingDetails: {
+		paddingVertical: 10,
+		paddingLeft: 15,
+		backgroundColor: '#FAFAFA',
 		borderRadius: 10,
 		height:  "100%",
 	},
@@ -325,10 +352,24 @@ const defaultStyles = StyleSheet.create({
 		marginVertical: 3
 	},
 
+	trainingModule: {
+		color: '#2B4066',
+		fontSize: RFPercentage(2.6),
+		fontWeight: 'bold',
+		marginVertical: 3
+	},
+
 	reservContext: {
 		color: 'white',
 		fontSize: RFPercentage(2.2),
-		marginVertical: 3
+		marginVertical: 3,
+	},
+
+	trainingContext: {
+		color: '#2B4066',
+		fontSize: RFPercentage(2.2),
+		marginVertical: 3,
+		marginTop: 20
 	},
 
 	reservHourText: {

@@ -9,6 +9,7 @@ import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GolfClassesScreen from '../screens/golf/GolfClassesScreen';
 import GymMenuScreen from '../screens/gym/GymMenuScreen';
 import GymReservationsScreen from '../screens/gym/GymReservationsScreen';
+import GymRoutinesScreen from '../screens/gym/GymRoutinesScreen';
 import { reservationMadeContext } from '../../../utils/context';
 
 const ModulesStackNavigator = createNativeStackNavigator();
@@ -93,6 +94,16 @@ export default function NewsletterStack(props) {
 				component={GymReservationsScreen}
 				options={{
 					title: 'Reservaciones Gimnasio',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen 
+				name='gym_routines'
+				component={GymRoutinesScreen}
+				options={{
+					title: 'Rutinas',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true,
 				}}
