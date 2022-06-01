@@ -80,6 +80,11 @@ export default function GolfClassesScreen(props) {
 		}
 	} , [selectedDate]);
 
+	/**
+     * Saves selected reservation on DB 
+     * @returns true if all conditions are met, else
+     * @returns false
+     */
 	const onSubmit = async () => {
 		if (guests.length > maxGuests) {
 			Alert.alert('Máximo de invitados alcanzado', 'Se ha rebasado el máximo de invitados en el horario seleccionado', [

@@ -1,17 +1,20 @@
+/* Requirements:
+	MMOD009 */
+
 import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
-import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
-import GuestsSection from '../../../ui/GuestsSection';
-import DateOption from '../../../ui/DateOption';
-import CapsuleBtn from '../../../ui/CapsuleBtn';
-import Switch from '../../../ui/Switch';
-import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
-import { reservationMadeContext } from '../../../../utils/context';
-import { STYLES as c } from '../../../../utils/constants';
+import { ScreenContainer, P, Subtitle, ActionBtn } from '../../ui/CampanarioComponents';
+import GuestsSection from '../../ui/GuestsSection';
+import DateOption from '../../ui/DateOption';
+import CapsuleBtn from '../../ui/CapsuleBtn';
+import Switch from '../../ui/Switch';
+import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym, getAllAvailableReservationsRaqueta, createReservationRaqueta, getAllAvailableReservationsPool, createReservationPool, getAllAvailableReservationsSalones, createReservationSalones } from '../../../utils/client';
+import { reservationMadeContext } from '../../../utils/context';
+import { getCalendarOptions } from '../../../utils/timeHelpers';
+import { STYLES as c } from '../../../utils/constants';
 
-
-export default function GolfReservationsScreen(props) {
-	const [allReservations, setAllReservations] = useState([]);
+export default function ReservationsScreen({route, navigation}) {
+    const [allReservations, setAllReservations] = useState([]);
 	//Fechas
 	const [selectedDate, setSelectedDate] = useState(null);
 	const [shownReservations, setShownReservations] = useState([]);
@@ -25,8 +28,22 @@ export default function GolfReservationsScreen(props) {
 	//Guardar reservación
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
+    
+	let fetchReservationsData = null;
+	if (route.params.module == 'golf')
+    	fetchReservationsData = getAllAvailableReservationsGolf;
+	else if (route.params.module == 'golf_tee')
+		fetchReservationsData = getAllAvailableReservationsGolfTee;
+	else if (route.params.module == 'gym')
+		fetchReservationsData = getAllAvailableReservationsGym;
+	else if (route.params.module == 'raqueta')
+		fetchReservationsData = getAllAvailableReservationsRaqueta;
+	else if (route.params.module == 'pool')
+		fetchReservationsData = getAllAvailableReservationsPool;
+	else
+		fetchReservationsData = getAllAvailableReservationsSalones;
 
-	/* ComponentDidMount */
+    /* ComponentDidMount */
 	useEffect(() => {
 		let componentMounted = true;
 
@@ -41,7 +58,7 @@ export default function GolfReservationsScreen(props) {
 			setKeyboardVisible(false);
 		});
 
-		getAllAvailableReservationsGolf().then( response => {
+		fetchReservationsData().then( response => {
 			const data = [];
 			response.forEach(i => {
 				data.push({id: i.id, 
@@ -62,7 +79,7 @@ export default function GolfReservationsScreen(props) {
 		  }; 
 	}, []);
 
-	/* selectedDate changed value */
+    /* selectedDate changed value */
 	useEffect(() => {
 		if (selectedDate !== null && selectedDate !== undefined) {
 			let reservations = JSON.parse(JSON.stringify(allReservations));
@@ -76,13 +93,13 @@ export default function GolfReservationsScreen(props) {
 		}
 	} , [selectedDate]);
 
-	/**
+    /**
      * Saves selected reservation on DB 
      * @returns true if all conditions are met, else
      * @returns false
      */
 	const onSubmit = async () => {
-		if (guests.length > maxGuests) {
+        if (route.params.showGuests && guests.length > maxGuests) {
 			Alert.alert('Máximo de invitados alcanzado', 'Se ha rebasado el máximo de invitados en el horario seleccionado', [
 				{text: 'Cerrar'}
 			]);
@@ -93,11 +110,40 @@ export default function GolfReservationsScreen(props) {
 			objectId: selectedReservationId,
 			estatus: 2,
 		};
-		const reservationGolfData = {
-			carritosReservados: parseInt(karts),
-			cantidadHoyos: holesEnabled ? 18 : 9,
-		};
-		const reservationCompleted = await createReservationGolf(reservationData, reservationGolfData, guests);
+
+        let reservationCompleted = null;
+
+        switch(route.params.module) {
+
+            case 'golf':
+                const reservationGolfData = {
+                    carritosReservados: parseInt(karts),
+                    cantidadHoyos: holesEnabled ? 18 : 9,
+                };
+                reservationCompleted = await createReservationGolf(reservationData, reservationGolfData, guests);
+                break;
+			
+			case 'golf_tee':
+				reservationCompleted = await createReservationGolf(reservationData, undefined, guests);
+                break;
+
+            case 'gym':
+                reservationCompleted = await createReservationGym(reservationData);
+                break;
+
+			case 'raqueta':
+				reservationCompleted = await createReservationRaqueta(reservationData, guests);
+				break;
+
+			case 'pool':
+				reservationCompleted = await createReservationPool(reservationData);
+				break;
+
+			case 'salones':
+				reservationCompleted = await createReservationSalones(reservationData);
+				break;
+
+        }
 
 		// Si hubo un error al tratar de guardar la reservación
 		if (!reservationCompleted) {
@@ -112,48 +158,50 @@ export default function GolfReservationsScreen(props) {
 			{text: 'Cerrar', 
 			onPress: () => {
 				setReservationMade(!reservationMade);
-				props.navigation.navigate('module_main');
+				navigation.navigate('module_main');
 			}}
 		]);
 		return true;
 	};
 
-	return (
+    return (
 		<ScreenContainer style={{paddingTop: 0, flex: 1}}>
 		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }} >
 			
 			{/* Hoyos a jugar y carritos */}
-			<View style={style.tableContainer}>
+            { route.params.module == 'golf' && 
+                <View style={style.tableContainer}>
 
-				<View style={style.tableRow}>
-					<View style={style.tableCol1}>
-						<P >Hoyos a jugar</P>
-					</View>
-					<View style={style.tableCol2}>
-						<Switch defaultValue={true} 
-								onValueChange={val => setHolesEnabled(val)}
-								activeText='18' 
-								inactiveText='09'
-								/>
-					</View>
-				</View>
+                    <View style={style.tableRow}>
+                        <View style={style.tableCol1}>
+                            <P >Hoyos a jugar</P>
+                        </View>
+                        <View style={style.tableCol2}>
+                            <Switch defaultValue={true} 
+                                    onValueChange={val => setHolesEnabled(val)}
+                                    activeText='18' 
+                                    inactiveText='09'
+                                    />
+                        </View>
+                    </View>
 
-				<View style={style.tableRow}>
-					<View style={style.tableCol1}>
-						<P >Rentar carritos</P>
-					</View>
-					<View style={style.tableCol2}>
-							<TextInput style={style.textInput}
-								keyboardType='numeric'
-								onChangeText={val => setKarts(val)}
-								maxLength={2}
-								value={karts}
-								keyboard
-								/>
-					</View>
-				</View>
+                    <View style={style.tableRow}>
+                        <View style={style.tableCol1}>
+                            <P >Rentar carritos</P>
+                        </View>
+                        <View style={style.tableCol2}>
+                                <TextInput style={style.textInput}
+                                    keyboardType='numeric'
+                                    onChangeText={val => setKarts(val)}
+                                    maxLength={2}
+                                    value={karts}
+                                    keyboard
+                                    />
+                        </View>
+                    </View>
 
-			</View>
+                </View>
+            }
 
 			{/* Selecciona la fecha y hora de la reservacion */}
 			<View>
@@ -196,14 +244,16 @@ export default function GolfReservationsScreen(props) {
 			</View>
 
 			{/* Agrega los invitados */}
-			<View>
-			{ selectedReservationId &&
-				<GuestsSection guests={guests} 
-								setGuests={setGuests}
-								maxGuests={maxGuests} 
-				/>
-			}
-			</View>
+			{ route.params.showGuests &&
+                <View>
+                { selectedReservationId &&
+                    <GuestsSection guests={guests} 
+                                    setGuests={setGuests}
+                                    maxGuests={maxGuests} 
+                    />
+                }
+                </View>
+            }
 			
 			{selectedReservationId && !isKeyboardVisible ? (
 				<View style={style.actionBtnContainer}>
@@ -268,22 +318,3 @@ const style = StyleSheet.create({
 		height: 33
 	}
 });
-
-
-const getCalendarOptions = data => {
-	if (data.length == 0)
-		return [];
-
-	const dates = [];
-	const seen = new Set();
-	data.forEach(row => {
-		const d = row.datetime.split('T')[0];
-		if (!seen.has(d)){
-			const date = new Date(row.datetime);
-			dates.push(date);
-			seen.add(d);
-		}
-	});
-	dates.sort( (a,b) => a.getFullYear()-b.getFullYear() || a.getMonth()-b.getMonth() || a.getDate()-b.getDate());
-	return dates;
-};
