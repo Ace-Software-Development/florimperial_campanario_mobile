@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity } from 'react-native';
 import { Title, Subtitle, P } from '../ui/CampanarioComponents';
 import ProfileIcon from '../../assets/icons/profile-icon.svg';
@@ -10,13 +10,12 @@ import Parse from 'parse/react-native';
 
 
 export default function TopNav(props) {
-
 	const [modalVisible, setModalVisible] = useState(false);
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 
 	const navigation = useNavigation();
-
+	/* Get the current user and their email */
 	useEffect(() => {
 		async function getCurrentUser() {
 		  if (username === '') {
@@ -30,14 +29,19 @@ export default function TopNav(props) {
 		getCurrentUser();
 	}, [username, email]);
 
+	/*User log out*/
 	const doUserLogOut = async function () {
 		return await Parse.User.logOut()
 		  .then(async () => {
 			const currentUser = await Parse.User.currentAsync();
 			if (currentUser === null) {
+			  navigation.reset({
+				index: 0,
+				routes: [{name: 'LogIn'}],
+			  });
 			  Alert.alert('Exito!', 'Ha cerrado sesión exitosamente');
 			  setModalVisible(!modalVisible)
-			  navigation.navigate('Login');
+			  
 			}
 			return true;
 		  })
@@ -47,6 +51,7 @@ export default function TopNav(props) {
 		  });
 	};
 
+	/* Alert to verify if the user wants to log out */
 	const logOutAlert = () => {
 		Alert.alert(
 			'Cerrar sesión',

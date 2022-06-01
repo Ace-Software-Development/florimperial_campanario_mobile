@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState }from 'react';
 import {
   Pressable,
   Image,
@@ -11,89 +11,70 @@ import {
 import { CampanarioLogoIcon } from "../../ui/DynamicIcons";
 import { STYLES as c } from '../../../utils/constants';
 import { Parse } from "parse/react-native";
+import { useNavigation } from '@react-navigation/native';
 const image = require('../../../assets/img/LogoLogin.png');
 
-export default class LogInScreen extends React.Component{
-  static navigationOptions = {
-	header: null,
-  };
+export default function LoginScreen(props){
+  const navigation = useNavigation();
+  const [user, setUser] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [nameError, setNameError] = useState(null);
 
-  constructor(props){
-	super(props);
-	this.state = {
-		username: '',
-		password: '',
-		nameError: null
-	}
-	Parse.User.currentAsync().then(user => {
-	if (user !== undefined || user !== null) { 
-		this.navigateToPage('LogIn'); 
-	} else {
-		let sessionToken = user.getSessionToken();
-		Parse.User.become(sessionToken).then(object => {
-		this.navigateToPage('Home');
-		}).catch(error => {
-		this.navigateToPage('LogIn');
-		});
-	}
-	})
-  }
-
-  navigateToPage = (page) => {
-	this.props.navigation.navigate(page);
-  }
+ /*  Check for user */
+  useEffect(() =>{
+    Parse.User.currentAsync().then(user => {
+        if (user === undefined || user === null) { 
+          navigation.navigate('LogIn')
+        } else {
+          let sessionToken = user.getSessionToken();
+          Parse.User.become(sessionToken).then(object => {
+          navigation.reset({
+              index: 0,
+              routes: [{name: 'Home'}],
+          });
+        }).catch(error => {
+          navigation.navigate('LogIn')
+        });
+      }
+    })
+  },[])
+  
 
   alertAnError = (title,message) => {
 	Alert.alert(
 		title,
 		message,
 		[
-			{text: 'OK', onPress: () => {this.navigateToPage('LogIn')}},
+			{text: 'OK', onPress: () => {navigation.navigate('LogIn')}},
 		]
 	)
   }
 
-  /*componentWillMount(){
-	Parse.User.currentAsync().then(user => {
-	  if (user !== undefined || user !== null) { 
-		this.navigateToPage('LogIn'); 
-	  } else {
-		let sessionToken = user.getSessionToken();
-		Parse.User.become(sessionToken).then(object => {
-		  this.navigateToPage('Home');
-		}).catch(error => {
-		  this.navigateToPage('LogIn');
-		});
-	  }
-	})
-  }*/
-
-
-  onLogin = async() =>{
-	let    
-	username = (this.state.username).trim(),
-	password = (this.state.password).trim();
-
-    if (username === "" || password === "" ) {
-      this.setState(() => ({ nameError: `Favor de llenar los espacios correctamente` }));
+  /* User log in */
+  const onLogin = async() =>{
+    if (user === null || password === null ) {
+      setNameError(`Favor de llenar los espacios correctamente`);
     } else {
       try {
-        await Parse.User.logIn(username.toString(), password.toString());
-        //this.submitAndClear();
-        this.textInput.clear();
-        this.textInput1.clear(); 
-        this.state.username = '';
-        this.state.password = '';
-        this.state.nameError = null;
-        this.props.navigation.navigate('Home');  
+        let    
+	      username = (user).trim(),
+      	passwordT = (password).trim();
+        await Parse.User.logIn(username.toString(), passwordT.toString());
+        textInput.clear();
+        textInput1.clear(); 
+        setUser('');
+        setPassword('');
+        setNameError(null);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Home'}],
+        });
       } catch (error) {                
-        this.setState(() => ({ nameError: 'Usuario o contraseña incorrectos' }));
+        setNameError('Usuario o contraseña incorrectos');
         return (error)
       }
     }
   }
-
-  render() {
     return (
       <View style={styles.container}>
         <View style={{marginBottom: '15%'}}>
@@ -103,34 +84,34 @@ export default class LogInScreen extends React.Component{
           <TextInput style={styles.inputs}
             keyboardType="email-address"
             placeholder="Usuario"
-            value={this.state.username}
-            ref = {input => {this.textInput = input}}
-            onChangeText={(username) => this.setState({username})}/>
+            value={user}
+            ref = {input => {textInput = input}}
+            onChangeText={user => setUser(user)}/>
         </View>
         <View style={styles.inputContainer}>
           <TextInput style={styles.inputs}
             placeholder="Contraseña"
             secureTextEntry={true}
             underlineColorAndroid='transparent'
-            value={this.state.password}
-            ref = {input => {this.textInput1 = input}}
-            onChangeText={(password) => this.setState({password})}/>
+            value={password}
+            ref = {input => {textInput1 = input}}
+            onChangeText={password => setPassword(password)}/>
         </View>
-        <Pressable onPress={() => this.props.navigation.navigate('Recuperar contraseña')}>
+        <Pressable onPress={() => navigation.navigate('Recuperar contraseña')}>
           <Text style={styles.loginText}>¿Olvidaste tu contraseña?</Text>
         </Pressable>
-        {!!this.state.nameError && (
+        {!!nameError && (
           <View styles={styles.divError}>
-              <Text style={styles.divErrorFont}>{this.state.nameError}</Text>
+              <Text style={styles.divErrorFont}>{nameError}</Text>
           </View>
         )}
-        <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this.onLogin}>
+        <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={onLogin}>
           <Text style={styles.loginText}>Iniciar Sesión</Text>
         </TouchableHighlight>        
       </View>
     );
-  }
 }
+
 
 const styles = StyleSheet.create({
   container: {
