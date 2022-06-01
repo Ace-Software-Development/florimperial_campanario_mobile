@@ -484,16 +484,20 @@ export async function getReservations() {
 	reservationQuery.include('sitio');
 	reservationQuery.addDescending('fechaInicio');
 
+
 	let data = await reservationQuery.find();
 	return data; 
 }
 
-export async function getArea(areaId) {
+export async function getArea() {
 	const areaQuery = new Parse.Query(AREA_MODEL);
-	areaQuery.select('nombre');
 	areaQuery.equalTo('eliminado', false);
-	areaQuery.equalTo('objectId', areaId);
 
-	let area = await areaQuery.find();
-	return area;
+	let data = await areaQuery.find();
+	const areas = new Map();
+	
+	for (let i of data) {
+		areas.set(i.id, i.get('nombre'));
+	};
+	return areas;
 }
