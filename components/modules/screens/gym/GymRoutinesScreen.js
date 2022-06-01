@@ -20,12 +20,12 @@ export default function GymRoutinesScreen(props) {
     }, [selectedRoutineId])
 
     return(
-        <ScreenContainer style={{paddingTop: 0, flex: 1}}>
-            {!routines ? (
+        <ScreenContainer style={{paddingTop: 0, flex: 1}}>    
+            <View style={style.dayViewContainer}>
+            {routines.length === 0 ? (
                 <P>No tiene rutinas activas, consulte a su entrenador</P>
             ) : null
             }
-            <View style={style.dayViewContainer}>
             <ScrollView contentContainerStyle={{ alignItems: 'center'}} style={style.datePickerContainer} horizontal={true}>
                 {routines.map((routine, i) => {
                     return(
@@ -51,6 +51,7 @@ export default function GymRoutinesScreen(props) {
                                 ejercicio = {training.get('nombre')}
                                 reps = {training.get('repeticiones')}
                                 series = {training.get('series')}
+                                notas = {training.get('notas')}
                             />
                         )
                 })}

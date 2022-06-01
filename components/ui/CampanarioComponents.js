@@ -180,6 +180,10 @@ export function TrainingCard(props) {
 				<View style={defaultStyles.trainingDetails}>
 					<Text style={defaultStyles.trainingModule}>{props.ejercicio}</Text>
 					<Text style={defaultStyles.trainingContext}>Repeticiones: {props.reps}	  			Series: {props.series}</Text>
+					{props.notas ? (
+						<Text style={defaultStyles.trainingContext2}>Notas: {props.notas}</Text>
+					) : null
+					}
 				</View>
 		</View>
 
@@ -370,6 +374,14 @@ const defaultStyles = StyleSheet.create({
 		fontSize: RFPercentage(2.2),
 		marginVertical: 3,
 		marginTop: 20
+	},
+
+	trainingContext2: {
+		color: '#2B4066',
+		fontSize: RFPercentage(2),
+		marginVertical: 3,
+		marginTop: 15,
+		marginRight: 5
 	},
 
 	reservHourText: {
