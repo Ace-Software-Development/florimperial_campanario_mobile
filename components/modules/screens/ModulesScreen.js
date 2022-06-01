@@ -14,7 +14,6 @@ export default function ModulesScreen(props) {
 	return (
 		<ScreenContainer>
 			<TopNav title='Módulos' />
-
 			<ScrollView>
 
 				<ModuleCard  
@@ -46,9 +45,7 @@ export default function ModulesScreen(props) {
 					source={salonesIMG}
 					onPress={() => navigation.navigate('salones_module')}
 				/>
-
 			</ScrollView>
-
 		</ScreenContainer>
 	);
 }
