@@ -1,3 +1,4 @@
+//MGE003
 import React, {FC, ReactElement, useState} from 'react';
 import {
   Alert,
@@ -17,6 +18,7 @@ export default UserResetPassword = () => {
 
     const [email, setEmail] = useState('');
 
+    /*Sends an email to the user so that he can reset his password */
     const doUserPasswordReset = async () =>{
         const emailValue = email;
         return await Parse.User.requestPasswordReset(emailValue)

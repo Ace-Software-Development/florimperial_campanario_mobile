@@ -1,3 +1,4 @@
+//MGI013
 import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
@@ -11,10 +12,12 @@ export default function GymRoutinesScreen(props) {
     const [routines, setRoutines] = useState([]);
     const [trainings, setTrainings] = useState([]);
 
+    /*Get the routines assosiated with the user*/
     useEffect( () =>{
         getRoutines().then(data => setRoutines(data));
     }, [])
 
+    /*Get the trainings for the selected routine */
     useEffect( () => {
         getTrainings(selectedRoutineId).then(data => setTrainings(data));
     }, [selectedRoutineId])
