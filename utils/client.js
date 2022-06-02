@@ -480,7 +480,6 @@ export async function getReservations() {
 	reservationQuery.equalTo('user', userObj);
 	reservationQuery.equalTo('eliminado', false);
 	reservationQuery.equalTo('estatus', 2);
-	reservationQuery.matchesQuery('sitio', sitiosQuery);
 	reservationQuery.include('sitio');
 	reservationQuery.addDescending('fechaInicio');
 
@@ -500,4 +499,42 @@ export async function getArea() {
 		areas.set(i.id, i.get('nombre'));
 	};
 	return areas;
+}
+
+export async function getReservations2() {
+	const userObj = await Parse.User.currentAsync();
+
+	/*const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.select('nombre');
+	areaQuery.equalTo('eliminado', false);
+
+	const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	sitiosQuery.select('nombre');
+	sitiosQuery.equalTo('eliminado', false);
+	sitiosQuery.matchesQuery('area', areaQuery);
+	sitiosQuery.include('area');
+
+	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
+	reservationQuery.equalTo('user', userObj);
+	reservationQuery.equalTo('eliminado', false);
+	reservationQuery.equalTo('estatus', 2);
+	reservationQuery.matchesQuery('sitio', sitiosQuery);
+	reservationQuery.include('sitio');
+	reservationQuery.includeAll();*/
+
+	const multipleReservation = new Parse.Query(MULTIPLE_RESERVATION_MODEL);
+	multipleReservation.equalTo('user', userObj);
+	multipleReservation.include('reservacion');
+	//multipleReservation.includeAll();
+
+	//multipleReservation.include(reservationQuery.get('sitio'));
+
+	let data = await multipleReservation.find();
+	for (let i of data) {
+		console.log(i);
+		console.log("-----------------6------------------");
+	}
+	console.log("*****************************************");
+
+	return data;
 }
