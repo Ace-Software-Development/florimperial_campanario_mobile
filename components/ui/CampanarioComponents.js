@@ -146,7 +146,11 @@ export function Guests(props) {
         <View style={defaultStyles.guestContainer}>
             <View style={defaultStyles.guest}>
                 <Icon name='user' size={20} style={defaultStyles.icon}/>
-                <P>{props.text}</P>
+                {props.isPartner ?
+					<P>{props.text} (socio)</P>
+					:
+					<P>{props.text}</P>
+				}
             </View>
 			<TouchableOpacity 
 				style={defaultStyles.delete} 

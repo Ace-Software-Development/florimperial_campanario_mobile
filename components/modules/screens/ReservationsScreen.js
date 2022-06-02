@@ -12,6 +12,7 @@ import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, cr
 import { reservationMadeContext } from '../../../utils/context';
 import { getCalendarOptions } from '../../../utils/timeHelpers';
 import { STYLES as c } from '../../../utils/constants';
+import NumericInput from 'react-native-numeric-input';
 
 export default function ReservationsScreen({route, navigation}) {
     const [allReservations, setAllReservations] = useState([]);
@@ -190,13 +191,17 @@ export default function ReservationsScreen({route, navigation}) {
                             <P >Rentar carritos</P>
                         </View>
                         <View style={style.tableCol2}>
-                                <TextInput style={style.textInput}
-                                    keyboardType='numeric'
-                                    onChangeText={val => setKarts(val)}
-                                    maxLength={2}
-                                    value={karts}
-                                    keyboard
-                                    />
+							<NumericInput
+									rounded
+									type='plus-minus'
+									onChange={val => setKarts(val)}
+									totalHeight = {40}
+									totalWidth = {100}
+									minValue={0}
+									maxValue={6}
+									valueType='integer'
+									value={karts}
+							/>
                         </View>
                     </View>
 
