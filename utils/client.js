@@ -9,6 +9,8 @@ const RESERVACION_MODEL = Parse.Object.extend("Reservacion");
 const AREA_MODEL = Parse.Object.extend("Area");
 const SITIO_MODEL = Parse.Object.extend("Sitio");
 const USER_MODEL = Parse.Object.extend("_User");
+const RUTINA_MODEL = Parse.Object.extend("Rutina");
+const EJERCICIO_MODEL = Parse.Object.extend("Ejercicio");
 const MULTIPLE_RESERVATION_MODEL = Parse.Object.extend("ReservacionMultiple");
 
 
@@ -531,4 +533,26 @@ export async function getArea() {
 		areas.set(i.id, i.get('nombre'));
 	};
 	return areas;
+}
+
+export async function getRoutines() {
+	const userObj = await Parse.User.currentAsync();
+	const routinesQuery = new Parse.Query(RUTINA_MODEL);
+	routinesQuery.equalTo('user', userObj);
+	routinesQuery.select('titulo');
+
+	let data = await routinesQuery.find();
+	return data;
+}
+
+export async function getTrainings(rutinaId){
+	const rutinaQuery = new Parse.Query(RUTINA_MODEL);
+	rutinaQuery.equalTo('objectId', rutinaId);
+	const rutina = await rutinaQuery.first();
+
+	const trainingsQuery = new Parse.Query(EJERCICIO_MODEL);
+	trainingsQuery.equalTo('rutina', rutina);
+
+	let data = await trainingsQuery.find();
+	return data;
 }
