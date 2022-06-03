@@ -466,6 +466,12 @@ export async function getAllActiveUsers(){
 }
 
 export async function getReservations() {
+	/**
+	 * 
+	 * @param none
+	 * @returns array with all reservations made by user
+	 * else @returns empty array
+	 */
 	const userObj = await Parse.User.currentAsync();
 
 	const areaQuery = new Parse.Query(AREA_MODEL);
@@ -482,22 +488,51 @@ export async function getReservations() {
 	reservationQuery.equalTo('user', userObj);
 	reservationQuery.equalTo('eliminado', false);
 	reservationQuery.equalTo('estatus', 2);
-	reservationQuery.matchesQuery('sitio', sitiosQuery);
 	reservationQuery.include('sitio');
-	reservationQuery.addDescending('fechaInicio');
 
 	let data = await reservationQuery.find();
+
+	const multipleReservationIdQuery = new Parse.Query(MULTIPLE_RESERVATION_MODEL);
+	multipleReservationIdQuery.select('reservacion');
+	multipleReservationIdQuery.equalTo('user', userObj);
+
+	let reservacionMultipeId = await multipleReservationIdQuery.find();
+	const reservacionIDS = [];
+
+	for (let i of reservacionMultipeId) {
+		reservacionIDS.push(i.get('reservacion').id);
+	}
+
+	for (let i of reservacionIDS) {		
+		const multipleReservationQuery = new Parse.Query(RESERVACION_MODEL);
+		multipleReservationQuery.equalTo('objectId', i);
+		multipleReservationQuery.equalTo('eliminado', false);
+		multipleReservationQuery.matchesQuery('sitio', sitiosQuery);
+		multipleReservationQuery.include('sitio');
+
+		let reservacion = await multipleReservationQuery.find();
+	
+		data.push(reservacion[0]);
+	}
+
+	data.sort(function(a, b) {
+		return (a.get('fechaInicio').toISOString() > b.get('fechaInicio').toISOString()) ? -1 : ((a.get('fechaInicio').toISOString() < b.get('fechaInicio').toISOString()) ? 1 : 0);
+	});
+
 	return data; 
 }
 
-export async function getArea(areaId) {
+export async function getArea() {
 	const areaQuery = new Parse.Query(AREA_MODEL);
-	areaQuery.select('nombre');
 	areaQuery.equalTo('eliminado', false);
-	areaQuery.equalTo('objectId', areaId);
 
-	let area = await areaQuery.find();
-	return area;
+	let data = await areaQuery.find();
+	const areas = new Map();
+	
+	for (let i of data) {
+		areas.set(i.id, i.get('nombre'));
+	};
+	return areas;
 }
 
 export async function getRoutines() {
