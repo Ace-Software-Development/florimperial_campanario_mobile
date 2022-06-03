@@ -3,7 +3,7 @@ import { ScrollView } from 'react-native';
 import { ScreenContainer, ReservationCard } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
 import { getReservations } from '../../../utils/client';
-import { getReservations2 } from '../../../utils/client';
+import { getMultipleReservations } from '../../../utils/client';
 import { getMonthFormat } from '../../../utils/timeHelpers';
 import { reservationMadeContext } from '../../../utils/context';
 import { multipleReservationMadeContext } from '../../../utils/context';
@@ -27,9 +27,9 @@ export default function MyReservationsScreen(props) {
 		.then(data => setReservations(data));	
 	}, [reservationMade]);
 
-	useEffect(() => {
-		getReservations2();
-	}, []);
+	/*useEffect(() => {
+		getMultipleReservations();
+	}, []);*/
 
 
 	/*useEffect( () => {
