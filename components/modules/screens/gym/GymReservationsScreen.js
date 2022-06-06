@@ -152,6 +152,7 @@ export default function GymReservationsScreen(props) {
             </ScrollView>
         </ScreenContainer>
     )
+}
 
 const style = StyleSheet.create({
 	tableContainer: {

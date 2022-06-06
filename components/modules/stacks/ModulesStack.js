@@ -5,6 +5,8 @@ import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
 import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
 import GymMenuScreen from '../screens/gym/GymMenuScreen';
+import GymRoutinesScreen from '../screens/gym/GymRoutinesScreen';
+import { reservationMadeContext } from '../../../utils/context';
 import RaquetaMenuScreen from '../screens/raqueta/RaquetaMenuScreen';
 import PoolMenuScreen from '../screens/pool/PoolMenuScreen';
 import ReservationsScreen from '../screens/ReservationsScreen';
@@ -125,6 +127,14 @@ export default function NewsletterStack(props) {
 					title: 'Clases Personalizadas Gimnasio',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen 
+				name='gym_routines'
+				component={GymRoutinesScreen}
+				options={{
+					title: 'Rutinas',
 				}}
 			/>
 

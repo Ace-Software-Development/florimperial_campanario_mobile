@@ -9,6 +9,8 @@ const RESERVACION_MODEL = Parse.Object.extend("Reservacion");
 const AREA_MODEL = Parse.Object.extend("Area");
 const SITIO_MODEL = Parse.Object.extend("Sitio");
 const USER_MODEL = Parse.Object.extend("_User");
+const RUTINA_MODEL = Parse.Object.extend("Rutina");
+const EJERCICIO_MODEL = Parse.Object.extend("Ejercicio");
 const MULTIPLE_RESERVATION_MODEL = Parse.Object.extend("ReservacionMultiple");
 const RESERVACION_GOLF_MODEL = Parse.Object.extend('ReservacionGolf');
 
@@ -480,6 +482,12 @@ export async function getAllActiveUsers(){
 }
 
 export async function getReservations() {
+	/**
+	 * 
+	 * @param none
+	 * @returns array with all reservations made by user
+	 * else @returns empty array
+	 */
 	const userObj = await Parse.User.currentAsync();
 
 	const areaQuery = new Parse.Query(AREA_MODEL);
@@ -497,10 +505,36 @@ export async function getReservations() {
 	reservationQuery.equalTo('eliminado', false);
 	reservationQuery.equalTo('estatus', 2);
 	reservationQuery.include('sitio');
-	reservationQuery.addDescending('fechaInicio');
-
 
 	let data = await reservationQuery.find();
+
+	const multipleReservationIdQuery = new Parse.Query(MULTIPLE_RESERVATION_MODEL);
+	multipleReservationIdQuery.select('reservacion');
+	multipleReservationIdQuery.equalTo('user', userObj);
+
+	let reservacionMultipeId = await multipleReservationIdQuery.find();
+	const reservacionIDS = [];
+
+	for (let i of reservacionMultipeId) {
+		reservacionIDS.push(i.get('reservacion').id);
+	}
+
+	for (let i of reservacionIDS) {		
+		const multipleReservationQuery = new Parse.Query(RESERVACION_MODEL);
+		multipleReservationQuery.equalTo('objectId', i);
+		multipleReservationQuery.equalTo('eliminado', false);
+		multipleReservationQuery.matchesQuery('sitio', sitiosQuery);
+		multipleReservationQuery.include('sitio');
+
+		let reservacion = await multipleReservationQuery.find();
+	
+		data.push(reservacion[0]);
+	}
+
+	data.sort(function(a, b) {
+		return (a.get('fechaInicio').toISOString() > b.get('fechaInicio').toISOString()) ? -1 : ((a.get('fechaInicio').toISOString() < b.get('fechaInicio').toISOString()) ? 1 : 0);
+	});
+
 	return data; 
 }
 
@@ -517,40 +551,24 @@ export async function getArea() {
 	return areas;
 }
 
-export async function getReservations2() {
+export async function getRoutines() {
 	const userObj = await Parse.User.currentAsync();
+	const routinesQuery = new Parse.Query(RUTINA_MODEL);
+	routinesQuery.equalTo('user', userObj);
+	routinesQuery.select('titulo');
 
-	/*const areaQuery = new Parse.Query(AREA_MODEL);
-	areaQuery.select('nombre');
-	areaQuery.equalTo('eliminado', false);
+	let data = await routinesQuery.find();
+	return data;
+}
 
-	const sitiosQuery = new Parse.Query(SITIO_MODEL);
-	sitiosQuery.select('nombre');
-	sitiosQuery.equalTo('eliminado', false);
-	sitiosQuery.matchesQuery('area', areaQuery);
-	sitiosQuery.include('area');
+export async function getTrainings(rutinaId){
+	const rutinaQuery = new Parse.Query(RUTINA_MODEL);
+	rutinaQuery.equalTo('objectId', rutinaId);
+	const rutina = await rutinaQuery.first();
 
-	const reservationQuery = new Parse.Query(RESERVACION_MODEL);
-	reservationQuery.equalTo('user', userObj);
-	reservationQuery.equalTo('eliminado', false);
-	reservationQuery.equalTo('estatus', 2);
-	reservationQuery.matchesQuery('sitio', sitiosQuery);
-	reservationQuery.include('sitio');
-	reservationQuery.includeAll();*/
+	const trainingsQuery = new Parse.Query(EJERCICIO_MODEL);
+	trainingsQuery.equalTo('rutina', rutina);
 
-	const multipleReservation = new Parse.Query(MULTIPLE_RESERVATION_MODEL);
-	multipleReservation.equalTo('user', userObj);
-	multipleReservation.include('reservacion');
-	//multipleReservation.includeAll();
-
-	//multipleReservation.include(reservationQuery.get('sitio'));
-
-	let data = await multipleReservation.find();
-	for (let i of data) {
-		console.log(i);
-		console.log("-----------------6------------------");
-	}
-	console.log("*****************************************");
-
+	let data = await trainingsQuery.find();
 	return data;
 }

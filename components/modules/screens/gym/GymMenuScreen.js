@@ -22,8 +22,9 @@ export default function GymReservationsScreen(props) {
 					<ModulesMenuListItem title="Clases personalizadas" onPress={() => navigation.navigate('gym_classes_reservations')}>
 						<GymIcon width={30} height={30} />
 					</ModulesMenuListItem>
-					<ModulesMenuListItem title="Rutinas" /*onPress={() => navigation.navigate()}*/>
-						<RutinasIcon width={30} height={30} />
+					<ModulesMenuListItem title="Rutinas" onPress={() => navigation.navigate('gym_routines')}>
+						<Golf2Icon width={30} height={30} />
+
 					</ModulesMenuListItem>
 				</ModulesMenuList>
             </View>
