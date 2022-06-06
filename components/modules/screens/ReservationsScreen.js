@@ -108,6 +108,7 @@ export default function ReservationsScreen({route, navigation}) {
 
 		const reservationData = {
 			objectId: selectedReservationId,
+			maximoJugadores: maxGuests,
 			estatus: 2,
 		};
 
@@ -124,7 +125,7 @@ export default function ReservationsScreen({route, navigation}) {
                 break;
 			
 			case 'golf_tee':
-				reservationCompleted = await createReservationGolf(reservationData, undefined, guests);
+				reservationCompleted = await createReservationGolf(reservationData, undefined, guests, true);
                 break;
 
             case 'gym':

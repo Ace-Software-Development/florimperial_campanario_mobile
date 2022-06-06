@@ -10,6 +10,7 @@ const AREA_MODEL = Parse.Object.extend("Area");
 const SITIO_MODEL = Parse.Object.extend("Sitio");
 const USER_MODEL = Parse.Object.extend("_User");
 const MULTIPLE_RESERVATION_MODEL = Parse.Object.extend("ReservacionMultiple");
+const RESERVACION_GOLF_MODEL = Parse.Object.extend('ReservacionGolf');
 
 
 // Golf module
@@ -66,7 +67,7 @@ export async function getAllAvailableReservationsGolfTee(){
 	return data;
 }
 
-export async function createReservationGolf(dataReservation, dataReservationGolf, guests) {
+export async function createReservationGolf(dataReservation, dataReservationGolf, guests, multipleReservation=false) {
 	/**
 	 * Saves reservation data in DB
 	 * @param {array} dataReservation 
@@ -82,17 +83,32 @@ export async function createReservationGolf(dataReservation, dataReservationGolf
 		// Update Reservation entry
 		let reservationObj = new Parse.Object('Reservacion');
 		reservationObj.set('objectId', dataReservation.objectId);
-		reservationObj.set('estatus', dataReservation.estatus);
-		reservationObj.set('user', userObj);
+		if (!multipleReservation) {
+			reservationObj.set('user', userObj);
+			reservationObj.set('estatus', dataReservation.estatus);
+		}
 		await reservationObj.save();
 
-		// Create GolfReservation entry
+		// Update GolfReservation entry
 		if(dataReservationGolf != undefined){
-			let reservationGolfObj = new Parse.Object('ReservacionGolf');
+			const golfReservationQuery = new Parse.Query(RESERVACION_GOLF_MODEL);            
+			golfReservationQuery.equalTo('reservacion', reservationObj);
+			let reservationGolfObj = await golfReservationQuery.find();
+			reservationGolfObj = reservationGolfObj.length ? reservationGolfObj[0] : null;
+			reservationGolfObj.set('carritosReservados', dataReservationGolf.carritosReservados);
 			reservationGolfObj.set('carritosReservados', dataReservationGolf.carritosReservados);
 			reservationGolfObj.set('cantidadHoyos', dataReservationGolf.cantidadHoyos);
 			reservationGolfObj.set('reservacion', reservationObj);
 			await reservationGolfObj.save();
+		}
+
+		if (multipleReservation) {
+			// Create Multiple Reservation entry
+			let multipleReservationObj = new Parse.Object('ReservacionMultiple');
+			multipleReservationObj.set('reservacion', reservationObj);
+			multipleReservationObj.set('user', userObj);
+
+			await multipleReservationObj.save();
 		}
 
 		// Crer entrada de invitados
