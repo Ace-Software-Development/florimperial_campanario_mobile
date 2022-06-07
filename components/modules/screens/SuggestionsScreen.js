@@ -60,7 +60,6 @@ export default function SuggetionsScreen(props) {
                 
                     <View style={styles.textInputView}>
                         <TextInput style={styles.textInput}
-                            onPress={Keyboard.dismiss()} accessible={false}
                             multiline
                             textAlignVertical='top'
                             numberOfLines={8}

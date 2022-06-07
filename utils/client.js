@@ -559,7 +559,6 @@ export async function getTrainings(rutinaId){
 }
 
 export async function postSuggestion(areaID, comment) {
-	//console.log(userObj.id, areaID, comment);
 	/**
 	 * 
 	 * @param {string} areaID
