@@ -10,13 +10,13 @@ import QRCode from 'react-native-qrcode-svg';
 import SuggetionsIcon from '../../assets/icons/suggestions-icon.svg';
 import SupportNumberIcon from '../../assets/icons/support-number-icon.svg';
 import LogOutIcon from '../../assets/icons/log-out-icon.svg';
-import Constants from 'expo-constants';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function TopNav(props) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
+	const [userID, setUserID] = useState('');
+
 
 	const navigation = useNavigation();
 	/* Get the current user and their email */
@@ -54,6 +54,14 @@ export default function TopNav(props) {
 			return false;
 		  });
 	};
+
+	useEffect(() => {
+		async function getUserID() {
+			const userID = await Parse.User.currentAsync();
+			setUserID(userID.id);
+		}
+		getUserID();
+	}, [userID]);
 
 	/* Alert to verify if the user wants to log out */
 	const logOutAlert = () => {
@@ -97,8 +105,8 @@ export default function TopNav(props) {
 						<SafeAreaView style={{ padding: 7}}>
 							<View style={styles.qrContainer}>
 								<QRCode
-								//QR code value
-								value={'https://youtu.be/eqd7biirRC4'}
+								//QR code value UZvfQQfIZT
+								value={'https://campanario.b4a.app/reservaciones/socios/'+userID}
 								//size of QR Code
 								size={200}
 								//Color of the QR Code

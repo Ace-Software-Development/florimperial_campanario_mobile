@@ -12,6 +12,7 @@ const USER_MODEL = Parse.Object.extend("_User");
 const RUTINA_MODEL = Parse.Object.extend("Rutina");
 const EJERCICIO_MODEL = Parse.Object.extend("Ejercicio");
 const MULTIPLE_RESERVATION_MODEL = Parse.Object.extend("ReservacionMultiple");
+const SUGERENCA_MODEL =Parse.Object.extend("Sugerencia");
 
 
 // Golf module
@@ -555,4 +556,39 @@ export async function getTrainings(rutinaId){
 
 	let data = await trainingsQuery.find();
 	return data;
+}
+
+export async function postSuggestion(areaID, comment) {
+	//console.log(userObj.id, areaID, comment);
+	/**
+	 * 
+	 * @param {string} areaID
+	 * @param {string} comment
+	 * @returns true if suggestion data saved succesfully
+	 * else @returns false
+	 */
+	 try{
+		// Get current user loged in
+		const userObj = await Parse.User.currentAsync();
+
+		const areaQuery = new Parse.Query(AREA_MODEL);
+		areaQuery.equalTo('objectId', areaID);
+		areaQuery.equalTo('eliminado', false);
+
+		const areaObj =  await areaQuery.find();
+
+		// Update Reservation entry
+		let suggestionObj = new Parse.Object('Sugerencia');
+		
+		suggestionObj.set('comentarios', comment);
+		suggestionObj.set('area', areaObj[0]);
+		suggestionObj.set('user', userObj);
+
+		await suggestionObj.save();
+
+		return true;
+	}catch(error) {
+		console.log(error);
+		return false;
+	}
 }
