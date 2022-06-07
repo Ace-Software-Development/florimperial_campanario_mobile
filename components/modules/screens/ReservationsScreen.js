@@ -25,7 +25,7 @@ export default function ReservationsScreen({route, navigation}) {
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState('0');
+	const [karts, setKarts] = useState(0);
 	//Guardar reservación
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
