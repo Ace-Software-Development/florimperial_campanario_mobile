@@ -3,23 +3,39 @@ import { ScrollView } from 'react-native';
 import { ScreenContainer, ReservationCard } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
 import { getReservations } from '../../../utils/client';
+import { getMultipleReservations } from '../../../utils/client';
 import { getMonthFormat } from '../../../utils/timeHelpers';
 import { reservationMadeContext } from '../../../utils/context';
+import { multipleReservationMadeContext } from '../../../utils/context';
+import { getArea } from '../../../utils/client';
 
 
 export default function MyReservationsScreen(props) {
+	const [areas, setallAreas] = useState([]);
 	const [reservations, setReservations] = useState([]);
 	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
+	const [multipleReservations, setMultipleReservations] = useState([]);
+	const {multipleReservationMade, setMultipleReservationMade} = useContext(multipleReservationMadeContext);
 
-	const areas = new Map();
-	areas.set('f2oIvY3kdW', 'Golf');
-	areas.set('BNgcGycR5Y', 'Raqueta');
-	areas.set('d4XN05i9zx', 'Alberca');
+	useEffect(() => {
+		const data = new Map();
+		getArea().then(data => setallAreas(data));
+	}, []);
 
 	useEffect( () => {
 		getReservations()
 		.then(data => setReservations(data));	
 	}, [reservationMade]);
+
+	/*useEffect(() => {
+		getMultipleReservations();
+	}, []);*/
+
+
+	/*useEffect( () => {
+		getMultipleReservations()
+		.then(data => setMultipleReservations(data));	
+	}, [multipleReservationMade]);*/
 
 	return (
 		<ScreenContainer>
@@ -39,6 +55,7 @@ export default function MyReservationsScreen(props) {
 				}
 				
 				)}
+				
 			</ScrollView>
 			
 		</ScreenContainer>

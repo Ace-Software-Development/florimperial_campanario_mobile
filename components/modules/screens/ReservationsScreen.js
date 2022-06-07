@@ -61,7 +61,7 @@ export default function ReservationsScreen({route, navigation}) {
 		fetchReservationsData().then( response => {
 			const data = [];
 			response.forEach(i => {
-				let endDate = i.get('fechaInicio');
+				let endDate = new Date(i.get('fechaInicio'));
 				endDate.setHours(endDate.getHours(), endDate.getMinutes()+30,0,0);
 				data.push({id: i.id, 
 							datetime: i.get('fechaInicio').toISOString(), 
@@ -111,6 +111,7 @@ export default function ReservationsScreen({route, navigation}) {
 
 		const reservationData = {
 			objectId: selectedReservationId,
+			maximoJugadores: maxGuests,
 			estatus: 2,
 		};
 
@@ -127,7 +128,7 @@ export default function ReservationsScreen({route, navigation}) {
                 break;
 			
 			case 'golf_tee':
-				reservationCompleted = await createReservationGolf(reservationData, undefined, guests);
+				reservationCompleted = await createReservationGolf(reservationData, undefined, guests, true);
                 break;
 
             case 'gym':
@@ -238,7 +239,7 @@ export default function ReservationsScreen({route, navigation}) {
 							<CapsuleBtn 
 								defaultActive={false}
 								title={i.datetime.toISOString().slice(11,16)}
-								endTime={i.datetimeF.toISOString().slice(11,16)}
+								endTime={i.datetimeF.slice(11,16)}
 								subtitle={i.hoyo_inicio}
 								value={i.id}
 								onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}

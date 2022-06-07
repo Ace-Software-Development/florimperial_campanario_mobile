@@ -5,6 +5,7 @@ import { ModulesMenuList, ModulesMenuListItem } from '../../../ui/ModulesMenuLis
 import { useNavigation } from '@react-navigation/native';
 import ClockIcon from '../../../../assets/icons/clock-icon.svg';
 import RaquetaIcon from '../../../../assets/icons/raqueta-icon.svg';
+import SwimIcon from '../../../../assets/icons/swim-icon.svg';
 
 export default function PoolMenuScreen(props) {
     const navigation = useNavigation();
@@ -18,7 +19,7 @@ export default function PoolMenuScreen(props) {
 						<ClockIcon width={30} height={30} />
 					</ModulesMenuListItem>
 					<ModulesMenuListItem title="Clases personalizadas" /*onPress={() => navigation.navigate()} */>
-						<RaquetaIcon width={30} height={30} />
+						<SwimIcon width={30} height={30} />
 					</ModulesMenuListItem>
 				</ModulesMenuList>
             </View>
