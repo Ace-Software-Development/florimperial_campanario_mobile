@@ -199,7 +199,7 @@ const defaultStyles = StyleSheet.create({
 	
 	title: {
 		color: c.color.primaryColor,
-		fontSize: RFPercentage(2.8),
+		fontSize: RFPercentage(2.6),
 		fontWeight: 'bold',
 	},
 

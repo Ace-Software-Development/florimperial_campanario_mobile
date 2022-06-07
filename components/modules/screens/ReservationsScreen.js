@@ -47,7 +47,6 @@ export default function ReservationsScreen({route, navigation}) {
     /* ComponentDidMount */
 	useEffect(() => {
 		let componentMounted = true;
-
 		/* Add keyboard listener */
 		const keyboardDidShowListener = Keyboard.addListener(
 			'keyboardDidShow', () => {
@@ -62,13 +61,16 @@ export default function ReservationsScreen({route, navigation}) {
 		fetchReservationsData().then( response => {
 			const data = [];
 			response.forEach(i => {
+				let endDate = i.get('fechaInicio');
+				endDate.setHours(endDate.getHours(), endDate.getMinutes()+30,0,0);
 				data.push({id: i.id, 
 							datetime: i.get('fechaInicio').toISOString(), 
+							datetimeF: endDate,
 							hoyo_inicio: i.get('sitio').get('nombre'),
 							maximoJugadores: i.get('maximoJugadores')
 						});
 			});
-
+			
 			if (componentMounted)
 				setAllReservations(data);
 		});
@@ -236,6 +238,7 @@ export default function ReservationsScreen({route, navigation}) {
 							<CapsuleBtn 
 								defaultActive={false}
 								title={i.datetime.toISOString().slice(11,16)}
+								endTime={i.datetimeF.toISOString().slice(11,16)}
 								subtitle={i.hoyo_inicio}
 								value={i.id}
 								onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}

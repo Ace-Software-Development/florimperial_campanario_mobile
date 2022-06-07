@@ -135,6 +135,8 @@ export default function NewsletterStack(props) {
 				component={GymRoutinesScreen}
 				options={{
 					title: 'Rutinas',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
 				}}
 			/>
 
