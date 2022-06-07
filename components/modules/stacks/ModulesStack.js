@@ -12,6 +12,8 @@ import PoolMenuScreen from '../screens/pool/PoolMenuScreen';
 import ReservationsScreen from '../screens/ReservationsScreen';
 import ClassesReservationsScreen from '../screens/ClassesReservationsScreen';
 import SalonesMenuScreen from '../screens/salones/SalonesMenuScreen';
+import SuggetionsScreen from '../screens/SuggestionsScreen';
+
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -264,6 +266,16 @@ export default function NewsletterStack(props) {
 				}}
 				options={{
 					title: 'Reservaciones Salones',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen 
+				name='suggestions'
+				component={SuggetionsScreen}
+				options={{
+					title: 'Nueva Sugerencia',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
 				}}
