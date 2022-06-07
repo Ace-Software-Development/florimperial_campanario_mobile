@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ModulesScreen from '../screens/ModulesScreen';
 import { Title } from '../../ui/CampanarioComponents';
 import GolfMenuScreen from '../screens/golf/GolfMenuScreen';
-import GolfRegulationsScreen from '../screens/golf/GolfRegulationsScreen';
+import RegulationsScreen from '../screens/RegulationsScreen';
 import GymMenuScreen from '../screens/gym/GymMenuScreen';
 import GymRoutinesScreen from '../screens/gym/GymRoutinesScreen';
 import { reservationMadeContext } from '../../../utils/context';
@@ -12,6 +12,8 @@ import PoolMenuScreen from '../screens/pool/PoolMenuScreen';
 import ReservationsScreen from '../screens/ReservationsScreen';
 import ClassesReservationsScreen from '../screens/ClassesReservationsScreen';
 import SalonesMenuScreen from '../screens/salones/SalonesMenuScreen';
+import SuggetionsScreen from '../screens/SuggestionsScreen';
+
 
 const ModulesStackNavigator = createNativeStackNavigator();
 
@@ -83,7 +85,10 @@ export default function NewsletterStack(props) {
 			
 			<ModulesStackNavigator.Screen 
 				name='golf_regulations'
-				component={GolfRegulationsScreen}
+				component={RegulationsScreen}
+				initialParams={{
+					module: 'Golf'
+				}}
 				options={{
 					title: 'Reglamento Golf',
 					headerTitle: (props) => <Title {...props}/>,
@@ -140,6 +145,19 @@ export default function NewsletterStack(props) {
 				}}
 			/>
 
+			<ModulesStackNavigator.Screen 
+				name='gym_regulations'
+				component={RegulationsScreen}
+				initialParams={{
+					module: 'Gimnasio'
+				}}
+				options={{
+					title: 'Reglamento Gimnasio',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
 			{/* Raqueta Stack */}
 			<ModulesStackNavigator.Screen
 				name='raqueta_module'
@@ -179,6 +197,19 @@ export default function NewsletterStack(props) {
 				}}
 			/>
 
+			<ModulesStackNavigator.Screen 
+				name='racket_regulations'
+				component={RegulationsScreen}
+				initialParams={{
+					module: 'Raqueta'
+				}}
+				options={{
+					title: 'Reglamento Raqueta',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
 			{/* Pool stack */}
 			<ModulesStackNavigator.Screen
 				name='pool_module'
@@ -204,6 +235,19 @@ export default function NewsletterStack(props) {
 				}}
 			/>
 
+			<ModulesStackNavigator.Screen 
+				name='pool_regulations'
+				component={RegulationsScreen}
+				initialParams={{
+					module: 'Alberca'
+				}}
+				options={{
+					title: 'Reglamento Alberca',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true,
+				}}
+			/>
+
 			{/* Salones stack */}
 			<ModulesStackNavigator.Screen
 				name='salones_module'
@@ -224,6 +268,16 @@ export default function NewsletterStack(props) {
 				}}
 				options={{
 					title: 'Reservaciones Salones',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
+			<ModulesStackNavigator.Screen 
+				name='suggestions'
+				component={SuggetionsScreen}
+				options={{
+					title: 'Nueva Sugerencia',
 					headerTitle: (props) => <Title {...props}/>,
 					headerBackTitleVisible: true
 				}}

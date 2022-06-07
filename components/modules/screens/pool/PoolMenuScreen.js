@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import ClockIcon from '../../../../assets/icons/clock-icon.svg';
 import RaquetaIcon from '../../../../assets/icons/raqueta-icon.svg';
 import SwimIcon from '../../../../assets/icons/swim-icon.svg';
+import BookIcon from '../../../../assets/icons/book-icon.svg';
 
 export default function PoolMenuScreen(props) {
     const navigation = useNavigation();
@@ -23,6 +24,15 @@ export default function PoolMenuScreen(props) {
 					</ModulesMenuListItem>
 				</ModulesMenuList>
             </View>
+
+			<View style={style.container}>
+				<Subtitle style={{marginBottom: 10}}>Reglamentos</Subtitle>
+				<ModulesMenuList>
+					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('pool_regulations')}>
+						<BookIcon width={30} height={30} />
+					</ModulesMenuListItem>
+				</ModulesMenuList>
+			</View>
         </ScreenContainer>
     )
 }

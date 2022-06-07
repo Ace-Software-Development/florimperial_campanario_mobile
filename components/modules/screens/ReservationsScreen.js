@@ -201,7 +201,7 @@ export default function ReservationsScreen({route, navigation}) {
 									totalHeight = {40}
 									totalWidth = {100}
 									minValue={0}
-									maxValue={6}
+									maxValue={69}
 									valueType='integer'
 									value={karts}
 							/>

@@ -1,18 +1,22 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Title, Subtitle, P } from '../ui/CampanarioComponents';
 import ProfileIcon from '../../assets/icons/profile-icon.svg';
 import adptvIcon from '../../assets/img/adaptive-icon.png';
 import { STYLES as c } from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 import Parse from 'parse/react-native';
-
-
+import QRCode from 'react-native-qrcode-svg';
+import SuggetionsIcon from '../../assets/icons/suggestions-icon.svg';
+import SupportNumberIcon from '../../assets/icons/support-number-icon.svg';
+import LogOutIcon from '../../assets/icons/log-out-icon.svg';
 
 export default function TopNav(props) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
+	const [userID, setUserID] = useState('');
+
 
 	const navigation = useNavigation();
 	/* Get the current user and their email */
@@ -51,6 +55,14 @@ export default function TopNav(props) {
 		  });
 	};
 
+	useEffect(() => {
+		async function getUserID() {
+			const userID = await Parse.User.currentAsync();
+			setUserID(userID.id);
+		}
+		getUserID();
+	}, [userID]);
+
 	/* Alert to verify if the user wants to log out */
 	const logOutAlert = () => {
 		Alert.alert(
@@ -64,6 +76,11 @@ export default function TopNav(props) {
 				{ text: "OK", onPress: () => doUserLogOut() }
 			  ]
 		);
+	}
+
+	const suggestionsFunction = () => {
+		setModalVisible(!modalVisible);
+		navigation.navigate('suggestions');
 	}
 
 	return (
@@ -85,23 +102,33 @@ export default function TopNav(props) {
 							<P size="small">{email}</P>
 						</View>
 
-						<TouchableOpacity style={styles.profileListItem}>
-							<Image style={styles.profileListIcon} source={adptvIcon}/>
-							<P style={styles.elementText}> Reglamento </P>
-						</TouchableOpacity>
+						<SafeAreaView style={{ padding: 7}}>
+							<View style={styles.qrContainer}>
+								<QRCode
+								//QR code value UZvfQQfIZT
+								value={'https://campanario.b4a.app/reservaciones/socios/'+userID}
+								//size of QR Code
+								size={200}
+								//Color of the QR Code
+								color="black"
+								//Background Color of the QR Code
+								backgroundColor="white"
+								/>
+							</View>
+						</SafeAreaView>
 
-						<TouchableOpacity style={styles.profileListItem}>
-							<Image style={styles.profileListIcon} source={adptvIcon}/>
+						<TouchableOpacity style={styles.profileListItem} onPress={() => suggestionsFunction()}>
+							<SuggetionsIcon style={styles.profileListIcon}/>
 							<P style={styles.elementText}> Sugerencias </P>
 						</TouchableOpacity>
 
 						<TouchableOpacity style={styles.profileListItem}>
-							<Image style={styles.profileListIcon} source={adptvIcon}/>
+							<SupportNumberIcon style={styles.profileListIcon}/>
 							<P style={styles.elementText}> Número de apoyo </P>
 						</TouchableOpacity>
 
 						<TouchableOpacity style={styles.profileListItem} onPress={() => logOutAlert()}>
-							<Image style={styles.profileListIcon} source={adptvIcon}/>
+							<LogOutIcon style={styles.profileListIcon}/>
 							<P style={styles.elementText}> Cerrar sesión</P>
 						</TouchableOpacity>
 
@@ -147,9 +174,8 @@ const styles = StyleSheet.create({
 
 	profileListIcon: {
 		resizeMode: "contain",
-		width: 30,
-		height: 28,
-		position: 'absolute'
+		position: 'absolute',
+		top: 2
 	}, 
 
 	profileListItem: {
@@ -190,5 +216,13 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		textAlign: 'center',
 		marginHorizontal: 45
+	}, 
+	qrContainer: {
+		
+		backgroundColor: 'white',
+		justifyContent: 'center',
+		alignItems: 'center',
+		textAlign: 'center',
+		padding: 10,
 	}
 })

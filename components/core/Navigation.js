@@ -7,7 +7,9 @@ import { reservationMadeContext as ReservationMadeContext } from '../../utils/co
 // Screens
 import NewsletterStack from '../modules/stacks/NewsletterStack';
 import ModulesStack from '../modules/stacks/ModulesStack';
+import MyReservationsStack from '../modules/stacks/MyReservationsStack';
 import MyReservationsScreen from '../modules/screens/MyReservationsScreen';
+import SuggetionsScreen from '../modules/screens/SuggestionsScreen';
 
 const TAB = createBottomTabNavigator();
 
@@ -58,7 +60,7 @@ export default MainNavigation = () => {
 							}}
 				/>
 				<TAB.Screen name="myreservations" 
-							component={MyReservationsScreen}
+							component={MyReservationsStack}
 							options={{
 								tabBarLabel: 'Mis Reservaciones',
 								headerShown: false,
