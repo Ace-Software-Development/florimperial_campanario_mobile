@@ -12,6 +12,7 @@ const USER_MODEL = Parse.Object.extend("_User");
 const RUTINA_MODEL = Parse.Object.extend("Rutina");
 const EJERCICIO_MODEL = Parse.Object.extend("Ejercicio");
 const MULTIPLE_RESERVATION_MODEL = Parse.Object.extend("ReservacionMultiple");
+const REGLAMENTO_MODEL = Parse.Object.extend("Reglamento");
 
 
 // Golf module
@@ -554,5 +555,22 @@ export async function getTrainings(rutinaId){
 	trainingsQuery.equalTo('rutina', rutina);
 
 	let data = await trainingsQuery.find();
+	return data;
+}
+
+/**
+ * Retrieves all regulations from db
+ * @param {string} module 
+ * @returns {array} data
+ */
+ export async function getRegulations(module) {
+	const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.equalTo('nombre', module);
+	
+	const regulationsQuery = new Parse.Query(REGLAMENTO_MODEL);
+	regulationsQuery.matchesQuery('area', areaQuery);
+	regulationsQuery.include('area');
+
+	const data = await regulationsQuery.find();
 	return data;
 }
