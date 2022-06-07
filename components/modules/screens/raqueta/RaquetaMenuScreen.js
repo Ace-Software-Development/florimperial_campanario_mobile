@@ -5,6 +5,7 @@ import { ModulesMenuList, ModulesMenuListItem } from '../../../ui/ModulesMenuLis
 import { useNavigation } from '@react-navigation/native';
 import ClockIcon from '../../../../assets/icons/clock-icon.svg';
 import RaquetaIcon from '../../../../assets/icons/raqueta-icon.svg';
+import BookIcon from '../../../../assets/icons/book-icon.svg';
 
 export default function RaquetaMenuScreen(props) {
     const navigation = useNavigation();
@@ -22,6 +23,15 @@ export default function RaquetaMenuScreen(props) {
 					</ModulesMenuListItem>
 				</ModulesMenuList>
             </View>
+
+			<View style={style.container}>
+				<Subtitle style={{marginBottom: 10}}>Reglamentos</Subtitle>
+				<ModulesMenuList>
+					<ModulesMenuListItem title="Reglamento general" onPress={() => navigation.navigate('racket_regulations')}>
+						<BookIcon width={30} height={30} />
+					</ModulesMenuListItem>
+				</ModulesMenuList>
+			</View>
         </ScreenContainer>
     )
 }
