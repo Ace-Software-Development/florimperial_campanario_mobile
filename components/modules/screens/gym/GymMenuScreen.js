@@ -5,7 +5,6 @@ import { ModulesMenuList, ModulesMenuListItem } from '../../../ui/ModulesMenuLis
 import { useNavigation } from '@react-navigation/native';
 import ClockIcon from '../../../../assets/icons/clock-icon.svg';
 import GymIcon from '../../../../assets/icons/gym-icon.svg';
-import Golf2Icon from '../../../../assets/icons/golf2-icon.svg';
 import RutinasIcon from '../../../../assets/icons/rutinas-icon.svg';
 import BookIcon from '../../../../assets/icons/book-icon.svg';
 
@@ -24,8 +23,7 @@ export default function GymReservationsScreen(props) {
 						<GymIcon width={30} height={30} />
 					</ModulesMenuListItem>
 					<ModulesMenuListItem title="Rutinas" onPress={() => navigation.navigate('gym_routines')}>
-						<Golf2Icon width={30} height={30} />
-
+						<RutinasIcon width={30} height={30} />
 					</ModulesMenuListItem>
 				</ModulesMenuList>
             </View>

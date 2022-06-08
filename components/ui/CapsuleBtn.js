@@ -28,8 +28,12 @@ export default function CapsuleBtn(props) {
 	}, [active]);
 
 	return (
-		<TouchableOpacity style={[style.container, statusContainerStyle]} onPress={() => setActive(!active)}>
-			<Text style={[style.title, statusTitleStyle]}>{props.title}</Text>
+		<TouchableOpacity style={[style.container, statusContainerStyle]} onPress={() => setActive(!active)}>			
+			{ props.subtitle === "Tee practica" ?
+				<Text style={[style.title2, statusTitleStyle]}>{props.title} - {props.endTime}</Text>
+				:
+				<Text style={[style.title, statusTitleStyle]}>{props.title}</Text>
+			}
 			<Text style={[style.subtitle, statusSubTitleStyle]}>{props.subtitle}</Text>
 		</TouchableOpacity>
 	);
@@ -52,6 +56,10 @@ const style = StyleSheet.create({
 	
 	title: {
 		fontSize: RFPercentage(2),
+	},
+
+	title2: {
+		fontSize: RFPercentage(1.7),
 	},
 
 	subtitle: {

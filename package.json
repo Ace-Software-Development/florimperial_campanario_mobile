@@ -24,6 +24,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-native": "0.68.2",
+    "react-native-numeric-input": "^1.9.1",
     "react-native-element-dropdown": "^1.8.12",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-qrcode-svg": "^6.1.2",
@@ -33,6 +34,7 @@
     "react-native-svg": "12.3.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-switch": "^1.5.1",
+    "react-native-vector-icons": "^9.1.0",
     "react-native-web": "0.17.7"
   },
   "devDependencies": {

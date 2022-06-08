@@ -130,6 +130,7 @@ export default function GuestsSection(props) {
                             index={index}
                             guests={props.guests}
                             setGuests={props.setGuests}
+                            isPartner={item.id != "" ? true : false}
                         />
                         )
                 })

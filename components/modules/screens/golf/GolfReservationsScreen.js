@@ -8,6 +8,7 @@ import Switch from '../../../ui/Switch';
 import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
 import { reservationMadeContext } from '../../../../utils/context';
 import { STYLES as c } from '../../../../utils/constants';
+import NumericInput from 'react-native-numeric-input'
 
 
 export default function GolfReservationsScreen(props) {
@@ -143,13 +144,13 @@ export default function GolfReservationsScreen(props) {
 						<P >Rentar carritos</P>
 					</View>
 					<View style={style.tableCol2}>
-							<TextInput style={style.textInput}
-								keyboardType='numeric'
+							<NumericInput
+								type='plus-minus'
 								onChangeText={val => setKarts(val)}
-								maxLength={2}
+								minValue={0}
+								valueType='integer'
 								value={karts}
-								keyboard
-								/>
+							/>
 					</View>
 				</View>
 

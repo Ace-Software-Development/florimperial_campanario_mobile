@@ -12,6 +12,7 @@ import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, cr
 import { reservationMadeContext } from '../../../utils/context';
 import { getCalendarOptions } from '../../../utils/timeHelpers';
 import { STYLES as c } from '../../../utils/constants';
+import NumericInput from 'react-native-numeric-input';
 
 export default function ReservationsScreen({route, navigation}) {
     const [allReservations, setAllReservations] = useState([]);
@@ -24,7 +25,7 @@ export default function ReservationsScreen({route, navigation}) {
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState('0');
+	const [karts, setKarts] = useState(0);
 	//Guardar reservación
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
@@ -46,7 +47,6 @@ export default function ReservationsScreen({route, navigation}) {
     /* ComponentDidMount */
 	useEffect(() => {
 		let componentMounted = true;
-
 		/* Add keyboard listener */
 		const keyboardDidShowListener = Keyboard.addListener(
 			'keyboardDidShow', () => {
@@ -61,13 +61,16 @@ export default function ReservationsScreen({route, navigation}) {
 		fetchReservationsData().then( response => {
 			const data = [];
 			response.forEach(i => {
+				let endDate = new Date(i.get('fechaInicio'));
+				endDate.setHours(endDate.getHours(), endDate.getMinutes()+30,0,0);
 				data.push({id: i.id, 
 							datetime: i.get('fechaInicio').toISOString(), 
+							datetimeF: endDate,
 							hoyo_inicio: i.get('sitio').get('nombre'),
 							maximoJugadores: i.get('maximoJugadores')
 						});
 			});
-
+			
 			if (componentMounted)
 				setAllReservations(data);
 		});
@@ -108,6 +111,7 @@ export default function ReservationsScreen({route, navigation}) {
 
 		const reservationData = {
 			objectId: selectedReservationId,
+			maximoJugadores: maxGuests,
 			estatus: 2,
 		};
 
@@ -124,7 +128,7 @@ export default function ReservationsScreen({route, navigation}) {
                 break;
 			
 			case 'golf_tee':
-				reservationCompleted = await createReservationGolf(reservationData, undefined, guests);
+				reservationCompleted = await createReservationGolf(reservationData, undefined, guests, true);
                 break;
 
             case 'gym':
@@ -190,13 +194,17 @@ export default function ReservationsScreen({route, navigation}) {
                             <P >Rentar carritos</P>
                         </View>
                         <View style={style.tableCol2}>
-                                <TextInput style={style.textInput}
-                                    keyboardType='numeric'
-                                    onChangeText={val => setKarts(val)}
-                                    maxLength={2}
-                                    value={karts}
-                                    keyboard
-                                    />
+							<NumericInput
+									rounded
+									type='plus-minus'
+									onChange={val => setKarts(val)}
+									totalHeight = {40}
+									totalWidth = {100}
+									minValue={0}
+									maxValue={69}
+									valueType='integer'
+									value={karts}
+							/>
                         </View>
                     </View>
 
@@ -231,6 +239,7 @@ export default function ReservationsScreen({route, navigation}) {
 							<CapsuleBtn 
 								defaultActive={false}
 								title={i.datetime.toISOString().slice(11,16)}
+								endTime={i.datetimeF.slice(11,16)}
 								subtitle={i.hoyo_inicio}
 								value={i.id}
 								onClick={id => {setSelectedReservationId(id); setMaxGuests(i.maximoJugadores); }}
