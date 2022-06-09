@@ -4,37 +4,30 @@ import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { STYLES as c } from '../../utils/constants';
 
 
-export default function CapsuleBtn(props) {
+export default function GymDayOption(props) {
 	const [active, setActive] = useState('defaultActive' in props ? props.defaultActive : false);
 	let statusContainerStyle = active ? style.containerActive : style.containerInactive;
 	let statusTitleStyle = active ? style.titleActive : style.titleInactive;
-	let statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;
 
-	// When the selectedReservation is modified in the parent component
+	// When the selectedRoutine is modified in the parent component
 	useEffect(() => {
-		setActive( props.selectedReservationId === props.value );
-	}, [props.selectedReservationId]);
+		setActive( props.selectedRoutineId === props.value );
+	}, [props.selectedRoutineId]);
 	
 	// When this component changes the Active state
 	useEffect(() => {
 		if (active)
 			props.onClick(props.value);
-		else if (props.selectedReservationId === props.value)
-			props.setSelectedReservationId(null);
-		
+		else if (props.selectedRoutineId === props.value)
+			props.setSelectedRoutineId(null);
+			
 		statusContainerStyle = active ? style.containerActive : style.containerInactive;
 		statusTitleStyle = active ? style.titleActive : style.titleInactive;
-		statusSubTitleStyle = active ? style.subtitleActive : style.subtitleInactive;
 	}, [active]);
 
 	return (
-		<TouchableOpacity style={[style.container, statusContainerStyle]} onPress={() => setActive(!active)}>			
-			{ props.subtitle === "Tee practica" ?
-				<Text style={[style.title2, statusTitleStyle]}>{props.title} - {props.endTime}</Text>
-				:
-				<Text style={[style.title, statusTitleStyle]}>{props.title}</Text>
-			}
-			<Text style={[style.subtitle, statusSubTitleStyle]}>{props.subtitle}</Text>
+		<TouchableOpacity style={[style.container, statusContainerStyle]} onPress={() => setActive(!active)}>
+			<Text style={[style.title, statusTitleStyle]}>{props.title}</Text>
 		</TouchableOpacity>
 	);
 }
@@ -45,7 +38,7 @@ const style = StyleSheet.create({
 		borderWidth: 1.5,
 		borderColor: c.color.primaryColor,
 		borderRadius: 100,
-		width: '29%',
+		width: 100,
 		paddingTop: 8,
 		paddingBottom: 7,
 		paddingHorizontal: 10,
@@ -58,14 +51,6 @@ const style = StyleSheet.create({
 		fontSize: RFPercentage(2),
 	},
 
-	title2: {
-		fontSize: RFPercentage(1.7),
-	},
-
-	subtitle: {
-		fontSize: RFPercentage(1.4),
-		color: c.color.darkGrey
-	},
 
 	containerActive: {
 		backgroundColor: c.color.primaryColor
@@ -81,13 +66,6 @@ const style = StyleSheet.create({
 
 	titleInactive: {
 		color: c.color.primaryColor
-	},
-
-	subtitleActive: {
-		color: c.color.grey
-	},
-	
-	subtitleInactive: {
-		color: c.color.darkGrey
 	}
+
 });

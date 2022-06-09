@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
-import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../../ui/CampanarioComponents';
-import DateOption from '../../../ui/DateOption';
-import CapsuleBtn from '../../../ui/CapsuleBtn';
-import Switch from '../../../ui/Switch';
-import { STYLES as c } from '../../../../utils/constants'
-import { getAllAvailableReservationsGolf, createReservationGolf } from '../../../../utils/client';
-import { reservationMadeContext } from '../../../../utils/context';
-import GuestsSection from '../../../ui/GuestsSection';
+import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../ui/CampanarioComponents';
+import DateOption from '../../ui/DateOption';
+import CapsuleBtn from '../../ui/CapsuleBtn';
+import Switch from '../../ui/Switch';
+import { STYLES as c } from '../../../utils/constants'
+import { getAllAvailableReservationsGolf,
+		createReservationGolf,
+		getAllAvailableReservationsGym, 
+		createReservationGym,
+		getAllAvailableReservationsRaqueta,
+		createReservationRaqueta } from '../../../utils/client';
+import { getCalendarOptions } from '../../../utils/timeHelpers';
+import { reservationMadeContext } from '../../../utils/context';
+import GuestsSection from '../../ui/GuestsSection';
+import NumericInput from 'react-native-numeric-input';
 
-
-export default function GolfClassesScreen(props) {
+export default function ClassesReservationsScreen({route, navigation}){
 	const [allReservations, setAllReservations] = useState([]);
 	//Fechas
 	const [selectedDate, setSelectedDate] = useState(null);
@@ -21,14 +27,25 @@ export default function GolfClassesScreen(props) {
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState('0');
+	const [karts, setKarts] = useState(0);
 	//Guardar reservación
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
 
+	
 	/* When app did mount */
 	useEffect(() => {
 		let componentMounted = true;
+		let fetchReservationsData = null;
+		if (route.params.module == 'golf') {
+			fetchReservationsData = () => getAllAvailableReservationsGolf(true);
+		}
+		else if (route.params.module == 'gym') {
+			fetchReservationsData = () => getAllAvailableReservationsGym(true);
+		}
+		else if (route.params.module == 'raqueta') {
+			fetchReservationsData = () => getAllAvailableReservationsRaqueta(true);
+		}
 
 		/* Add keyboard listener */
 		const keyboardDidShowListener = Keyboard.addListener(
@@ -44,7 +61,7 @@ export default function GolfClassesScreen(props) {
 			}
 		  );
 
-		  getAllAvailableReservationsGolf(true).then( response => {
+		  fetchReservationsData().then( response => {
 			const data = [];
 			response.forEach(i => {
 				data.push({id: i.id, 
@@ -97,11 +114,23 @@ export default function GolfClassesScreen(props) {
 			objectId: selectedReservationId,
 			estatus: 2,
 		};
-		const reservationGolfData = {
-			carritosReservados: parseInt(karts),
-			cantidadHoyos: holesEnabled ? 18 : 9,
+
+		let reservationCompleted = null;
+		switch (route.params.module) {
+			case 'golf':
+				const reservationGolfData = {
+					carritosReservados: parseInt(karts),
+					cantidadHoyos: holesEnabled ? 18 : 9,
+				}
+				reservationCompleted = await createReservationGolf(reservationData, reservationGolfData, guests);
+				break;
+
+			case 'gym':
+				reservationCompleted = await createReservationGym(reservationData);
+
+			case 'raqueta':
+				reservationCompleted = await createReservationRaqueta(reservationData);
 		};
-		const reservationCompleted = await createReservationGolf(reservationData, reservationGolfData, guests);
 
 		// Si hubo un error al tratar de guardar la reservación
 		if (!reservationCompleted) {
@@ -116,7 +145,7 @@ export default function GolfClassesScreen(props) {
 			{text: 'Cerrar', 
 			onPress: () => {
 				setReservationMade(!reservationMade);
-				props.navigation.navigate('module_main');
+				navigation.navigate('module_main');
 			}}
 		]);
 		return true;
@@ -124,40 +153,46 @@ export default function GolfClassesScreen(props) {
 
 	return (
 		<ScreenContainer style={{paddingTop: 0, flex: 1}}>
-		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }}>
+		<ScrollView style={{paddingTop: 0, flex: 1, marginVertical: 30}} contentContainerStyle={{ flexGrow: 1 }}>
 			
 			{/* Hoyos a jugar y carritos */}
-			<View style={style.tableContainer}>
+			{ route.params.module === 'golf' && 
+				<View style={style.tableContainer}>
 
-				<View style={style.tableRow}>
-					<View style={style.tableCol1}>
-						<P >Hoyos a jugar</P>
+					<View style={style.tableRow}>
+						<View style={style.tableCol1}>
+							<P >Hoyos a jugar</P>
+						</View>
+						<View style={style.tableCol2}>
+							<Switch defaultValue={true} 
+									onValueChange={val => setHolesEnabled(val)}
+									activeText='18' 
+									inactiveText='09'
+									/>
+						</View>
 					</View>
-					<View style={style.tableCol2}>
-						<Switch defaultValue={true} 
-								onValueChange={val => setHolesEnabled(val)}
-								activeText='18' 
-								inactiveText='09'
-								/>
+
+					<View style={style.tableRow}>
+						<View style={style.tableCol1}>
+							<P >Rentar carritos</P>
+						</View>
+						<View style={style.tableCol2}>
+							<NumericInput
+									rounded
+									type='plus-minus'
+									onChange={val => setKarts(val)}
+									totalHeight = {40}
+									totalWidth = {100}
+									minValue={0}
+									maxValue={69}
+									valueType='integer'
+									value={karts}
+							/>
+						</View>
 					</View>
+
 				</View>
-
-				<View style={style.tableRow}>
-					<View style={style.tableCol1}>
-						<P >Rentar carritos</P>
-					</View>
-					<View style={style.tableCol2}>
-							<TextInput style={style.textInput}
-								keyboardType='numeric'
-								onChangeText={val => setKarts(val)}
-								maxLength={2}
-								value={karts}
-								keyboard
-								/>
-					</View>
-				</View>
-
-			</View>
+			}
 
 			{/* Selecciona la fecha y hora de la reservacion */}
 			<View>
@@ -219,14 +254,16 @@ export default function GolfClassesScreen(props) {
 			</View>
 
 			{/* Agrega los invitados */}
-			<View>
-				{ selectedReservationId && 
-					<GuestsSection guests={guests} 
-									setGuests={setGuests}
-									maxGuests={maxGuests}
-					/>
-				}
-			</View>
+			{ route.params.showGuests && 
+				<View>
+					{ selectedReservationId && 
+						<GuestsSection guests={guests} 
+										setGuests={setGuests}
+										maxGuests={maxGuests}
+						/>
+					}
+				</View>
+			}
 			
 			{selectedReservationId && !isKeyboardVisible ? (
 				<View style={style.actionBtnContainer}>
@@ -239,39 +276,11 @@ export default function GolfClassesScreen(props) {
 	);
 }
 
-const groupByProfessor = reservationsList => {
-	const result = {};
-	reservationsList.forEach(i => {
-		const key = i.profesor.nombre;
-		if (!(key in result))
-			result[key] = [];
-		result[key].push(i);
-	});
-	return result;
-};
-
-const getCalendarOptions = data => {
-	if (data.length === 0 || data === undefined)
-		return [];
-
-	const dates = [];
-	const seen = new Set();
-	data.forEach(row => {
-		const d = row.datetime.split('T')[0];
-		if (!seen.has(d)){
-			const date = new Date(row.datetime);
-			dates.push(date);
-			seen.add(d);
-		}
-	});
-	dates.sort( (a,b) => a.getFullYear()-b.getFullYear() || a.getMonth()-b.getMonth() || a.getDate()-b.getDate());
-	return dates;
-};
 
 const style = StyleSheet.create({
 	tableContainer: {
 		justifyContent: 'flex-start',
-		marginVertical: 20
+		marginBottom: 20
 	},
 
 	tableRow: {
@@ -321,4 +330,15 @@ const style = StyleSheet.create({
 		width: 100,
 		height: 33
 	}
-})
+});
+
+const groupByProfessor = reservationsList => {
+	const result = {};
+	reservationsList.forEach(i => {
+		const key = i.profesor.nombre;
+		if (!(key in result))
+			result[key] = [];
+		result[key].push(i);
+	});
+	return result;
+};
