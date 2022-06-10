@@ -14,8 +14,8 @@ export default function ModulesScreen(props) {
 	return (
 		<ScreenContainer>
 			<TopNav title='Módulos' />
-			<ScrollView>
-
+			<ScrollView >
+			<View marginBottom={100}>
 				<ModuleCard  
 					title='Golf'
 					source={golfIMG}
@@ -45,6 +45,7 @@ export default function ModulesScreen(props) {
 					source={salonesIMG}
 					onPress={() => navigation.navigate('salones_module')}
 				/>
+			</View>
 			</ScrollView>
 		</ScreenContainer>
 	);

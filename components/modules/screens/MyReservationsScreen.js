@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { ScreenContainer, ReservationCard } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
 import { getReservations } from '../../../utils/client';
@@ -8,6 +8,7 @@ import { getMonthFormat } from '../../../utils/timeHelpers';
 import { reservationMadeContext } from '../../../utils/context';
 import { multipleReservationMadeContext } from '../../../utils/context';
 import { getArea } from '../../../utils/client';
+
 
 
 export default function MyReservationsScreen(props) {
@@ -42,6 +43,7 @@ export default function MyReservationsScreen(props) {
 			<TopNav title='Mis Reservaciones' />
 
 			<ScrollView>
+			<View marginBottom={100}>
 				{reservations.map((reservation, i) =>{
 					return (
 					<ReservationCard key={i}
@@ -53,9 +55,8 @@ export default function MyReservationsScreen(props) {
 					/>
 					)
 				}
-				
 				)}
-				
+			</View>
 			</ScrollView>
 			
 		</ScreenContainer>

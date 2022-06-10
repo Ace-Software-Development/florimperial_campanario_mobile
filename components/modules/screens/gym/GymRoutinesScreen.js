@@ -47,6 +47,7 @@ export default function GymRoutinesScreen(props) {
             </View>
             
             <ScrollView>
+                <View marginBottom={100}>
                 {trainings.map((training, i) => {
                         return(
                             <TrainingCard
@@ -58,6 +59,7 @@ export default function GymRoutinesScreen(props) {
                             />
                         )
                 })}
+                </View>
             </ScrollView>
         </ScreenContainer>
     )
