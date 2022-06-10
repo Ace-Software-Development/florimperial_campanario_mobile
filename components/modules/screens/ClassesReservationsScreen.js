@@ -151,6 +151,12 @@ export default function ClassesReservationsScreen({route, navigation}){
 		return true;
 	};
 
+	if (allReservations.length < 1) {
+		return (
+			<ScreenContainer style={{paddingTop: 0, flex: 1}}><Subtitle style={{marginTop:15}}>No hay reservaciones actualmente.</Subtitle></ScreenContainer>
+		);
+	} else
+
 	return (
 		<ScreenContainer style={{paddingTop: 0, flex: 1}}>
 		<ScrollView style={{paddingTop: 0, flex: 1, marginVertical: 30}} contentContainerStyle={{ flexGrow: 1 }}>
@@ -196,7 +202,7 @@ export default function ClassesReservationsScreen({route, navigation}){
 
 			{/* Selecciona la fecha y hora de la reservacion */}
 			<View>
-				<Subtitle>Selecciona la fecha y la hora</Subtitle>
+				<Subtitle>Selecciona la fecha</Subtitle>
 
 				{/* Date picker */}
 				<ScrollView style={style.datePickerContainer} horizontal={true}>
@@ -214,6 +220,8 @@ export default function ClassesReservationsScreen({route, navigation}){
 						);
 					}) }
 				</ScrollView>
+
+				<Subtitle style={{marginTop:15}}>Selecciona la hora</Subtitle>
 
 				{/* Hour picker */}
 				<View style={style.timePickerContainer} >
