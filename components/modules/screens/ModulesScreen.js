@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ScrollView  } from 'react-native';
 import { ScreenContainer, ModuleCard } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
-import golfIMG from '../../../assets/img/golfIMG.png';
+import golfIMG from '../../../assets/img/golfIMG.jpeg';
 import gymIMG from '../../../assets/img/gymIMG.jpeg';
 import raquetaIMG from '../../../assets/img/raquetaIMG.jpg';
 import poolIMG from '../../../assets/img/poolIMG.jpg';
@@ -40,11 +40,6 @@ export default function ModulesScreen(props) {
 					onPress={() => navigation.navigate('pool_module')}
 				/>
 
-				<ModuleCard  
-					title='Salones'
-					source={salonesIMG}
-					onPress={() => navigation.navigate('salones_module')}
-				/>
 			</ScrollView>
 		</ScreenContainer>
 	);

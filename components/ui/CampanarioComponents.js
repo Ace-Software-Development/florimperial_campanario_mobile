@@ -194,6 +194,28 @@ export function TrainingCard(props) {
 	);
 }
 
+export function ClinicaCard(props) {
+	return (
+		<View style={defaultStyles.reservCard} >
+				<View style={defaultStyles.reservDetails}>
+					<Text style={defaultStyles.reservModule}>{props.area}</Text>
+					<Text style={defaultStyles.reservContext}>{props.sitio}</Text>
+					<Text style={defaultStyles.reservHourText}>Hora</Text>
+					<Text style={defaultStyles.reservHour}>{props.hour} Hrs</Text>
+				</View>
+				<View style={defaultStyles.reservDate}>
+					{props.dias.LUNES ? <Text style={defaultStyles.dias}>LUN</Text> : null}
+					{props.dias.MARTES ? <Text style={defaultStyles.dias}>MAR</Text> : null}
+					{props.dias.MIERCOLES ? <Text style={defaultStyles.dias}>MIE</Text> : null}
+					{props.dias.JUEVES ? <Text style={defaultStyles.dias}>JUE</Text> : null}
+					{props.dias.VIERNES ? <Text style={defaultStyles.dias}>VIE</Text> : null}
+					{props.dias.SABADO ? <Text style={defaultStyles.dias}>SAB</Text> : null}
+				</View>
+			</View>
+
+	);
+}
+
 
 const defaultStyles = StyleSheet.create({
 	
@@ -411,6 +433,13 @@ const defaultStyles = StyleSheet.create({
 		fontSize: RFPercentage(5.6),
 		color: c.color.primaryColor,
 		includeFontPadding: false,
+	},
+
+	dias: {
+		fontSize: RFPercentage(2.4),
+		color: c.color.primaryColor,
+		textTransform: 'uppercase',
+		includeFontPadding: false, 
 	}
 	
 });
