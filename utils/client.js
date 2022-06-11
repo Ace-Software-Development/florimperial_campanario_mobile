@@ -16,8 +16,6 @@ const RESERVACION_GOLF_MODEL = Parse.Object.extend('ReservacionGolf');
 const SUGERENCA_MODEL =Parse.Object.extend("Sugerencia");
 const REGLAMENTO_MODEL = Parse.Object.extend("Reglamento");
 
-
-
 // Golf module
 export async function getAllAvailableReservationsGolf(filterCoaches=false){
 	// Query all sitios belonging to Golf
