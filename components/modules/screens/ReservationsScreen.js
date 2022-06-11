@@ -1,5 +1,4 @@
-/* Requirements:
-	MMOD009 */
+// M012 M014 M019 M023
 
 import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
@@ -10,7 +9,7 @@ import CapsuleBtn from '../../ui/CapsuleBtn';
 import Switch from '../../ui/Switch';
 import { getAllAvailableReservationsGolf, getAllAvailableReservationsGolfTee, createReservationGolf, createReservationGym, getAllAvailableReservationsGym, getAllAvailableReservationsRaqueta, createReservationRaqueta, getAllAvailableReservationsPool, createReservationPool, getAllAvailableReservationsSalones, createReservationSalones } from '../../../utils/client';
 import { reservationMadeContext } from '../../../utils/context';
-import { getCalendarOptions } from '../../../utils/timeHelpers';
+import { getCalendarOptions, getISOString, getTime, normalizeYearMonthDayFormat } from '../../../utils/timeHelpers';
 import { STYLES as c } from '../../../utils/constants';
 import NumericInput from 'react-native-numeric-input';
 
@@ -64,13 +63,12 @@ export default function ReservationsScreen({route, navigation}) {
 				let endDate = new Date(i.get('fechaInicio'));
 				endDate.setHours(endDate.getHours(), endDate.getMinutes()+30,0,0);
 				data.push({id: i.id, 
-							datetime: i.get('fechaInicio').toISOString(), 
+							datetime: i.get('fechaInicio'), 
 							datetimeF: endDate,
 							hoyo_inicio: i.get('sitio').get('nombre'),
 							maximoJugadores: i.get('maximoJugadores')
 						});
 			});
-			
 			if (componentMounted)
 				setAllReservations(data);
 		});
@@ -85,12 +83,13 @@ export default function ReservationsScreen({route, navigation}) {
     /* selectedDate changed value */
 	useEffect(() => {
 		if (selectedDate !== null && selectedDate !== undefined) {
-			let reservations = JSON.parse(JSON.stringify(allReservations));
-			reservations = reservations.filter(i => i.datetime.split('T')[0]===selectedDate.split('T')[0]);
-			reservations = reservations.map(i => {
-				i.datetime = new Date(i.datetime);
-				return i;
-			});
+			// We need to make a deep copy of the reservations, but then we need to remade the Date objects
+			let reservations = allReservations.map(reservation => {return{...reservation, datetime:reservation.datetime.toString()}});
+			reservations = JSON.parse(JSON.stringify(reservations));
+			reservations = reservations.map(reservation => {return{...reservation, datetime:new Date(reservation.datetime)}});
+			
+			// Find all reservations with the same Month, Year and Day
+			reservations = reservations.filter(i => normalizeYearMonthDayFormat(i.datetime)===normalizeYearMonthDayFormat(selectedDate));
 			setSelectedReservationId(null);
 			setShownReservations(reservations);
 		}
@@ -221,9 +220,9 @@ export default function ReservationsScreen({route, navigation}) {
 						return (
 							<DateOption 
 								defaultActive={false} 
-								datetime={date.toISOString()} 
+								datetime={date} 
 								day={date.getDay()}
-								date={date.getDate()}
+								date={date.getUTCDate()}
 								onClick={datetime => setSelectedDate(datetime)}
 								selectedDate={selectedDate}
 								key={date.toISOString()}
@@ -238,7 +237,7 @@ export default function ReservationsScreen({route, navigation}) {
 						return (
 							<CapsuleBtn 
 								defaultActive={false}
-								title={i.datetime.toISOString().slice(11,16)}
+								title={getTime(i.datetime)}
 								endTime={i.datetimeF.slice(11,16)}
 								subtitle={i.hoyo_inicio}
 								value={i.id}

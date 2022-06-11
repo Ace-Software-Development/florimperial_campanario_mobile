@@ -1,3 +1,4 @@
+// M011 M020 M024
 import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn, Hr } from '../../ui/CampanarioComponents';
@@ -10,8 +11,9 @@ import { getAllAvailableReservationsGolf,
 		getAllAvailableReservationsGym, 
 		createReservationGym,
 		getAllAvailableReservationsRaqueta,
+		getAllAvailableReservationsPool,
 		createReservationRaqueta } from '../../../utils/client';
-import { getCalendarOptions } from '../../../utils/timeHelpers';
+import { getCalendarOptions, normalizeYearMonthDayFormat, getTime } from '../../../utils/timeHelpers';
 import { reservationMadeContext } from '../../../utils/context';
 import GuestsSection from '../../ui/GuestsSection';
 import NumericInput from 'react-native-numeric-input';
@@ -37,15 +39,14 @@ export default function ClassesReservationsScreen({route, navigation}){
 	useEffect(() => {
 		let componentMounted = true;
 		let fetchReservationsData = null;
-		if (route.params.module == 'golf') {
+		if (route.params.module == 'golf')
 			fetchReservationsData = () => getAllAvailableReservationsGolf(true);
-		}
-		else if (route.params.module == 'gym') {
+		else if (route.params.module == 'gym')
 			fetchReservationsData = () => getAllAvailableReservationsGym(true);
-		}
-		else if (route.params.module == 'raqueta') {
+		else if (route.params.module == 'raqueta')
 			fetchReservationsData = () => getAllAvailableReservationsRaqueta(true);
-		}
+		else if (route.params.module == 'pool')
+			fetchReservationsData = () => getAllAvailableReservationsPool(true);
 
 		/* Add keyboard listener */
 		const keyboardDidShowListener = Keyboard.addListener(
@@ -65,7 +66,7 @@ export default function ClassesReservationsScreen({route, navigation}){
 			const data = [];
 			response.forEach(i => {
 				data.push({id: i.id, 
-							datetime: i.get('fechaInicio').toISOString(), 
+							datetime: i.get('fechaInicio'), 
 							profesor: {id:i.get('profesor').get('id'), nombre: i.get('profesor').get('nombre')},
 							hoyo_inicio: i.get('sitio').get('nombre'),
 							maximoJugadores: i.get('maximoJugadores')
@@ -86,12 +87,13 @@ export default function ClassesReservationsScreen({route, navigation}){
 	/* When the selected Date changes, we need to update the reservations available */
 	useEffect(() => {
 		if (selectedDate !== null && selectedDate !== undefined) {
-			let reservations = JSON.parse(JSON.stringify(allReservations));
-			reservations = reservations.filter(i => i.datetime.split('T')[0]===selectedDate.split('T')[0]);
-			reservations = reservations.map(i => {
-				i.datetime = new Date(i.datetime);
-				return i;
-			});
+			// We need to make a deep copy of the reservations, but then we need to remade the Date objects
+			let reservations = allReservations.map(reservation => {return{...reservation, datetime:reservation.datetime.toString()}});
+			reservations = JSON.parse(JSON.stringify(reservations));
+			reservations = reservations.map(reservation => {return{...reservation, datetime:new Date(reservation.datetime)}});
+			
+			// Find all reservations with the same Month, Year and Day
+			reservations = reservations.filter(i => normalizeYearMonthDayFormat(i.datetime)===normalizeYearMonthDayFormat(selectedDate));
 			setSelectedReservationId(null);
 			setShownReservations(reservations);
 		}
@@ -129,7 +131,7 @@ export default function ClassesReservationsScreen({route, navigation}){
 				reservationCompleted = await createReservationGym(reservationData);
 
 			case 'raqueta':
-				reservationCompleted = await createReservationRaqueta(reservationData);
+				reservationCompleted = await createReservationRaqueta(reservationData, guests);
 		};
 
 		// Si hubo un error al tratar de guardar la reservación
@@ -204,9 +206,9 @@ export default function ClassesReservationsScreen({route, navigation}){
 						return (
 							<DateOption 
 								defaultActive={false} 
-								datetime={date.toISOString()} 
+								datetime={date} 
 								day={date.getDay()}
-								date={date.getDate()}
+								date={date.getUTCDate()}
 								onClick={datetime => setSelectedDate(datetime)}
 								selectedDate={selectedDate}
 								key={date.toISOString()}
@@ -228,7 +230,7 @@ export default function ClassesReservationsScreen({route, navigation}){
 												return (
 													<CapsuleBtn 
 														defaultActive={false}
-														title={i.datetime.toISOString().slice(11,16)}
+														title={getTime(i.datetime)}
 														subtitle={i.hoyo_inicio}
 														value={i.id}
 														onClick={id => {
