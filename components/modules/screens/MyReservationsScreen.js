@@ -1,7 +1,7 @@
 // M009 M016
 import React, { useState, useEffect, useContext } from 'react';
-import { ScrollView } from 'react-native';
-import { ScreenContainer, ReservationCard } from '../../ui/CampanarioComponents';
+import { ScrollView, Text } from 'react-native';
+import { ScreenContainer, ReservationCard, ClinicaCard, Subtitle } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
 import { getReservations, getArea } from '../../../utils/client';
 import { getMonthFormat, getTime } from '../../../utils/timeHelpers';
@@ -11,9 +11,9 @@ import { reservationMadeContext, multipleReservationMadeContext } from '../../..
 export default function MyReservationsScreen(props) {
 	const [areas, setallAreas] = useState([]);
 	const [reservations, setReservations] = useState([]);
+	const [clinicas, setClinicas] = useState([]);
 	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
-	const [multipleReservations, setMultipleReservations] = useState([]);
-	const {multipleReservationMade, setMultipleReservationMade} = useContext(multipleReservationMadeContext);
+	const {clinicaMade, setClinicaMade} = useContext(reservationMadeContext);
 
 	useEffect(() => {
 		const data = new Map();
@@ -25,11 +25,30 @@ export default function MyReservationsScreen(props) {
 		.then(data => setReservations(data));	
 	}, [reservationMade]);
 
+	useEffect( () => {
+		getClinicas()
+		.then(data => setClinicas(data));	
+	}, [clinicaMade]);
+
+	for (let i of clinicas) console.log(i);
 	return (
 		<ScreenContainer>
 			<TopNav title='Mis Reservaciones' />
 
 			<ScrollView>
+				<Subtitle>Clínicas</Subtitle>
+				{clinicas.map((clinica, i) =>{
+					return (
+					<ClinicaCard key={i}
+						area={areas.get(clinica.get('sitio').get('area').id)}
+						sitio={clinica.get('sitio').get('nombre')}
+						hour={clinica.get('horario')}
+						dias={clinica.get('dias')}
+					/>
+					)
+				}
+				)}
+				<Subtitle>Reservaciones</Subtitle>
 				{reservations.map((reservation, i) =>{
 					return (
 					<ReservationCard key={i}
