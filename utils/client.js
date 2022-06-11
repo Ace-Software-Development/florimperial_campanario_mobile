@@ -13,8 +13,10 @@ const RUTINA_MODEL = Parse.Object.extend("Rutina");
 const EJERCICIO_MODEL = Parse.Object.extend("Ejercicio");
 const MULTIPLE_RESERVATION_MODEL = Parse.Object.extend("ReservacionMultiple");
 const RESERVACION_GOLF_MODEL = Parse.Object.extend('ReservacionGolf');
-const SUGERENCA_MODEL =Parse.Object.extend("Sugerencia");
+const SUGERENCA_MODEL = Parse.Object.extend("Sugerencia");
 const REGLAMENTO_MODEL = Parse.Object.extend("Reglamento");
+const  NUMEROATENCION_MODEL = Parse.Object.extend("NumeroAtencion");
+
 
 // Golf module
 export async function getAllAvailableReservationsGolf(filterCoaches=false){
@@ -626,3 +628,16 @@ export async function postSuggestion(areaID, comment) {
 	return data;
 }
 
+/**
+ * Retrieves support number from db
+ * @returns {int} data
+ */
+ export async function getSupportNumber() {
+
+	const supportNumberQuery = new Parse.Query(NUMEROATENCION_MODEL);
+	supportNumberQuery.first();
+
+	const data = await supportNumberQuery.find();
+	const supportNumber = data[0].get('Numero');
+	return supportNumber;
+}

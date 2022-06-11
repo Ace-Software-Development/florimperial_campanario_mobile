@@ -14,6 +14,7 @@ import { getAllAvailableReservationsGolf,
 import { getCalendarOptions } from '../../../utils/timeHelpers';
 import { reservationMadeContext } from '../../../utils/context';
 import GuestsSection from '../../ui/GuestsSection';
+import NumericInput from 'react-native-numeric-input';
 
 export default function ClassesReservationsScreen({route, navigation}){
 	const [allReservations, setAllReservations] = useState([]);
@@ -26,7 +27,7 @@ export default function ClassesReservationsScreen({route, navigation}){
 	const [maxGuests, setMaxGuests] = useState(0);
 	//Hoyos y carritos
 	const [holesEnabled, setHolesEnabled] = useState(true);
-	const [karts, setKarts] = useState('0');
+	const [karts, setKarts] = useState(0);
 	//Guardar reservación
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const {reservationMade, setReservationMade} = useContext(reservationMadeContext);
@@ -176,13 +177,17 @@ export default function ClassesReservationsScreen({route, navigation}){
 							<P >Rentar carritos</P>
 						</View>
 						<View style={style.tableCol2}>
-								<TextInput style={style.textInput}
-									keyboardType='numeric'
-									onChangeText={val => setKarts(val)}
-									maxLength={2}
+							<NumericInput
+									rounded
+									type='plus-minus'
+									onChange={val => setKarts(val)}
+									totalHeight = {40}
+									totalWidth = {100}
+									minValue={0}
+									maxValue={69}
+									valueType='integer'
 									value={karts}
-									keyboard
-									/>
+							/>
 						</View>
 					</View>
 
