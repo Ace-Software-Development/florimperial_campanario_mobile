@@ -538,6 +538,10 @@ export async function getReservations() {
 		return (a.get('fechaInicio').toISOString() > b.get('fechaInicio').toISOString()) ? -1 : ((a.get('fechaInicio').toISOString() < b.get('fechaInicio').toISOString()) ? 1 : 0);
 	});
 
+	data = data.filter((item, pos) => {
+		return data.indexOf(item) == pos;
+	});
+
 	return data; 
 }
 
