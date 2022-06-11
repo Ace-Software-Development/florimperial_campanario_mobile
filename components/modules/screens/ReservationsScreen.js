@@ -109,6 +109,13 @@ export default function ReservationsScreen({route, navigation}) {
 			return false;
 		}
 
+		if (route.params.module === 'raqueta' && guests.length < 1) {
+			Alert.alert('Agregue invitados', 'Deben haber mínimo dos personas para reservar una cancha', [
+				{text: 'Cerrar'}
+			]);
+			return false;
+		}
+
 		const reservationData = {
 			objectId: selectedReservationId,
 			maximoJugadores: maxGuests,
