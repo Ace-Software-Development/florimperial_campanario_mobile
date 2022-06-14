@@ -1,8 +1,8 @@
+// M004 M005 M006
 import React, { useEffect, useState, useContext } from 'react';
 import { View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Title, Subtitle, P } from '../ui/CampanarioComponents';
 import ProfileIcon from '../../assets/icons/profile-icon.svg';
-import adptvIcon from '../../assets/img/adaptive-icon.png';
 import { STYLES as c } from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 import Parse from 'parse/react-native';
@@ -10,12 +10,17 @@ import QRCode from 'react-native-qrcode-svg';
 import SuggetionsIcon from '../../assets/icons/suggestions-icon.svg';
 import SupportNumberIcon from '../../assets/icons/support-number-icon.svg';
 import LogOutIcon from '../../assets/icons/log-out-icon.svg';
+import * as Linking from "expo-linking";
+import { getSupportNumber } from '../../utils/client';
+
+
 
 export default function TopNav(props) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [userID, setUserID] = useState('');
+	const [supportNumber, setSupportNumber] = useState(0);
 
 
 	const navigation = useNavigation();
@@ -55,6 +60,7 @@ export default function TopNav(props) {
 		  });
 	};
 
+	/*get the current user's ID*/
 	useEffect(() => {
 		async function getUserID() {
 			const userID = await Parse.User.currentAsync();
@@ -78,10 +84,17 @@ export default function TopNav(props) {
 		);
 	}
 
+	/* navigate to suggestions screen */
 	const suggestionsFunction = () => {
 		setModalVisible(!modalVisible);
 		navigation.navigate('suggestions');
 	}
+
+	/* get support number using query function */
+	useEffect(() => {
+		const number = 0;
+		getSupportNumber().then(number => setSupportNumber(number));
+	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -122,7 +135,7 @@ export default function TopNav(props) {
 							<P style={styles.elementText}> Sugerencias </P>
 						</TouchableOpacity>
 
-						<TouchableOpacity style={styles.profileListItem}>
+						<TouchableOpacity style={styles.profileListItem} onPress={() => Linking.openURL('tel:'+supportNumber)}>
 							<SupportNumberIcon style={styles.profileListIcon}/>
 							<P style={styles.elementText}> Número de apoyo </P>
 						</TouchableOpacity>

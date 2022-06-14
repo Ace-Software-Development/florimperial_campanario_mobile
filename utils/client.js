@@ -13,9 +13,11 @@ const RUTINA_MODEL = Parse.Object.extend("Rutina");
 const EJERCICIO_MODEL = Parse.Object.extend("Ejercicio");
 const MULTIPLE_RESERVATION_MODEL = Parse.Object.extend("ReservacionMultiple");
 const RESERVACION_GOLF_MODEL = Parse.Object.extend('ReservacionGolf');
-const SUGERENCA_MODEL =Parse.Object.extend("Sugerencia");
+const SUGERENCA_MODEL = Parse.Object.extend("Sugerencia");
 const REGLAMENTO_MODEL = Parse.Object.extend("Reglamento");
-
+const  NUMEROATENCION_MODEL = Parse.Object.extend("NumeroAtencion");
+const  CLINICA_MODEL = Parse.Object.extend("Clinica");
+const  RESERVACION_CLINICA_MODEL = Parse.Object.extend("ReservacionClinica");
 
 
 // Golf module
@@ -484,13 +486,13 @@ export async function getAllActiveUsers(){
 	return data;
 }
 
-export async function getReservations() {
-	/**
+/**
 	 * 
 	 * @param none
 	 * @returns array with all reservations made by user
 	 * else @returns empty array
 	 */
+export async function getReservations() {
 	const userObj = await Parse.User.currentAsync();
 
 	const areaQuery = new Parse.Query(AREA_MODEL);
@@ -536,6 +538,10 @@ export async function getReservations() {
 
 	data.sort(function(a, b) {
 		return (a.get('fechaInicio').toISOString() > b.get('fechaInicio').toISOString()) ? -1 : ((a.get('fechaInicio').toISOString() < b.get('fechaInicio').toISOString()) ? 1 : 0);
+	});
+
+	data = data.filter((item, pos) => {
+		return data.indexOf(item) == pos;
 	});
 
 	return data; 
@@ -628,3 +634,65 @@ export async function postSuggestion(areaID, comment) {
 	return data;
 }
 
+/**
+ * Retrieves support number from db
+ * @returns {int} data
+ */
+ export async function getSupportNumber() {
+
+	const supportNumberQuery = new Parse.Query(NUMEROATENCION_MODEL);
+	supportNumberQuery.first();
+
+	const data = await supportNumberQuery.find();
+	const supportNumber = data[0].get('Numero');
+	return supportNumber;
+}
+
+export async function getClinicas() {
+	const userObj = await Parse.User.currentAsync();
+
+	const areaQuery = new Parse.Query(AREA_MODEL);
+	areaQuery.select('nombre');
+	areaQuery.equalTo('eliminado', false);
+
+	const sitiosQuery = new Parse.Query(SITIO_MODEL);
+	sitiosQuery.select('nombre');
+	sitiosQuery.equalTo('eliminado', false);
+	sitiosQuery.matchesQuery('area', areaQuery);
+	sitiosQuery.include('area');
+	
+	let data = [];
+
+	const reservacionClinicaIdQuery = new Parse.Query(RESERVACION_CLINICA_MODEL);
+	reservacionClinicaIdQuery.select('clinica');
+	reservacionClinicaIdQuery.equalTo('user', userObj);
+
+	let clinicaID = await reservacionClinicaIdQuery.find();
+	const clinicasIDS = [];
+
+	for (let i of clinicaID) {
+		clinicasIDS.push(i.get('clinica').id);
+	}
+
+	for (let i of clinicasIDS) {		
+		const reservacionClinicaQuery = new Parse.Query(CLINICA_MODEL);
+		reservacionClinicaQuery.equalTo('objectId', i);
+		reservacionClinicaQuery.matchesQuery('sitio', sitiosQuery);
+		reservacionClinicaQuery.include('sitio');
+
+		let clinica = await reservacionClinicaQuery.find();
+
+		//console.log(clinica[0].get('dias').LUNES);
+		//console.log(clinica[0]);
+	
+		data.push(clinica[0]);
+	}
+
+	/*data.sort(function(a, b) {
+		return (a.get('fechaInicio').toISOString() > b.get('fechaInicio').toISOString()) ? -1 : ((a.get('fechaInicio').toISOString() < b.get('fechaInicio').toISOString()) ? 1 : 0);
+	});*/
+
+	//console.log(data);
+
+	return data; 
+}

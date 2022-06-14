@@ -235,6 +235,20 @@ export default function NewsletterStack(props) {
 				}}
 			/>
 
+			<ModulesStackNavigator.Screen
+				name='pool_classes_reservations'
+				component={ClassesReservationsScreen}
+				initialParams={{
+					module: 'pool',
+					showGuests: false
+				}}
+				options={{
+					title: 'Reservaciones con profesor Alberca',
+					headerTitle: (props) => <Title {...props}/>,
+					headerBackTitleVisible: true
+				}}
+			/>
+
 			<ModulesStackNavigator.Screen 
 				name='pool_regulations'
 				component={RegulationsScreen}
