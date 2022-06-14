@@ -1,3 +1,4 @@
+// M008
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import { ScreenContainer } from '../../../ui/CampanarioComponents';
@@ -26,7 +27,7 @@ export default function NewsletterHomeScreen(props) {
 		<ScrollView>
 			<ScreenContainer>
 				<TopNav title='Anuncios' />
-				<View>
+				<View marginBottom={100}>
 				{ posters.map( (poster, i) => {
 					return (
 					<Poster key={i} 

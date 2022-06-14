@@ -20,8 +20,6 @@ const  CLINICA_MODEL = Parse.Object.extend("Clinica");
 const  RESERVACION_CLINICA_MODEL = Parse.Object.extend("ReservacionClinica");
 
 
-
-
 // Golf module
 export async function getAllAvailableReservationsGolf(filterCoaches=false){
 	// Query all sitios belonging to Golf
@@ -540,6 +538,10 @@ export async function getReservations() {
 
 	data.sort(function(a, b) {
 		return (a.get('fechaInicio').toISOString() > b.get('fechaInicio').toISOString()) ? -1 : ((a.get('fechaInicio').toISOString() < b.get('fechaInicio').toISOString()) ? 1 : 0);
+	});
+
+	data = data.filter((item, pos) => {
+		return data.indexOf(item) == pos;
 	});
 
 	return data; 

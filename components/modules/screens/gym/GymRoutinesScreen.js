@@ -1,4 +1,4 @@
-//MGI013
+//M017
 import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, TextInput, ScrollView, Alert, Keyboard } from 'react-native';
 import { ScreenContainer, P, Subtitle, ActionBtn } from '../../../ui/CampanarioComponents';
@@ -47,6 +47,7 @@ export default function GymRoutinesScreen(props) {
             </View>
             
             <ScrollView>
+                <View marginBottom={100}>
                 {trainings.map((training, i) => {
                         return(
                             <TrainingCard
@@ -58,6 +59,7 @@ export default function GymRoutinesScreen(props) {
                             />
                         )
                 })}
+                </View>
             </ScrollView>
         </ScreenContainer>
     )
