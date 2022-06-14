@@ -183,7 +183,7 @@ export default function ReservationsScreen({route, navigation}) {
     return (
 		<ScreenContainer style={{paddingTop: 0, flex: 1}}>
 		<ScrollView style={{paddingTop: 0, flex: 1}} contentContainerStyle={{ flexGrow: 1 }} >
-			
+		<View marginBottom={100}>
 			{/* Hoyos a jugar y carritos */}
             { route.params.module == 'golf' && 
                 <View style={style.tableContainer}>
@@ -284,7 +284,8 @@ export default function ReservationsScreen({route, navigation}) {
 				</View>
 				) : null
 			}
-		</ScrollView>
+		</View>
+		</ScrollView>	
 		</ScreenContainer>
 	);
 }

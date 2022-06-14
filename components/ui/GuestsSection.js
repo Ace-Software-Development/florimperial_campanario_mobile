@@ -142,7 +142,8 @@ export default function GuestsSection(props) {
 
 const style = StyleSheet.create({
     guestsContainer: {
-		marginTop: 20
+		marginTop: 20,
+        marginBottom: 100
 	},
     keyboardContainer: {
         alignItems: 'center',
