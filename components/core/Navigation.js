@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {NewsDinamicIcon, ModulesDinamicIcon, TicketDinamicIcon} from '../ui/DynamicIcons';
 import { STYLES as styles } from '../../utils/constants';
@@ -22,7 +23,18 @@ export default MainNavigation = () => {
 			<TAB.Navigator
 				initialRouteName="newsletter"
 				screenOptions={{
-					tabBarActiveTintColor: styles.color.contrastColor
+					tabBarShowLabel: false,
+					tabBarActiveTintColor: styles.color.contrastColor,
+					tabBarStyle: {
+							position: 'absolute',
+							bottom: 25, 
+							left: 40,
+							right: 40,
+							elevation: 0,
+							borderRadius: 100,
+							height: 65,
+							...style.shadow
+					}
 				}}
 			>
 				<TAB.Screen name="newsletter"
@@ -36,7 +48,10 @@ export default MainNavigation = () => {
 									else
 										color = styles.color.primaryColor;
 									return (
-										<NewsDinamicIcon color={color} />
+										<View style={style.tabView3}>
+											<NewsDinamicIcon color={color} />
+											<Text style={{fontSize: 10, marginTop: 5, color: focused ? styles.color.contrastColor : styles.color.primaryColor}}>Anuncios</Text>
+										</View>
 									);
 											
 								}
@@ -53,7 +68,10 @@ export default MainNavigation = () => {
 									else
 										color = styles.color.primaryColor;
 									return (
-										<ModulesDinamicIcon color={color} />
+										<View style={style.tabView}>
+											<ModulesDinamicIcon color={color} />
+											<Text style={{fontSize: 10, marginTop: 5, color: focused ? styles.color.contrastColor : styles.color.primaryColor}}>Módulos</Text>
+										</View>
 									);
 											
 								}
@@ -70,7 +88,10 @@ export default MainNavigation = () => {
 									else
 										color = styles.color.primaryColor;
 									return (
-										<TicketDinamicIcon color={color} />
+										<View style={style.tabView2}>
+											<TicketDinamicIcon color={color} />
+											<Text style={{fontSize: 10, marginTop: 5, color: focused ? styles.color.contrastColor : styles.color.primaryColor}}>Reservaciones</Text>
+										</View>
 									);
 											
 								}
@@ -80,3 +101,37 @@ export default MainNavigation = () => {
 		</ReservationMadeContext.Provider>
 	);
 }
+
+const style = StyleSheet.create({
+	shadow: {
+		shadowColor: 'black',
+		shadowOffset: {
+			width: 0,
+			height: 10,
+		},
+		shadowOpacity: 0.5,
+		shadowRadius: 3.5,
+		elevation: 5
+	},
+	tabView: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		top: 3
+	},
+	tabView2: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		top: 3,
+		marginRight: 30
+	},
+	tabView3: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		top: 3,
+		marginLeft: 30
+	},
+	tabText: {
+		fontSize: 10,
+		marginTop: 5
+	}
+});

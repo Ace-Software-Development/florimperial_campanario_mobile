@@ -27,7 +27,7 @@ export default function NewsletterHomeScreen(props) {
 		<ScrollView>
 			<ScreenContainer>
 				<TopNav title='Anuncios' />
-				<View>
+				<View marginBottom={100}>
 				{ posters.map( (poster, i) => {
 					return (
 					<Poster key={i} 

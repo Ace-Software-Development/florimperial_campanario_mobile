@@ -1,11 +1,12 @@
 // M009 M016
 import React, { useState, useEffect, useContext } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { ScreenContainer, ReservationCard, ClinicaCard, Subtitle } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
 import { getReservations, getArea } from '../../../utils/client';
 import { getMonthFormat, getTime } from '../../../utils/timeHelpers';
 import { reservationMadeContext, multipleReservationMadeContext } from '../../../utils/context';
+
 
 
 export default function MyReservationsScreen(props) {
@@ -36,6 +37,7 @@ export default function MyReservationsScreen(props) {
 			<TopNav title='Mis Reservaciones' />
 
 			<ScrollView>
+			<View marginBottom={100}>
 				<Subtitle>Clínicas</Subtitle>
 				{clinicas.map((clinica, i) =>{
 					return (
@@ -60,9 +62,8 @@ export default function MyReservationsScreen(props) {
 					/>
 					)
 				}
-				
 				)}
-				
+			</View>
 			</ScrollView>
 			
 		</ScreenContainer>
