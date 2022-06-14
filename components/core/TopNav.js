@@ -1,8 +1,8 @@
+// M004 M005 M006
 import React, { useEffect, useState, useContext } from 'react';
 import { View, StyleSheet, Image, Alert, Modal,Text, Pressable, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Title, Subtitle, P } from '../ui/CampanarioComponents';
 import ProfileIcon from '../../assets/icons/profile-icon.svg';
-import adptvIcon from '../../assets/img/adaptive-icon.png';
 import { STYLES as c } from '../../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 import Parse from 'parse/react-native';

@@ -19,7 +19,7 @@ export default function PoolMenuScreen(props) {
 					<ModulesMenuListItem title="Horarios y resevaciones" onPress={() => navigation.navigate('pool_reservations')} >
 						<ClockIcon width={30} height={30} />
 					</ModulesMenuListItem>
-					<ModulesMenuListItem title="Clases personalizadas" /*onPress={() => navigation.navigate()} */>
+					<ModulesMenuListItem title="Clases personalizadas" onPress={() => navigation.navigate('pool_classes_reservations')} >
 						<SwimIcon width={30} height={30} />
 					</ModulesMenuListItem>
 				</ModulesMenuList>
