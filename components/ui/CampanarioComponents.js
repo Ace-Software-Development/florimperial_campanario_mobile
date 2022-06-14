@@ -183,7 +183,7 @@ export function TrainingCard(props) {
 		<View style={defaultStyles.trainingCard} >
 				<View style={defaultStyles.trainingDetails}>
 					<Text style={defaultStyles.trainingModule}>{props.ejercicio}</Text>
-					<Text style={defaultStyles.trainingContext}>Repeticiones: {props.reps}	  			Series: {props.series}</Text>
+					<Text style={defaultStyles.trainingContext}>Series: {props.series}	  			Repeticiones: {props.reps}</Text>
 					{props.notas ? (
 						<Text style={defaultStyles.trainingContext2}>Notas: {props.notas}</Text>
 					) : null

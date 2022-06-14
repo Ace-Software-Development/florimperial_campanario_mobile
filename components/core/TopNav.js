@@ -93,7 +93,7 @@ export default function TopNav(props) {
 	/* get support number using query function */
 	useEffect(() => {
 		const number = 0;
-		getSupportNumber().then(number => setSupportNumber(number));
+		getSupportNumber().then(number => setSupportNumber(number)).catch((error) => console.log(error));
 	}, []);
 
 	return (

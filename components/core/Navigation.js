@@ -90,7 +90,7 @@ export default MainNavigation = () => {
 									return (
 										<View style={style.tabView2}>
 											<TicketDinamicIcon color={color} />
-											<Text style={{fontSize: 10, marginTop: 5, color: focused ? styles.color.contrastColor : styles.color.primaryColor}}>Reservaciones</Text>
+											<Text style={{fontSize: 10, marginTop: 5, marginHorizontal: -1, color: focused ? styles.color.contrastColor : styles.color.primaryColor}}>Reservaciones</Text>
 										</View>
 									);
 											
@@ -104,7 +104,7 @@ export default MainNavigation = () => {
 
 const style = StyleSheet.create({
 	shadow: {
-		shadowColor: 'black',
+		shadowColor: 'grey',
 		shadowOffset: {
 			width: 0,
 			height: 10,

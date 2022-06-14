@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { ScrollView, View } from 'react-native';
 import { ScreenContainer, ReservationCard, ClinicaCard, Subtitle } from '../../ui/CampanarioComponents';
 import TopNav from '../../core/TopNav';
-import { getReservations, getArea } from '../../../utils/client';
+import { getReservations, getArea, getClinicas } from '../../../utils/client';
 import { getMonthFormat, getTime } from '../../../utils/timeHelpers';
 import { reservationMadeContext, multipleReservationMadeContext } from '../../../utils/context';
 
@@ -28,10 +28,9 @@ export default function MyReservationsScreen(props) {
 
 	useEffect( () => {
 		getClinicas()
-		.then(data => setClinicas(data));	
+		.then(data => setClinicas(data)).catch((error) => console.error());	
 	}, [clinicaMade]);
 
-	for (let i of clinicas) console.log(i);
 	return (
 		<ScreenContainer>
 			<TopNav title='Mis Reservaciones' />
